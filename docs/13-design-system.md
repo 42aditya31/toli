@@ -151,6 +151,32 @@ One size per token. Screens must pick a token, never a raw size.
 
 Everything else is flat.
 
+### 4.1 Tokens added while building the design system (M3, 2026-09-26)
+
+The prototype uses values the tables above don't name. Following the rule at the top, they became tokens before any screen used them. The single source is `packages/design-system/src/tokens.ts`.
+
+| Token | Value | Where the prototype uses it |
+|---|---|---|
+| `type.cta` | Bricolage 17 / 600 | 56 px CTA labels ("Create trip", "Save & tear stubs"), hold button |
+| `type.captionStrong` | Bricolage 13 / 600 | chips, template tiles, tab labels, the SyncPill |
+| `type.smallStrong` | Bricolage 12 / 600 | category chips, payment-card buttons, stub names |
+| `size.buttonL` | 50 | sheet buttons ("Same one, skip" / "Save anyway") |
+| `size.bar` / `size.barThick` | 6 / 8 | progress bars / payer bars |
+| `size.ring` / `size.ringStroke` | 140 / 14 | kitty ring |
+| `size.notch` / `size.notchS` / `size.notchL` | 20 / 18 / 32 | ticket notches (hero, payment card, welcome) |
+| `size.holdButton` | 60 | HoldButton |
+| `size.tooth` | 9 × 6 | zigzag teeth |
+| `size.caret` | 3 × 52 | keypad caret |
+| `size.checkbox` | 26 | split-editor tick box |
+| `size.switchTrack` / `size.switchThumb` | 46 × 28 / 22 | Switch |
+| `size.fabRadius` / `size.fabRaise`, `size.tabBarInset`, `size.tabDot` | 22 / 16, 14, 5 | tab bar (values already in §4, now named) |
+| `space.tabBarClearance` | 110 | bottom room for the floating tab bar (§9) |
+| `opacity.onAccentMuted` / `opacity.onAccentSub` | 0.70 / 0.75 | "LIVE", sub-lines and headers on lime |
+| `dur.reduced` | 200 | the Reduce Motion crossfade (§7.3) |
+| `dur.shimmer`, `dur.caretBlink`, `dur.ring` | 1300, 1000, 900 | skeleton, caret, kitty ring |
+| `tear.*` | 500 / 550 / 950 / 1350 / 780 / 130 / 800 / 420 | the tear sequence (§7.3, screens/tear-overlay) |
+| `frame` | 370 × 780 | reference frame; the tear overlay lays out in units of `width / 370` |
+
 ---
 
 ## 5. Icons

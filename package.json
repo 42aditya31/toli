@@ -6,7 +6,7 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "build": "turbo run build",
-    "lint": "biome check . && node packages/config/scripts/check-money-types.mjs",
+    "lint": "biome check . && node packages/config/scripts/check-money-types.mjs && node packages/config/scripts/check-raw-styles.mjs",
     "format": "biome format --write ."
   },
   "devDependencies": {

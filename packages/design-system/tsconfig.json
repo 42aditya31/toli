@@ -1,0 +1,14 @@
+{
+  "extends": ["expo/tsconfig.base", "../config/tsconfig.base.json"],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "types": ["jest"]
+  },
+  "include": [
+    "jest.setup.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "__tests__/**/*.ts",
+    "__tests__/**/*.tsx"
+  ]
+}
