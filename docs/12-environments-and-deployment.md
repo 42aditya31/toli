@@ -35,7 +35,7 @@ Three environments, fully separated. Code moves from Development → Preview →
 | | **Development** | **Preview** | **Production** |
 |---|---|---|---|
 | **Who uses it** | developers | internal QA only (the team); **never given to testers** | real users, including APK beta testers ([D-016](decisions/D-016-testing-distribution.md)) and Play closed testers |
-| **Supabase project** | `toli-dev` (plus local Supabase CLI in Docker for most work) | `toli-preview` (Mumbai) | `toli-prod` (Mumbai) |
+| **Supabase project** | local Supabase CLI in Docker (no cloud project, [D-027](decisions/D-027-environments-and-backups.md)) | `toli-preview` (Mumbai) | `toli-prod` (Mumbai) |
 | **API config** | `EXPO_PUBLIC_SUPABASE_URL` / anon key of `toli-dev` or `http://<LAN-IP>:54321` for local | `toli-preview` URL + anon key | `toli-prod` URL + anon key |
 | **Secrets** | Edge Function secrets in `toli-dev`; local `.env` (git-ignored) | Edge Function secrets in `toli-preview`; GitHub env `preview` | Edge Function secrets in `toli-prod`; GitHub env `production` (manual approval) |
 | **Storage (R2)** | `toli-dev-files` | `toli-preview-files` | `toli-prod-files`, `toli-prod-backups` |
