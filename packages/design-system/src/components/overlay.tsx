@@ -601,6 +601,10 @@ function FlyingStub({
   const split = phase === 'split' || phase === 'fly' || phase === 'done';
   const flying = phase === 'fly' || phase === 'done';
   const delay = i * tear.stagger * T;
+  // Easing curves are built here, on the JS thread: a worklet may not call JS helpers (the
+  // "[Worklets] Tried to synchronously call a Remote Function" crash).
+  const popEase = easing('pop');
+  const moveEase = easing('move');
   const style = useAnimatedStyle(() => {
     const core =
       phase === 'tear'
@@ -610,20 +614,20 @@ function FlyingStub({
           : flying
             ? { y: 0, x: 0, r: mid * 22 + 10, s: 0.34 }
             : { y: 0, x: 0, r: 0, s: 1 };
-    const pop = { duration: 420 * T, easing: easing('pop') };
+    const pop = { duration: 420 * T, easing: popEase };
     return {
       opacity: withTiming(landed ? 0 : 1, { duration: 150 }),
       transform: [
         {
           translateX: withDelay(
             flying ? delay : 0,
-            withTiming(flying ? dx : 0, { duration: tear.fly * T, easing: easing('move') }),
+            withTiming(flying ? dx : 0, { duration: tear.fly * T, easing: moveEase }),
           ),
         },
         {
           translateY: withDelay(
             flying ? delay : 0,
-            withTiming(flying ? dy : 0, { duration: tear.fly * T, easing: easing('pop') }),
+            withTiming(flying ? dy : 0, { duration: tear.fly * T, easing: popEase }),
           ),
         },
         { translateX: withDelay(flying ? delay : 0, withTiming(core.x * k, pop)) },

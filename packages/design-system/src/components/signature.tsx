@@ -417,9 +417,12 @@ export function Wordmark({
             <Polygon points={ZIG(h, w, 1)} />
           </ClipPath>
         </Defs>
-        <SvgText {...common} fill={top} clipPath="url(#toli-top)">
-          toli
-        </SvgText>
+        {/* Android applies clip paths reliably on groups, not on text: wrap both halves. */}
+        <G clipPath="url(#toli-top)">
+          <SvgText {...common} fill={top}>
+            toli
+          </SvgText>
+        </G>
         <G clipPath="url(#toli-bottom)">
           <SvgText
             {...common}

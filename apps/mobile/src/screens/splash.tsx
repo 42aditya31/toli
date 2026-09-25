@@ -70,7 +70,20 @@ export function SplashScreen() {
       <View style={styles.center}>
         <Animated.View style={[styles.icon, iconStyle]}>
           <View style={styles.iconBody} />
-          <Animated.View style={[styles.iconStub, stubStyle]} />
+          <Animated.View style={[styles.iconStub, stubStyle]}>
+            {/* Android can't draw a dashed single-side border, so the tear line is an SVG. */}
+            <Svg width={size.stampBorder} height={brand.mark.height} style={styles.tearLine}>
+              <Line
+                x1={size.stampBorder / 2}
+                y1={0}
+                x2={size.stampBorder / 2}
+                y2={brand.mark.height}
+                stroke={color.onAccent}
+                strokeWidth={size.stampBorder}
+                strokeDasharray={[space.s6, space.s4]}
+              />
+            </Svg>
+          </Animated.View>
           <View style={[styles.iconNotch, { top: -space.s8 }]} />
           <View style={[styles.iconNotch, { bottom: -space.s8 }]} />
         </Animated.View>
@@ -107,10 +120,8 @@ const styles = StyleSheet.create({
     backgroundColor: color.accent,
     borderTopRightRadius: radius.cta,
     borderBottomRightRadius: radius.cta,
-    borderLeftWidth: size.stampBorder,
-    borderStyle: 'dashed',
-    borderLeftColor: color.onAccent,
   },
+  tearLine: { position: 'absolute', left: 0, top: 0 },
   iconNotch: {
     position: 'absolute',
     left: brand.mark.notchAt,
