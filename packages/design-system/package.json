@@ -19,6 +19,8 @@
     "react-native-svg": "*"
   },
   "devDependencies": {
+    "@expo-google-fonts/bricolage-grotesque": "^0.4.1",
+    "@expo-google-fonts/jetbrains-mono": "^0.4.1",
     "@testing-library/react-native": "^14.0.1",
     "@toli/engine": "workspace:^",
     "@types/jest": "^30.0.0",

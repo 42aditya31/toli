@@ -71,10 +71,16 @@ export const type = {
   amountS: { fontFamily: font.extrabold, fontSize: 22, tracking: -0.02, line: 1.1 },
   header: { fontFamily: font.semibold, fontSize: 20, tracking: 0, line: 1.2 },
   subhead: { fontFamily: font.semibold, fontSize: 18, tracking: 0, line: 1.3 },
+  /** 56 px CTA labels ("Create trip", "Save & tear stubs"): prototype 17/600. Added in M3. */
+  cta: { fontFamily: font.semibold, fontSize: 17, tracking: 0, line: 1.2 },
   bodyStrong: { fontFamily: font.semibold, fontSize: 15, tracking: 0, line: 1.35 },
   body: { fontFamily: font.regular, fontSize: 14, tracking: 0, line: 1.45 },
   caption: { fontFamily: font.regular, fontSize: 13, tracking: 0, line: 1.4 },
+  /** Chips, template tiles, small buttons: prototype 13/600. Added in M3. */
+  captionStrong: { fontFamily: font.semibold, fontSize: 13, tracking: 0, line: 1.3 },
   small: { fontFamily: font.regular, fontSize: 12, tracking: 0, line: 1.4 },
+  /** Category chips, payment-card buttons: prototype 12/600. Added in M3. */
+  smallStrong: { fontFamily: font.semibold, fontSize: 12, tracking: 0, line: 1.3 },
   micro: { fontFamily: font.regular, fontSize: 11, tracking: 0, line: 1.3 },
   monoL: { fontFamily: font.monoBold, fontSize: 16, tracking: 0, line: 1.3 },
   mono: { fontFamily: font.monoBold, fontSize: 14, tracking: 0, line: 1.3 },
@@ -137,6 +143,8 @@ export const size = {
   cta: 56,
   buttonM: 44,
   buttonS: 36,
+  /** Sheet buttons ("Same one, skip"): 50 high, radius.key (screens/add-expense). Added in M3. */
+  buttonL: 50,
   row: 52,
   rowTall: 58,
   avatar: 34,
