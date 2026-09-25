@@ -1,0 +1,8 @@
+{
+  "extends": ["expo/tsconfig.base", "../../packages/config/tsconfig.base.json"],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "dist"]
+}

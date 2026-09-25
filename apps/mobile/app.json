@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Toli (dev)",
+    "slug": "toli",
+    "scheme": "toli",
+    "version": "0.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "package": "app.toli.dev",
+      "adaptiveIcon": {
+        "backgroundColor": "#2B2F36",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    }
+  }
+}

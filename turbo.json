@@ -2,7 +2,7 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "typecheck": { "dependsOn": ["^typecheck"] },
-    "test": { "outputs": ["coverage/**"] },
+    "test": { "outputs": [] },
     "build": { "dependsOn": ["^build"], "outputs": ["dist/**"] }
   }
 }
