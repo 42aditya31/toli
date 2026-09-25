@@ -23,6 +23,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { addExpense, CommandError, editExpense } from '../../commands/index.ts';
 import { nowIso } from '../../data/clock.ts';
+import { uuidv7 } from '../../data/ids.ts';
 import {
   amountText,
   draftAmount,
@@ -57,7 +58,7 @@ export function draftStatus() {
       error: 'Type an amount first',
       per: 'Amount is the only thing you need',
     };
-  const r = computeShares(`draft-${d.tripId}`, amount, draftSpec(d));
+  const r = computeShares(d.expenseId, amount, draftSpec(d));
   const ccy = d.currency;
   if (!r.ok) {
     const pct = d.mode === 'percent';
@@ -135,6 +136,7 @@ export function AddExpenseScreen() {
       const raw = (input.amounts ?? input.bp ?? input.weights ?? {}) as Record<string, string>;
       start({
         tripId: v.trip.id,
+        expenseId: e.id,
         currency: e.revision.currency,
         text: amountText(e.amount, e.revision.currency),
         description: e.revision.description ?? '',
@@ -154,6 +156,7 @@ export function AddExpenseScreen() {
     }
     start({
       tripId: v.trip.id,
+      expenseId: uuidv7(),
       currency: v.trip.base_currency,
       text: '',
       description: '',
@@ -273,7 +276,7 @@ export function AddExpenseScreen() {
         router.back();
         return toast('Saved');
       }
-      const expenseId = addExpense(v, v.me.id, input);
+      const expenseId = addExpense(v, v.me.id, input, d.expenseId);
       useDraft.getState().clear();
       router.replace(`/trip/${v.trip.id}`);
       if (payers === 'kitty')

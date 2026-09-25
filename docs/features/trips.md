@@ -56,7 +56,7 @@ The organiser wants to start tracking money **the moment the trip starts**, ofte
 |---|---|---|---|---|
 | TR-1 | Only a **name** is required to create a trip (1–60 characters). | MUST | R1a | F1 |
 | TR-2 | Optional: destination (place autocomplete), start/end dates, cover image, base currency (default from the phone's locale; INR in India). | MUST | R1a | F1 |
-| TR-3 | Offer templates: *Beach trip, Road trip, Trek, Wedding, Office offsite, Other*. A template presets the category list and the default split mode (a constant in `packages/config`, [04 §2.1][api]). Templates never limit behaviour. | MUST | R1a | F1, §22 Q4 |
+| TR-3 | Offer templates: *Beach trip, Road trip, Trek, Wedding, Office offsite, Other*. A template presets the category list and the default split mode (a constant in `packages/config`, [04 §2.1][api]). Templates never limit behaviour. Seeded lists (`TEMPLATE_CATEGORIES`, Assumption, 2026-09-26): every template gets Food · Drinks · Travel · Stay · Activities · Shopping · Fuel · Misc; **Road trip** adds Tolls and **Wedding** adds Tips (screens/add-expense: "Tolls and Tips appear if the template includes them"). Default split: Equal for all. | MUST | R1a | F1, §22 Q4 |
 | TR-4 | The trip is created **locally** and is fully usable **before** any network call finishes. | MUST | R1a | F1, §12 |
 | TR-5 | Support a `planning` state so a trip can hold an itinerary and bookings before it's `active`. | MUST | R1a | F1 |
 | TR-6 | Lifecycle is `planning → active → settling → settled → archived` (§6). | MUST | R1a | §8 |

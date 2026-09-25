@@ -59,7 +59,7 @@ export function SplitEditorScreen() {
   const ccy = draft.currency;
   const amount = draftAmount(draft);
   const ids = includedIds(draft);
-  const r = amount > 0n ? computeShares(`draft-${draft.tripId}`, amount, draftSpec(draft)) : null;
+  const r = amount > 0n ? computeShares(draft.expenseId, amount, draftSpec(draft)) : null;
   const shares = r?.ok ? r.shares : {};
   const payers = resolvedPayers(draft);
   const payerIds = payers === 'kitty' ? [] : Object.keys(payers);

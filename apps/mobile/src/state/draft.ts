@@ -7,6 +7,9 @@ export type Mode = 'equal' | 'exact' | 'percent' | 'shares';
 
 export type Draft = {
   readonly tripId: string;
+  /** The expense's ID, fixed when the draft starts: it's the rounding seed (07 §3), so the
+   *  preview and the saved split give the odd paisa to the same person. */
+  readonly expenseId: string;
   readonly currency: string;
   /** Typed digits (D-013): whole major units for INR, a decimal string for decimal currencies. */
   readonly text: string;
@@ -81,7 +84,7 @@ export function stepFor(mode: Mode, currency: string): bigint {
 function startingValues(d: Draft, mode: Mode): Record<string, bigint> {
   const ids = includedIds(d);
   if (ids.length === 0) return {};
-  if (mode === 'exact') return distributeRemainder(d.tripId, draftAmount(d), ids);
+  if (mode === 'exact') return distributeRemainder(d.expenseId, draftAmount(d), ids);
   if (mode === 'percent') {
     // Equal whole percents; the leftover % goes to the first people (split-editor table).
     const k = BigInt(ids.length);
@@ -143,7 +146,7 @@ export const useDraft = create<DraftStore>((set, get) => ({
   distribute: (unassigned) => {
     const d = get().draft;
     if (!d || unassigned <= 0n) return;
-    const add = distributeRemainder(`${d.tripId}:dist`, unassigned, includedIds(d));
+    const add = distributeRemainder(d.expenseId, unassigned, includedIds(d));
     const values = { ...d.values };
     for (const [k, v] of Object.entries(add)) values[k] = (values[k] ?? 0n) + v;
     set({ draft: { ...d, values, touchedAt: Date.now() } });
