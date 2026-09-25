@@ -200,6 +200,12 @@ This is exactly "contributions are payments". The leftover cash goes back throug
 
 > **Decided (OQ-E1, 2026-09-25):** the PRD F7 "group can override proportional refunds" option is **dropped**. With folding, each person's result is exactly what they paid minus what they used, so an "equal refund" would move money between people ([D-010](decisions/D-010-kitty-folding.md)).
 
+**How the engine implements this (M2, 2026-09-26).** None of this adds a rule; it pins down details the text above leaves open:
+- **Signs.** `computeBalances` returns `kittyCash` (the cash in the pot, shown as "₹3,000") and `kittyBalance = −kittyCash` (K's balance). The trip-view invariant is **Σ member balances + kittyBalance = 0**.
+- **Hand-over lines (settle view).** Contributions, kitty-paid expenses and hand-overs are replayed by their `order`. Each holding period ends with a line **−(net cash that came in during the period)** for that holder. Each hand-over adds **+R** to the giver and **−R** to the receiver, where R is the cash at that moment. Every earlier holder therefore nets to 0 and the current holder carries −kittyCash, exactly "the remaining cash is charged to the current holder" above.
+- **Direct mode** pairs kitty lines with the **current** holder, so direct nets equal the settle view (invariant 11).
+- **Top-up** uses the exact fraction `spent × days_left ÷ max(1, days_elapsed) − remaining`, then divides by the member count, rounding up, and finally rounds up to 50 major units.
+
 ---
 
 ## 7. Balances
@@ -347,7 +353,7 @@ Checked with **property-based tests (fast-check)** on random trips (random membe
 
 | # | Scenario | Expected result |
 |---|---|---|
-| G1 | PRD Appendix A (hotel / dinner / cab) | A +₹3,400, R −₹1,000, N −₹1,200, J −₹1,200. Payments: N→A ₹1,200, J→A ₹1,200, R→A ₹1,000. Direct mode gives the same. |
+| G1 | PRD Appendix A (hotel / dinner / cab) | A +₹3,400, R −₹1,000, N −₹1,200, J −₹1,200. Simplified payments: N→A ₹1,200, J→A ₹1,200, R→A ₹1,000. Direct mode gives **5** payments (R→A ₹1,400, N→A ₹1,000, N→R ₹200, J→A ₹1,000, J→R ₹200), because Rahul paid the cab; its nets equal the same balances (invariant 11). *(Corrected 2026-09-26: this row and PRD Appendix A said direct gives the same 3.)* |
 | G2 | ₹1,000 ÷ 3 | 333.34 / 333.33 / 333.33, deterministic |
 | G3 | ₹3,000 paid ₹2,000 A + ₹1,000 N, equal 4 ways | shares ₹750 each; A +₹1,250, N +₹250, R −₹750, J −₹750 |
 | G4 | Late joiner: Jay joins day 2 | night-1 room split 3 ways, later expenses split 4 ways |
