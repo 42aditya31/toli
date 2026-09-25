@@ -1,0 +1,1736 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Qualified Application Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap">
+<style>
+:root{
+  --paper:#EFF2F3; --surface:#FBFCFC; --surface-2:#E5EAEC; --surface-3:#DCE3E6;
+  --ink:#0E1418; --ink-2:#39474F; --ink-3:#69767D;
+  --rule:#D3DBDE; --rule-2:#B2BEC3;
+  --accent:#096A73; --accent-soft:#DAEAEB; --accent-ink:#06525A;
+  --signal:#A33C17; --signal-soft:#F7E2D8;
+  --good:#2A6B46; --good-soft:#DCEAE1;
+  --warn:#875707; --warn-soft:#F3E7D2;
+  --s1:#008C99; --s2:#C5541F; --s3:#4661B8; --s4:#B08A18;
+  --grid:#C8D2D6;
+  --shadow:0 1px 2px rgba(14,20,24,.06);
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1215; --surface:#141A1E; --surface-2:#1C2429; --surface-3:#243036;
+    --ink:#E4EAEC; --ink-2:#A7B4BA; --ink-3:#78858C;
+    --rule:#263036; --rule-2:#39464C;
+    --accent:#3EB2BB; --accent-soft:#0F3236; --accent-ink:#63C6CE;
+    --signal:#E07A50; --signal-soft:#361C13;
+    --good:#5FB287; --good-soft:#132C1D;
+    --warn:#CE9F42; --warn-soft:#2F2410;
+    --grid:#2B363C;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1215; --surface:#141A1E; --surface-2:#1C2429; --surface-3:#243036;
+  --ink:#E4EAEC; --ink-2:#A7B4BA; --ink-3:#78858C;
+  --rule:#263036; --rule-2:#39464C;
+  --accent:#3EB2BB; --accent-soft:#0F3236; --accent-ink:#63C6CE;
+  --signal:#E07A50; --signal-soft:#361C13;
+  --good:#5FB287; --good-soft:#132C1D;
+  --warn:#CE9F42; --warn-soft:#2F2410;
+  --grid:#2B363C;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-size:17.5px; line-height:1.75;
+  margin:0; padding-inline:24px; padding-block:0;
+  -webkit-font-smoothing:antialiased;
+}
+.shell{max-width:1340px;margin:0 auto;display:grid;grid-template-columns:236px minmax(0,1fr);gap:56px;align-items:start}
+
+.nav{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding-block:40px;font-family:var(--mono);font-size:.72rem}
+.nav .brand{font-family:var(--sans);font-weight:700;font-size:.95rem;letter-spacing:-.01em;color:var(--ink);margin-bottom:24px;line-height:1.3}
+.nav .cluster{font-size:.62rem;text-transform:uppercase;letter-spacing:.13em;color:var(--ink-3);margin:20px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
+.nav a{display:flex;gap:9px;text-decoration:none;color:var(--ink-2);padding:3px 0;line-height:1.4}
+.nav a:hover{color:var(--accent)}
+.nav a .n{color:var(--ink-3);min-width:1.2em}
+.nav-mobile{display:none}
+
+.doc{padding-block:48px 96px;min-width:0}
+.doc > p,.doc > ul,.doc > ol,.doc > h2,.doc > h3,.doc > h4,.doc > blockquote{max-width:64ch}
+h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,4.6vw,3.3rem);line-height:1.05;letter-spacing:-.025em;margin:0 0 18px;text-wrap:balance;max-width:19ch}
+h2{font-family:var(--sans);font-weight:600;font-size:clamp(1.42rem,2.6vw,1.95rem);line-height:1.16;letter-spacing:-.018em;margin:0 0 16px;text-wrap:balance}
+h3{font-family:var(--sans);font-weight:600;font-size:1.12rem;letter-spacing:-.008em;margin:34px 0 10px;text-wrap:balance}
+h4{font-family:var(--mono);font-weight:600;font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-2);margin:26px 0 8px}
+p{margin:0 0 18px}
+strong{font-weight:600;color:var(--ink)}
+em{font-style:italic}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px}
+ul,ol{margin:0 0 18px;padding-left:1.15em}
+li{margin-bottom:9px}
+li::marker{color:var(--ink-3)}
+code{font-family:var(--mono);font-size:.82em;background:var(--surface-2);padding:.1em .34em;border-radius:2px;color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+
+section{border-top:1px solid var(--rule-2);padding-top:34px;margin-top:56px;scroll-margin-top:20px}
+section:first-of-type{border-top:none;margin-top:0}
+.eyebrow{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);margin-bottom:12px;display:block}
+.lede{font-size:1.2rem;line-height:1.6;color:var(--ink-2);max-width:58ch}
+
+.masthead{padding-block:56px 0}
+.kicker{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.16em;color:var(--signal);margin-bottom:20px}
+.meta{font-family:var(--mono);font-size:.7rem;color:var(--ink-3);letter-spacing:.04em;margin-top:26px;padding-top:16px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:6px 22px;max-width:64ch}
+
+.wide{margin:30px 0}
+figure{margin:0}
+figcaption{font-family:var(--mono);font-size:.71rem;color:var(--ink-3);line-height:1.55;margin-top:10px;max-width:72ch}
+.figtitle{font-family:var(--sans);font-weight:600;font-size:.95rem;margin-bottom:3px;color:var(--ink)}
+.figsub{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px}
+svg{max-width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--mono);font-size:.7rem;color:var(--ink-2);margin:12px 0 0}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:10px;height:10px;border-radius:2px;flex:none}
+
+.tw{overflow-x:auto;margin:26px 0;border-top:1.5px solid var(--ink);border-bottom:1px solid var(--rule-2)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:.84rem;line-height:1.5}
+th{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);text-align:left;padding:11px 14px 10px 0;vertical-align:bottom;font-weight:500;border-bottom:1px solid var(--rule-2);white-space:nowrap}
+td{padding:11px 14px 11px 0;vertical-align:top;border-bottom:1px solid var(--rule);color:var(--ink-2)}
+td:first-child{color:var(--ink);font-weight:500}
+tr:last-child td{border-bottom:none}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+table .t-good{color:var(--good);font-weight:600}
+table .t-bad{color:var(--signal);font-weight:600}
+caption{caption-side:bottom;font-family:var(--mono);font-size:.68rem;color:var(--ink-3);text-align:left;padding-top:10px;line-height:1.55}
+.bar{display:block;height:7px;background:var(--accent);border-radius:0 2px 2px 0;min-width:2px}
+.bartrack{background:var(--surface-3);width:100%;min-width:74px;border-radius:2px}
+
+.box{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:20px 22px;margin:26px 0;max-width:68ch;box-shadow:var(--shadow)}
+.box p:last-child,.box ul:last-child,.box ol:last-child{margin-bottom:0}
+.box .tag{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.11em;display:block;margin-bottom:9px;font-weight:600}
+.box.risk{background:var(--signal-soft);border-color:transparent}
+.box.risk .tag{color:var(--signal)}
+.box.rec{background:var(--accent-soft);border-color:transparent}
+.box.rec .tag{color:var(--accent-ink)}
+.box.warn{background:var(--warn-soft);border-color:transparent}
+.box.warn .tag{color:var(--warn)}
+.box.plain{background:var(--good-soft);border-color:transparent}
+.box.plain .tag{color:var(--good)}
+
+.findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1px;background:var(--rule-2);border-block:1px solid var(--rule-2);margin:32px 0}
+.finding{background:var(--paper);padding:22px 20px 24px}
+.finding .fig-n{font-family:var(--mono);font-size:1.9rem;font-weight:500;line-height:1.05;letter-spacing:-.04em;color:var(--signal);display:block;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.finding .fig-n.pos{color:var(--accent)}
+.finding .fig-u{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);display:block;margin-bottom:11px}
+.finding p{font-size:.94rem;line-height:1.58;margin:0;color:var(--ink-2)}
+.finding p strong{color:var(--ink)}
+
+.pill{font-family:var(--mono);font-size:.64rem;text-transform:uppercase;letter-spacing:.07em;padding:2px 7px;border-radius:2px;white-space:nowrap;font-weight:500;display:inline-block}
+.pill.auto{background:var(--accent-soft);color:var(--accent-ink)}
+.pill.human{background:var(--signal-soft);color:var(--signal)}
+.pill.assist{background:var(--warn-soft);color:var(--warn)}
+.pill.never{background:var(--surface-3);color:var(--ink-2)}
+.pill.p0{background:var(--signal);color:#fff}
+.pill.p1{background:var(--accent);color:#fff}
+.pill.p2{background:var(--surface-3);color:var(--ink)}
+.pill.p3{background:transparent;color:var(--ink-3);border:1px solid var(--rule-2)}
+.stage{border-left:2px solid var(--rule-2);padding-left:18px;margin:24px 0;max-width:66ch}
+.stage h4{margin-top:0}
+.kv{font-family:var(--mono);font-size:.78rem;line-height:1.65;color:var(--ink-2)}
+.kv b{color:var(--ink-3);font-weight:500;text-transform:uppercase;letter-spacing:.07em;font-size:.88em}
+.gloss{font-family:var(--sans);font-size:.87rem;line-height:1.55}
+.gloss dt{font-weight:600;color:var(--ink);margin-top:12px}
+.gloss dt:first-child{margin-top:0}
+.gloss dd{margin:2px 0 0;color:var(--ink-2)}
+hr{border:none;border-top:1px solid var(--rule);margin:32px 0;max-width:64ch}
+
+@media (max-width:1020px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+  .nav{display:none}
+  .nav-mobile{display:block;position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule-2);margin-inline:-24px;padding:10px 24px}
+  .nav-mobile summary{font-family:var(--mono);font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;color:var(--ink-2);padding:4px 0}
+  .nav-mobile .inner{columns:2;column-gap:24px;padding:12px 0 6px;font-family:var(--mono);font-size:.72rem}
+  .nav-mobile a{display:block;color:var(--ink-2);text-decoration:none;padding:3px 0;break-inside:avoid}
+  .nav-mobile .cluster{font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-3);margin:10px 0 5px;break-inside:avoid}
+  .doc{padding-block:34px 72px}
+  .masthead{padding-block:30px 0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="shell">
+<nav class="nav">
+  <div class="brand">The Qualified<br>Application Engine</div>
+  <div class="cluster">What is wrong</div>
+  <a href="#f1"><span class="n">01</span>The short version</a>
+  <a href="#f2"><span class="n">02</span>Your 250 number</a>
+  <a href="#f3"><span class="n">03</span>Why volume stopped working</a>
+  <a href="#f4"><span class="n">04</span>Problems you didn't mention</a>
+  <a href="#f5"><span class="n">05</span>The big change</a>
+  <div class="cluster">The new system</div>
+  <a href="#f6"><span class="n">06</span>How it works, step by step</a>
+  <a href="#f7"><span class="n">07</span>What to store</a>
+  <a href="#f8"><span class="n">08</span>Where jobs come from</a>
+  <a href="#f9"><span class="n">09</span>Matching jobs to people</a>
+  <a href="#f10"><span class="n">10</span>What to automate</a>
+  <a href="#f11"><span class="n">11</span>Stopping bad applications</a>
+  <a href="#f12"><span class="n">12</span>Proof — build this first</a>
+  <div class="cluster">Running it</div>
+  <a href="#f13"><span class="n">13</span>Your team</a>
+  <a href="#f14"><span class="n">14</span>The three screens</a>
+  <a href="#f15"><span class="n">15</span>Alerts</a>
+  <a href="#f16"><span class="n">16</span>How many people</a>
+  <div class="cluster">Money &amp; safety</div>
+  <a href="#f17"><span class="n">17</span>Money</a>
+  <a href="#f18"><span class="n">18</span>Safety &amp; law</a>
+  <div class="cluster">Building it</div>
+  <a href="#f19"><span class="n">19</span>About "AI agents"</a>
+  <a href="#f20"><span class="n">20</span>Your own questions</a>
+  <a href="#f21"><span class="n">21</span>Which tools</a>
+  <a href="#f22"><span class="n">22</span>Build order</a>
+  <a href="#f23"><span class="n">23</span>What first</a>
+  <a href="#f24"><span class="n">24</span>If I were you</a>
+  <a href="#f25"><span class="n">25</span>Word list &amp; sources</a>
+</nav>
+
+<div>
+<details class="nav-mobile">
+  <summary>Contents — 25 parts</summary>
+  <div class="inner">
+    <div class="cluster">What is wrong</div>
+    <a href="#f1">01 The short version</a><a href="#f2">02 Your 250 number</a><a href="#f3">03 Why volume stopped working</a><a href="#f4">04 Problems you didn't mention</a><a href="#f5">05 The big change</a>
+    <div class="cluster">The new system</div>
+    <a href="#f6">06 How it works</a><a href="#f7">07 What to store</a><a href="#f8">08 Where jobs come from</a><a href="#f9">09 Matching</a><a href="#f10">10 What to automate</a><a href="#f11">11 Stopping bad applications</a><a href="#f12">12 Proof — build first</a>
+    <div class="cluster">Running it</div>
+    <a href="#f13">13 Your team</a><a href="#f14">14 Three screens</a><a href="#f15">15 Alerts</a><a href="#f16">16 How many people</a>
+    <div class="cluster">Money &amp; safety</div>
+    <a href="#f17">17 Money</a><a href="#f18">18 Safety &amp; law</a>
+    <div class="cluster">Building it</div>
+    <a href="#f19">19 About "AI agents"</a><a href="#f20">20 Your own questions</a><a href="#f21">21 Which tools</a><a href="#f22">22 Build order</a><a href="#f23">23 What first</a><a href="#f24">24 If I were you</a><a href="#f25">25 Word list &amp; sources</a>
+  </div>
+</details>
+
+<header class="masthead">
+  <div class="kicker">A plain-language plan for the business</div>
+  <h1>The Qualified Application Engine</h1>
+  <p class="lede">You sell a large number of job applications. The market has stopped paying for large numbers. This explains what changed, what to build instead, how much money it saves, and the order to build it in — written so it is easy to read, not to impress.</p>
+  <div class="meta"><span>12 September 2026</span><span>Version 2 — plain language</span><span>Written for: one founder who is also the developer</span></div>
+</header>
+
+<article class="doc">
+
+<section id="f1">
+<span class="eyebrow">Part 01</span>
+<h2>The short version</h2>
+<p>If you read only one page, read this one.</p>
+
+<div class="findings wide">
+  <div class="finding"><span class="fig-n">1 job<br>5 people</span><span class="fig-u">How you hit 250 a day</span><p><strong>Your 250 number is real.</strong> It works because your employee finds one job and applies to it for all five candidates. That saves a lot of time — but it means five people from your company apply to the same job. That is the real problem, and it is bigger than a wrong number would have been.</p></div>
+  <div class="finding"><span class="fig-n">244</span><span class="fig-u">People applying to one job in 2026</span><p><strong>Everyone can apply fast now.</strong> AI gave every job seeker the same power. So applying to many jobs is no longer special. It is now the normal thing that everyone does, and it stopped working.</p></div>
+  <div class="finding"><span class="fig-n">5–15</span><span class="fig-u">Good jobs per day for a specific person</span><p><strong>For most candidates, 50 good jobs a day do not exist.</strong> If you promise 50, your team must apply to jobs that do not fit. That hurts the candidate.</p></div>
+  <div class="finding"><span class="fig-n">0%</span><span class="fig-u">Applications you can prove</span><p><strong>You cannot prove you did the work.</strong> Your team types numbers into a sheet. Nobody checks. So you cannot prove it to a candidate, and you cannot learn from it.</p></div>
+  <div class="finding"><span class="fig-n pos">$9 back<br>per $1</span><span class="fig-u">Labour saved per dollar of AI</span><p><strong>The money side is very good.</strong> About $12 of AI per candidate per month replaces about $105 of human work. Profit goes from about 25% to about 72%.</p></div>
+</div>
+
+<div class="box plain">
+<span class="tag">In simple words</span>
+<p>Stop selling <strong>"we send many applications."</strong> Start selling <strong>"we send good applications, and we can prove it."</strong></p>
+<p>Apply on the company's own website instead of LinkedIn. Let a computer find and check the jobs. Let people do the final click. Build one system where <strong>no number is typed by hand</strong> — the computer records everything itself.</p>
+</div>
+
+<h3>What changes, in one table</h3>
+<div class="tw wide">
+<table>
+<thead><tr><th>Now</th><th>After</th></tr></thead>
+<tbody>
+<tr><td>50 applications per candidate per day</td><td>15 good applications per candidate per day</td></tr>
+<tr><td>Same job sent for 5 candidates</td><td>Each job chosen for one person</td></tr>
+<tr><td>Mostly LinkedIn one-click</td><td>Mostly the company's own website</td></tr>
+<tr><td>Employee searches for jobs</td><td>Computer searches, employee decides</td></tr>
+<tr><td>Numbers typed in a sheet</td><td>Numbers recorded automatically</td></tr>
+<tr><td>No proof</td><td>Every application has a confirmation email</td></tr>
+<tr><td>5 candidates per employee</td><td>11, then 20 candidates per employee</td></tr>
+<tr><td>About 25% profit</td><td>About 72% profit</td></tr>
+</tbody>
+</table>
+</div>
+<p>The rest of this document explains each line.</p>
+</section>
+
+<section id="f2">
+<span class="eyebrow">Part 02</span>
+<h2>About your 250 number — I was wrong</h2>
+
+<p>In my first version I said 250 applications per employee per day was not possible. You told me it is. <strong>You are right and I was wrong.</strong> Here is the mistake I made, because it turns out to be important.</p>
+
+<h3>What I got wrong</h3>
+<p>I assumed every application needs its own job search. Like this:</p>
+<div class="box">
+<p class="kv"><b>My wrong maths</b><br>
+Find a job = 0.6 minutes<br>
+Apply to it = 1.0 minute<br>
+Total = <strong>1.6 minutes per application</strong><br>
+359 working minutes ÷ 1.6 = 224... and with harder forms mixed in, about 151 a day</p>
+</div>
+
+<h3>What you actually do</h3>
+<p>Your employee finds one job, then applies to that <em>same</em> job for all five candidates. So the search time is shared:</p>
+<div class="box plain">
+<span class="tag">The correct maths</span>
+<p class="kv">Find a job <strong>once</strong> = 0.6 minutes<br>
+Apply for candidate 1 = 1.0 minute<br>
+Apply for candidate 2 = 1.0 minute<br>
+Apply for candidate 3 = 1.0 minute<br>
+Apply for candidate 4 = 1.0 minute<br>
+Apply for candidate 5 = 1.0 minute<br>
+<strong>Total = 5.6 minutes for 5 applications</strong><br><br>
+5.6 ÷ 5 = <strong>1.12 minutes per application</strong><br>
+359 working minutes ÷ 1.12 = <strong>320 applications a day</strong></p>
+</div>
+<p>So 250 a day is not only possible — you have room to spare. My number was wrong because I forgot that one search can serve five people.</p>
+
+<figure class="wide">
+<div class="figtitle">Minutes needed for one application</div>
+<div class="figsub">359 usable working minutes per employee per day</div>
+<svg viewBox="0 0 900 208" role="img" aria-label="Bar chart of minutes per application. Your method, one job shared across five candidates: 1.12 minutes, which allows 320 applications a day. One job searched for one person: 1.6 minutes, 224 a day. Applying on a company website by hand: 6.0 minutes, 60 a day.">
+  <g font-family="IBM Plex Mono, monospace" font-size="12.5">
+    <line x1="250" y1="14" x2="250" y2="172" stroke="var(--grid)" stroke-width="1"/>
+    <line x1="340" y1="14" x2="340" y2="172" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="430" y1="14" x2="430" y2="172" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="520" y1="14" x2="520" y2="172" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="610" y1="14" x2="610" y2="172" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="700" y1="14" x2="700" y2="172" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="790" y1="14" x2="790" y2="172" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <text x="250" y="188" fill="var(--ink-3)" font-size="11" text-anchor="middle">0</text>
+    <text x="340" y="188" fill="var(--ink-3)" font-size="11" text-anchor="middle">1</text>
+    <text x="430" y="188" fill="var(--ink-3)" font-size="11" text-anchor="middle">2</text>
+    <text x="520" y="188" fill="var(--ink-3)" font-size="11" text-anchor="middle">3</text>
+    <text x="610" y="188" fill="var(--ink-3)" font-size="11" text-anchor="middle">4</text>
+    <text x="700" y="188" fill="var(--ink-3)" font-size="11" text-anchor="middle">5</text>
+    <text x="790" y="188" fill="var(--ink-3)" font-size="11" text-anchor="middle">6</text>
+    <text x="520" y="204" fill="var(--ink-3)" font-size="11" text-anchor="middle">minutes per application</text>
+
+    <text x="238" y="30" text-anchor="end" fill="var(--ink)">Your way now</text>
+    <text x="238" y="45" text-anchor="end" fill="var(--ink-3)" font-size="10.5">1 job → 5 people</text>
+    <rect x="250" y="20" width="101" height="26" rx="4" fill="var(--s2)"><title>1.12 minutes per application — about 320 possible per day</title></rect>
+    <text x="363" y="38" fill="var(--ink)" font-weight="600">1.12 min</text>
+    <text x="443" y="38" fill="var(--ink-3)" font-size="11">→ 320 a day possible</text>
+
+    <text x="238" y="82" text-anchor="end" fill="var(--ink)">1 job → 1 person</text>
+    <text x="238" y="97" text-anchor="end" fill="var(--ink-3)" font-size="10.5">still one-click</text>
+    <rect x="250" y="72" width="144" height="26" rx="4" fill="var(--s1)"><title>1.6 minutes per application — about 224 per day</title></rect>
+    <text x="406" y="90" fill="var(--ink)" font-weight="600">1.60 min</text>
+    <text x="486" y="90" fill="var(--ink-3)" font-size="11">→ 224 a day</text>
+
+    <text x="238" y="134" text-anchor="end" fill="var(--ink)">Company website</text>
+    <text x="238" y="149" text-anchor="end" fill="var(--ink-3)" font-size="10.5">full form, by hand</text>
+    <rect x="250" y="124" width="540" height="26" rx="4" fill="var(--s1)"><title>6.0 minutes per application — about 60 per day</title></rect>
+    <text x="802" y="142" fill="var(--ink)" font-weight="600">6.0 min</text>
+  </g>
+</svg>
+<div class="legend"><span><i class="sw" style="background:var(--s2)"></i>How you work today</span><span><i class="sw" style="background:var(--s1)"></i>Other ways of working</span></div>
+<figcaption>Sharing one job across five candidates is what makes 250 a day possible. It is also what makes the applications weak.</figcaption>
+</figure>
+
+<h3>Now the important part: what makes 250 possible is also what breaks it</h3>
+<p>Look again at how the speed is achieved. Five different people apply to the same job. Think about what that means:</p>
+
+<ol>
+<li><strong>Five people from your company apply to one job.</strong> The person reading applications at that company sees five applications that look similar, arriving together. That looks like spam, even if every person is good.</li>
+<li><strong>Your own candidates compete with each other.</strong> If the job really fits all five, they now fight each other for one position. You are working against your own clients.</li>
+<li><strong>If the job does not fit all five, four are wasted.</strong> And a job almost never fits five different people equally well.</li>
+<li><strong>One minute per application means nobody reads the job.</strong> There is no time to read the description, no time to change the CV, no time to think. It is copy and paste.</li>
+<li><strong>It only works on one-click apply.</strong> A real company form takes 5–6 minutes. So this method traps you on LinkedIn and Indeed — exactly the places that are most crowded.</li>
+</ol>
+
+<div class="box risk">
+<span class="tag">The real finding</span>
+<p>Your number is honest. Your <em>method</em> is the problem. You are fast because you are not choosing jobs for each person — you are sending the same job to everyone. Speed came from removing the thinking, and the thinking is the part the candidate is paying for.</p>
+</div>
+
+<div class="box plain">
+<span class="tag">In simple words</span>
+<p>You built a very fast machine. But the machine is fast because it skipped the part that makes applications work. The fix is not to go slower. The fix is to <strong>let a computer do the thinking</strong> — find and check jobs for each person separately — and let your employee do only the final click. Then each application is chosen for one person, and you are still fast.</p>
+</div>
+
+<hr>
+<p>One note before you read on: because 250 a day is real, your team has spare capacity you did not know about. At 1.12 minutes each, 250 applications take 280 minutes, and your employee has 359. That extra 79 minutes a day, plus everything AI takes over, is where the new system comes from.</p>
+</section>
+
+<section id="f3">
+<span class="eyebrow">Part 03</span>
+<h2>Why sending many applications stopped working</h2>
+<p>Your business model made sense in 2022. Three things changed since then. All three are bad for "send many applications".</p>
+
+<h3>1. Everyone got fast, so being fast is no longer special</h3>
+<p>ChatGPT and similar tools let any job seeker apply to 30 jobs in the time it used to take to apply to one. So everyone started doing it. The numbers:</p>
+<ul>
+<li>LinkedIn now receives about <strong>11,000 applications every minute</strong>. That is 45% more than one year ago.</li>
+<li>Companies now get about <strong>244 applications for one open job</strong>.</li>
+<li>Greenhouse (software companies use to collect applications) reported that the number of applications needed per hire went up <strong>157%</strong> since 2022.</li>
+</ul>
+<p>When you were one of the few applying fast, speed was your advantage. Now speed is what everybody has. It stopped being an advantage and became the normal background noise.</p>
+<p>Companies noticed and started fighting back. In August 2026 LinkedIn began showing a warning to people when their profile does not match a job. That warning exists to stop exactly the behaviour you sell.</p>
+
+<h3>2. The maths now favours the opposite strategy</h3>
+<p>Research on real applications in 2026 shows a clear pattern:</p>
+<ul>
+<li>A <strong>generic</strong> application (same CV sent everywhere) gets an interview about <strong>2–3%</strong> of the time. At the very low-effort end — one-click, no reading — it is closer to <strong>1%</strong>.</li>
+<li>An application that was actually <strong>written for that job</strong> gets an interview <strong>7–9%</strong> of the time.</li>
+</ul>
+<p>So fewer good applications beat many weak ones. Here is what that looks like for one candidate over one month:</p>
+
+<div class="tw wide">
+<table>
+<caption>One candidate, 22 working days. Interview rates come from 2026 research. Treat this as a model to check against your own data once you can measure it.</caption>
+<thead><tr><th>Way of working</th><th class="num">Applications</th><th class="num">Interview rate</th><th class="num">Interviews</th><th class="num">Employee minutes</th></tr></thead>
+<tbody>
+<tr><td>Now — 50/day, one-click, same CV</td><td class="num">1,100</td><td class="num">1.0%</td><td class="num">11</td><td class="num">1,232</td></tr>
+<tr><td>New — 15/day, company website, CV adjusted</td><td class="num">330</td><td class="num">5.0%</td><td class="num t-good">16.5</td><td class="num t-good">719</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box plain">
+<span class="tag">In simple words</span>
+<p>Read that table slowly, because it is the whole reason to change:</p>
+<p><strong>70% fewer applications. 40% less work for your employee. About 50% more interviews.</strong></p>
+<p>Even if you think 5% is too hopeful and the real number is 3.5%, you still get the same interviews as now, using less than half the work. There is no version of this where 50 weak applications a day is the better choice.</p>
+</div>
+
+<h3>3. The websites you depend on do not want you there</h3>
+<p>LinkedIn's rules forbid software that applies automatically or copies data. This is not new, but the enforcement got much harder:</p>
+<ul>
+<li>In 2025 and 2026 LinkedIn stopped giving warnings and started suspending accounts on the first offence.</li>
+<li>In March 2026 LinkedIn removed the company page of an automation tool called HeyReach <em>and banned the founder's personal profile</em>.</li>
+</ul>
+<p>Indeed is not a safe alternative either. Indeed closed its public job-data service to new users in October 2022 and shut down the old one in 2023–24. Today only a few approved partner companies get access, and only for employer-side features.</p>
+
+<div class="box risk">
+<span class="tag">The danger you are carrying right now</span>
+<p>If your team uses candidates' LinkedIn accounts to apply quickly, one enforcement wave does two things at the same time: you cannot deliver your service any more, <strong>and</strong> your clients lose their LinkedIn profile — the most important professional account they have. That is not just a bad day. That is your product breaking and your customers being harmed together, with your name on it.</p>
+</div>
+
+<h3>4. Your price is stuck in the worst place</h3>
+<p>Right now you compete in two directions at once, and you lose in both:</p>
+<div class="tw wide">
+<table>
+<thead><tr><th>Who you compete with</th><th>What they charge</th><th>Why you lose</th></tr></thead>
+<tbody>
+<tr><td>Software tools (LazyApply, Simplify, Jobright)</td><td>$99–999 per year · $15 per month · $18 per week</td><td>They sell the same thing you sell — many applications — and software costs them almost nothing. You pay salaries. You cannot win a price fight</td></tr>
+<tr><td>Human job-search services ("reverse recruiters")</td><td>$1,500–3,000 per month, up to $15,000 for executives</td><td>They sell interviews and job offers, not form submissions. They can charge more because they promise a result</td></tr>
+</tbody>
+</table>
+</div>
+<p>You are in the middle: <strong>people expect software prices, but you pay human costs.</strong> The way out is not a price cut. It is to move up — sell fit, proof and results, which no $99 browser tool can offer.</p>
+</section>
+
+<section id="f4">
+<span class="eyebrow">Part 04</span>
+<h2>Problems you did not mention</h2>
+<p>You listed the obvious pains: messy sheets, manual assignment, no clear view. Those are real and this document fixes them. These are the ones that were not on your list, starting with the ones that cost the most money.</p>
+
+<h3>The number of good jobs runs out before your employees do</h3>
+<p>You plan capacity by asking "how fast can a person fill forms?" But for most candidates the real limit comes much earlier: <strong>there are not 50 good jobs a day for them.</strong></p>
+
+<div class="tw wide">
+<table>
+<caption>How many genuinely suitable new jobs appear each day, depending on how specific the person is.</caption>
+<thead><tr><th>Type of candidate</th><th>Example</th><th class="num">Good new jobs per day</th><th class="num">Sensible applications per day</th></tr></thead>
+<tbody>
+<tr><td>Very open</td><td>Customer support or sales, will work anywhere in the country, remote is fine, no visa problem</td><td class="num">60–150</td><td class="num">25–40</td></tr>
+<tr><td>Medium</td><td>Mid-level developer, common skills, 2–3 cities or remote</td><td class="num">20–60</td><td class="num">12–20</td></tr>
+<tr><td>Specific</td><td>Senior person, narrow field, one city only, needs visa sponsorship</td><td class="num">4–15</td><td class="num t-bad">3–8</td></tr>
+<tr><td>Very specific</td><td>Director level, regulated industry, cannot relocate</td><td class="num">1–5</td><td class="num t-bad">1–3</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>For a specific candidate, "50 a day" can only be reached by applying to jobs they are not right for. That lowers their chance of an interview, uses up companies they might genuinely fit later, and now triggers LinkedIn's "you don't match this job" warning. <strong>Your promise forces your team to hurt your own client.</strong></p>
+
+<h3>Your most specific candidates probably lose you money</h3>
+<p>Specific candidates take the <em>most</em> employee time — harder to find jobs for, longer forms at senior level, more care needed — but usually pay the same price as an easy candidate. You almost certainly have candidates costing you more than they pay, and no way to see which ones. Part 17 turns this into a real number.</p>
+
+<h3>You are throwing away the most valuable thing you produce</h3>
+<p>Every day your team creates thousands of small facts like this:</p>
+<div class="box">
+<p class="kv">this person + this job + applied on this date + through this website<br>→ <strong>company replied / stayed silent / rejected / gave an interview</strong></p>
+</div>
+<p>Nobody else has this. Job boards do not know who got hired. Software tools do not follow up. You do this work every day and the result disappears the moment the employee closes the browser tab.</p>
+<p>If you saved it, after about a year you could tell a candidate: <em>"people like you, applying to jobs like this, get a reply 11% of the time."</em> No browser extension can copy that, because the value is in your recorded results, not in clever code. <strong>The information you are not saving is worth more than the work that creates it.</strong></p>
+
+<h3>You cannot tell if an employee did the work</h3>
+<p>Your team types their own numbers into a sheet. If someone writes 250 and actually did 80, you would never find out. This is not about trusting your people. It is about the system: <strong>when the person being measured also writes the measurement, the number always drifts, and always in one direction.</strong> Part 12 makes this impossible rather than trying to police it.</p>
+
+<h3>You are mixing two opposite kinds of "candidate left"</h3>
+<p>A candidate who leaves <em>because they got a job</em> is your best advertisement. A candidate who leaves <em>because nothing happened</em> is a refund risk and a bad review. If both are just "closed" in your sheet, you cannot tell success from failure, and a quality problem can hide for months. Use three separate words from day one: <strong>got a job</strong>, <strong>gave up</strong>, <strong>time finished</strong>.</p>
+
+<h3>Your one-time price has no end date</h3>
+<p>You said price depends on what the candidate prefers — monthly or one-time. The problem with one-time: the candidate reasonably expects you to keep working until they get a job. But your costs are monthly. If someone takes six months, you work for free from month three. And the people who take longest are the specific candidates who already cost you the most. This leak grows quietly and you cannot see it.</p>
+
+<h3>You are one person doing three jobs</h3>
+<p>You are the owner, the developer, and the operations manager. The build plan in Part 22 is arranged around that. But be honest with yourself: <strong>you cannot build this system and run the daily operation at the same time past about 50 candidates.</strong> Part 16 gives you the exact moment to hire, and it is not another person to apply to jobs.</p>
+</section>
+
+<section id="f5">
+<span class="eyebrow">Part 05</span>
+<h2>The big change</h2>
+<p>Three changes, in this order. Everything else in this document is just details of these three.</p>
+
+<h3>Change 1 — Sell a different thing</h3>
+<p>Stop counting "applications". Start counting <strong>good applications</strong>. A good application must be all four of these:</p>
+<div class="tw wide">
+<table>
+<thead><tr><th>Rule</th><th>What it means</th></tr></thead>
+<tbody>
+<tr><td>It fits</td><td>The computer gave it a match score above your minimum. Not the employee's opinion — the system's score</td></tr>
+<tr><td>It is clean</td><td>It passed all the safety checks: not a duplicate, right city, right level, nothing invented</td></tr>
+<tr><td>It was delivered</td><td>It went into the company's own application system</td></tr>
+<tr><td>It has proof</td><td>A confirmation email or receipt exists and is saved</td></tr>
+</tbody>
+</table>
+</div>
+<p>This one definition does a surprising amount of work. It makes the service provable to the candidate. It makes the employee target impossible to fake. It gives the AI a clear job. And it changes the conversation with candidates from "how many?" to "how good?".</p>
+
+<h3>Change 2 — Apply on the company's own website instead of LinkedIn</h3>
+<p>This is the main strategic change. Instead of racing 244 other people through LinkedIn, apply directly on the company's careers page — which goes straight into the system the recruiter actually reads.</p>
+
+<div class="box plain">
+<span class="tag">What "ATS" means</span>
+<p>An <strong>ATS</strong> is the software a company uses to collect job applications. The common ones are <strong>Greenhouse, Lever, Ashby and Workday</strong>. When you see a careers page on a company website, you are usually looking at one of these.</p>
+<p>The useful part: <strong>Greenhouse, Lever and Ashby publish their job lists openly, for free, with no password needed.</strong> They want people to find these jobs. So you can legally and safely read them — unlike LinkedIn.</p>
+</div>
+
+<div class="tw wide">
+<table>
+<caption>Company website versus LinkedIn one-click, on every point that matters.</caption>
+<thead><tr><th>Point</th><th>LinkedIn / Indeed one-click</th><th>Company's own website</th></tr></thead>
+<tbody>
+<tr><td>Is it allowed?</td><td class="t-bad">Automation is against the rules. Indeed's data service is closed</td><td class="t-good">Open and free. Meant to be read</td></tr>
+<tr><td>How fresh?</td><td>Copied over later — hours or days old</td><td class="t-good">Posted here first</td></tr>
+<tr><td>How crowded?</td><td class="t-bad">The most crowded place on the internet</td><td class="t-good">Much quieter. You have to look to find it</td></tr>
+<tr><td>How does it look to the company?</td><td class="t-bad">Looks like mass applying</td><td class="t-good">Looks like real interest</td></tr>
+<tr><td>Do you need the candidate's password?</td><td class="t-bad">Yes — and that is your biggest danger</td><td class="t-good">No. None at all</td></tr>
+<tr><td>Time per application, by hand</td><td class="t-good">1.6 minutes</td><td>6.0 minutes</td></tr>
+<tr><td>Time per application, with AI help</td><td>1.05 minutes</td><td class="t-good">1.75 minutes</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Yes, company websites take longer per application. That is the trade, and it is a good one: you spend about 3× more time to get about 5× better results, and then you use AI to take most of that extra time back. Look at the last row — with AI help, a company-website application takes 1.75 minutes instead of 6.</p>
+
+<h3>Change 3 — Price by how specific the candidate is, and always set an end date</h3>
+<p>Tie the price to how many good jobs actually exist for that person, and put a time limit on every deal.</p>
+
+<div class="tw wide">
+<table>
+<caption>Example structure — put your own prices in. The <em>shape</em> matters more than the numbers.</caption>
+<thead><tr><th>Plan</th><th class="num">Good applications per week</th><th>Includes</th><th>Length</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td>Focus</td><td class="num">40</td><td>Matching, applying, proof, candidate portal</td><td>Monthly, renews</td><td>Open candidates</td></tr>
+<tr><td>Targeted</td><td class="num">75</td><td>+ CV adjusted for each job, saved answers</td><td>Monthly, renews</td><td>Most candidates</td></tr>
+<tr><td>Managed</td><td class="num">100</td><td>+ contacting hiring managers, weekly call, interview practice</td><td>12 weeks, fixed</td><td>Senior or specific</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Two details that matter more than the prices:</p>
+<ul>
+<li><strong>The one-time option becomes a prepaid fixed period</strong> — for example 12 weeks, 15% cheaper. Never "until you get a job". This removes your biggest hidden cost.</li>
+<li><strong>Write a "not enough jobs" rule into the contract.</strong> Something like: <em>"If fewer than N suitable jobs exist for you in a week, we apply to every one that does, give you credit for the rest, and show you which jobs we rejected and why."</em></li>
+</ul>
+
+<div class="box plain">
+<span class="tag">Why that second rule is clever</span>
+<p>Your biggest weakness is that good jobs run out. Every competitor has this problem and every competitor hides it. If you <em>tell the truth</em> about it, that weakness becomes the reason people trust you. The candidate portal in Part 14 shows this automatically, so it costs you nothing to be honest.</p>
+</div>
+
+<div class="box rec">
+<span class="tag">Do this before writing any code</span>
+<p>Changes 1 and 3 are business decisions. They cost nothing and take one afternoon. Make them this week. If you build software around the old "50 per day" promise, you will bake a number you are about to abandon into your database, your employee targets and your reports — and pulling it out later is painful.</p>
+</div>
+</section>
+
+<section id="f6">
+<span class="eyebrow">Part 06</span>
+<h2>How the new system works, step by step</h2>
+<p>Fourteen steps from "a candidate signs up" to "they get a job". The column to look at is <strong>Who does it</strong> — that is where your money goes.</p>
+
+<figure class="wide">
+<div class="figtitle">The whole system in one picture</div>
+<div class="figsub">Blue = computer does it · Orange = a person does it</div>
+<svg viewBox="0 0 900 230" role="img" aria-label="Diagram. Top row, all done by computer: collect jobs, remove duplicates, filter out impossible jobs, find closest matches, score and rank, build the work list. Bottom row: employee reviews (person), prepare and check (computer), submit (person), save proof (computer), record what happened (computer), reports (computer). A dashed line loops results back to improve scoring.">
+  <defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="var(--rule-2)"/></marker></defs>
+  <g font-family="IBM Plex Mono, monospace" font-size="10.5">
+    <g>
+      <rect x="2" y="18" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="66" y="35" text-anchor="middle" fill="var(--ink)">Collect jobs from</text><text x="66" y="49" text-anchor="middle" fill="var(--ink)">company sites</text>
+      <line x1="132" y1="39" x2="145" y2="39" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="150" y="18" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="214" y="35" text-anchor="middle" fill="var(--ink)">Remove</text><text x="214" y="49" text-anchor="middle" fill="var(--ink)">duplicates</text>
+      <line x1="280" y1="39" x2="293" y2="39" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="298" y="18" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="362" y="35" text-anchor="middle" fill="var(--ink)">Throw out the</text><text x="362" y="49" text-anchor="middle" fill="var(--ink)">impossible ones</text>
+      <line x1="428" y1="39" x2="441" y2="39" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="446" y="18" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="510" y="35" text-anchor="middle" fill="var(--ink)">Find the closest</text><text x="510" y="49" text-anchor="middle" fill="var(--ink)">60 jobs</text>
+      <line x1="576" y1="39" x2="589" y2="39" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="594" y="18" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="658" y="35" text-anchor="middle" fill="var(--ink)">AI scores each</text><text x="658" y="49" text-anchor="middle" fill="var(--ink-3)">with reasons</text>
+      <line x1="724" y1="39" x2="737" y2="39" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="742" y="18" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="806" y="35" text-anchor="middle" fill="var(--ink)">Build today's</text><text x="806" y="49" text-anchor="middle" fill="var(--ink)">work list</text>
+    </g>
+    <path d="M870,60 L884,60 L884,90 L20,90 L20,112" fill="none" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+    <g>
+      <rect x="2" y="118" width="128" height="42" rx="3" fill="var(--signal-soft)" stroke="var(--s2)" stroke-width="1.5"/><text x="66" y="135" text-anchor="middle" fill="var(--ink)">Employee looks</text><text x="66" y="149" text-anchor="middle" fill="var(--ink-3)">yes or skip</text>
+      <line x1="132" y1="139" x2="145" y2="139" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="150" y="118" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="214" y="135" text-anchor="middle" fill="var(--ink)">Prepare + check</text><text x="214" y="149" text-anchor="middle" fill="var(--ink-3)">safety rules</text>
+      <line x1="280" y1="139" x2="293" y2="139" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="298" y="118" width="128" height="42" rx="3" fill="var(--signal-soft)" stroke="var(--s2)" stroke-width="1.5"/><text x="362" y="135" text-anchor="middle" fill="var(--ink)">Employee sends</text><text x="362" y="149" text-anchor="middle" fill="var(--ink-3)">form auto-filled</text>
+      <line x1="428" y1="139" x2="441" y2="139" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="446" y="118" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="510" y="135" text-anchor="middle" fill="var(--ink)">Save the proof</text><text x="510" y="149" text-anchor="middle" fill="var(--ink-3)">confirmation email</text>
+      <line x1="576" y1="139" x2="589" y2="139" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="594" y="118" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="658" y="135" text-anchor="middle" fill="var(--ink)">Record what</text><text x="658" y="149" text-anchor="middle" fill="var(--ink)">happened</text>
+      <line x1="724" y1="139" x2="737" y2="139" stroke="var(--rule-2)" stroke-width="1.5" marker-end="url(#ar)"/>
+      <rect x="742" y="118" width="128" height="42" rx="3" fill="var(--accent-soft)" stroke="var(--s1)" stroke-width="1.5"/><text x="806" y="135" text-anchor="middle" fill="var(--ink)">Reports and</text><text x="806" y="149" text-anchor="middle" fill="var(--ink)">numbers</text>
+    </g>
+    <path d="M806,162 L806,186 L560,186" fill="none" stroke="var(--s1)" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ar)"/>
+    <text x="570" y="190" fill="var(--ink-3)" font-size="10">results teach the scoring to get better</text>
+  </g>
+</svg>
+<figcaption>Only two orange boxes. Everything else runs by itself. That ratio is the whole reason this saves money.</figcaption>
+</figure>
+
+<div class="tw wide">
+<table>
+<caption>The fourteen steps. "Starts when" tells you what makes the step run.</caption>
+<thead><tr><th>Step</th><th>Now</th><th>After</th><th>Who does it</th><th>Starts when</th></tr></thead>
+<tbody>
+<tr><td>1 · Sign up</td><td>Messages and manual invoice</td><td>Candidate picks a plan, pays by card, signs permission form — all in one flow</td><td><span class="pill auto">Computer</span></td><td>Payment received</td></tr>
+<tr><td>2 · Collect details</td><td>Long form, often half-empty</td><td>CV first. AI reads it and fills the form. Candidate only checks and corrects</td><td><span class="pill assist">AI + candidate</span></td><td>Account created</td></tr>
+<tr><td>3 · Check details</td><td>Nobody checks</td><td>Computer looks for missing or conflicting information and asks for it</td><td><span class="pill auto">Computer</span></td><td>Form sent</td></tr>
+<tr><td>4 · Build the profile</td><td>A row in a sheet</td><td>Proper structured profile: skills, level, cities, minimum salary, companies to avoid, how specific they are</td><td><span class="pill auto">AI</span></td><td>Check passed</td></tr>
+<tr><td>5 · Saved answers</td><td>Typed again every time</td><td>Candidate answers 25 common form questions once. Reused forever</td><td><span class="pill assist">AI + candidate</span></td><td>Profile built</td></tr>
+<tr><td>6 · Give to an employee</td><td>Manual, from memory</td><td>Computer suggests based on workload, language and time zone. You approve</td><td><span class="pill assist">Computer + you</span></td><td>Profile ready</td></tr>
+<tr><td>7 · Find jobs</td><td>Employee searches by hand</td><td>Runs every night from company career pages. Duplicates removed</td><td><span class="pill auto">Computer</span></td><td>Every night</td></tr>
+<tr><td>8 · Match jobs</td><td>Employee guesses</td><td>Filter, then AI scores each job for <em>this one person</em> and explains why</td><td><span class="pill auto">AI</span></td><td>New jobs collected</td></tr>
+<tr><td>9 · Employee reviews</td><td>—</td><td>One job on screen at a time: the job, why it matched, the ready application. Yes or skip</td><td><span class="pill human">Person</span></td><td>Work list ready</td></tr>
+<tr><td>10 · Prepare</td><td>Same CV every time</td><td>CV adjusted for this job, answers pulled from saved list. Nothing invented</td><td><span class="pill auto">AI</span></td><td>Employee said yes</td></tr>
+<tr><td>11 · Safety check</td><td>None</td><td>Blocks duplicates, wrong city, wrong level, invented facts. Warns about smaller issues</td><td><span class="pill auto">Computer</span></td><td>Preparation done</td></tr>
+<tr><td>12 · Send it</td><td>By hand, not recorded</td><td>Form fills itself, employee checks and clicks send</td><td><span class="pill human">Person</span></td><td>Safety check passed</td></tr>
+<tr><td>13 · Proof and tracking</td><td>Nothing</td><td>Each candidate has an email address at your domain. Confirmations, rejections and interview invites arrive there and are read automatically</td><td><span class="pill auto">Computer</span></td><td>Email arrives</td></tr>
+<tr><td>14 · Result</td><td>Word of mouth</td><td>Interviews, offers, salary, then testimonial and referral request</td><td><span class="pill assist">Computer + you</span></td><td>Interview detected</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box plain">
+<span class="tag">The one rule behind this whole table</span>
+<p><strong>A person should only be asked to do something a computer is not allowed to do.</strong></p>
+<p>Searching, reading, sorting, writing drafts, checking and recording — all computer work. Deciding, clicking send, and talking to the candidate — person work.</p>
+<p>If your employee is typing something into a form that is already in your database, that is a bug, not a job.</p>
+</div>
+</section>
+
+<section id="f7">
+<span class="eyebrow">Part 07</span>
+<h2>What information to store</h2>
+<p>Get this right and questions like "why did applications drop?" become easy. Get it wrong and no dashboard will help you.</p>
+
+<h3>Five rules first</h3>
+<ol>
+<li><strong>Never overwrite a status. Add a new line instead.</strong> If an application goes from "sent" to "rejected", do not replace the word — write a new row saying "rejected, at this time". Six months later you can still see the whole story. If you overwrite, the history is gone forever.</li>
+<li><strong>Save what you used, when you used it.</strong> Save the match score, the CV version and the answers <em>as they were at that moment</em>. If you look them up fresh later, you will never be able to tell whether your matching got better.</li>
+<li><strong>Identify companies by their website address, not their name.</strong> "Acme", "Acme Inc." and "ACME Corporation" never match as text. <code>acme.com</code> always does. This is what makes "do not apply twice to the same company" actually work.</li>
+<li><strong>Numbers must come from what the system saw, never from what a person typed.</strong> If a person can type it, it is not a measurement — it is an opinion.</li>
+<li><strong>Record AI cost against the candidate from your very first AI call.</strong> One extra column. Without it, "what does each candidate cost me?" can never be answered, and Part 17 depends on it.</li>
+</ol>
+
+<div class="tw wide">
+<table>
+<caption>The main things to store. The ones marked ★ are usually forgotten — and forgetting them is why these businesses cannot answer basic questions later.</caption>
+<thead><tr><th>Table</th><th>What goes in it</th><th>Why you need it</th></tr></thead>
+<tbody>
+<tr><td>candidate</td><td>Plan, start and end date, how specific they are, visa status, wanted job titles, cities, minimum salary, companies to avoid, current state</td><td>"Current state" must separate <em>got a job</em> / <em>gave up</em> / <em>time finished</em></td></tr>
+<tr><td>profile facts ★</td><td>Skills with how recently used, past jobs, education, certificates — as proper data, not a document</td><td>This is also the list the "did we invent something?" check compares against</td></tr>
+<tr><td>documents</td><td>Each CV version, which one is the master, which job it was adjusted for</td><td>Versions are how you prove that adjusting the CV actually helps</td></tr>
+<tr><td>saved answers ★</td><td>Question, the agreed answer, when the candidate confirmed it, whether it is sensitive</td><td>Removes the biggest repeated typing cost. "Sensitive" marks legal answers AI must never write</td></tr>
+<tr><td>employee</td><td>Minutes available per day, languages, time zone, working hours, quality score</td><td>Capacity in <strong>minutes</strong>, not "candidates". Candidates differ too much</td></tr>
+<tr><td>assignment ★</td><td>Which employee, which candidate, from when to when</td><td>A separate table, not a column on the candidate. Keeps history when you move someone</td></tr>
+<tr><td>company ★</td><td>Website address, industry, size, which ATS they use, how often they reply</td><td>Over time this becomes valuable: which companies actually answer</td></tr>
+<tr><td>job</td><td>Title, level, city, remote or not, salary range, date posted, date closed, apply link, a fingerprint of the text</td><td>The fingerprint plus company plus title is how you spot duplicates</td></tr>
+<tr><td>job source ★</td><td>Name, type, <strong>automation rule</strong>, speed limit, health</td><td>The automation rule is read by the code. A source marked "people only" simply cannot be touched by automation. Rules in code, not in a document nobody reads</td></tr>
+<tr><td>match</td><td>Score, sub-scores, reasons, quotes as evidence, which AI version produced it</td><td>Recording the AI version is what lets you improve it safely</td></tr>
+<tr><td>application</td><td>Candidate, job, employee, when, how, which CV, which answers, the score at that moment, proof</td><td>"At that moment" is the important part</td></tr>
+<tr><td>application history ★</td><td>One row per change: queued → approved → sent → confirmed → rejected → interview → offer</td><td>This is rule 1 in practice</td></tr>
+<tr><td>proof ★</td><td>Confirmation email or screenshot, when it arrived, a fingerprint so it cannot be edited</td><td>This is what makes your service provable</td></tr>
+<tr><td>safety checks</td><td>One row per check run, and whether it passed</td><td>Shows you which checks actually catch things</td></tr>
+<tr><td>work item</td><td>Type, who has it, <strong>when it started, when it finished</strong></td><td>These two timestamps tell you where employee time really goes — that is how you know what to automate next</td></tr>
+<tr><td>permission ★</td><td>The signed form letting you apply on their behalf, what it covers, when signed</td><td>Legally required before you apply as someone else</td></tr>
+<tr><td>AI usage ★</td><td>Candidate, purpose, model, tokens used, cost</td><td>Makes "cost per candidate" a simple question</td></tr>
+<tr><td>activity log</td><td>Who looked at what, who downloaded what, who changed permissions</td><td>Security. Especially downloads</td></tr>
+<tr><td>interviews and results</td><td>Company, round, date, result, salary offered, start date</td><td>The truth that teaches everything else</td></tr>
+<tr><td>daily totals</td><td>Pre-calculated numbers per candidate and per employee, per day</td><td>Keeps your dashboards fast without extra tools</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box warn">
+<span class="tag">Never store this</span>
+<p><strong>Do not keep candidates' LinkedIn or Indeed passwords in your database.</strong> Not encrypted, not "just for now". If you must have them during the change-over, use a proper password vault where the employee never sees the actual password and every use is logged. The goal is that they stop existing completely — and applying on company websites needs no passwords at all. More in Part 18.</p>
+</div>
+</section>
+
+<section id="f8">
+<span class="eyebrow">Part 08</span>
+<h2>Where the jobs come from</h2>
+<p>This decides your legal risk, how fresh your jobs are, and how much you pay. Start with the first three rows — they are nearly free.</p>
+
+<div class="tw wide">
+<table>
+<thead><tr><th>Source</th><th>How you get it</th><th>Cost</th><th>What I recommend</th></tr></thead>
+<tbody>
+<tr><td>Greenhouse, Lever, Ashby career pages</td><td>Open, free, no password needed</td><td class="num">Free</td><td class="t-good">Build this first. Freshest, quietest, completely legal</td></tr>
+<tr><td>Workday, iCIMS, SmartRecruiters pages</td><td>Open per company, but messier to read</td><td class="num">Free</td><td class="t-good">Build second — this is where big companies are</td></tr>
+<tr><td>Adzuna</td><td>Proper service, free for 1,000 requests a month</td><td class="num">Free tier</td><td>Good for UK and Europe, weaker in the US</td></tr>
+<tr><td>JSearch</td><td>Paid service that reads Google for Jobs</td><td class="num">$</td><td>Wide coverage, but sends duplicates — you must clean them yourself</td></tr>
+<tr><td>Unified ATS services</td><td>One connection covering 60+ systems</td><td class="num">$$</td><td>Buy later, when writing connectors becomes annoying</td></tr>
+<tr><td>Coresignal and similar</td><td>Sales call required, around $800–1,000+ a month</td><td class="num">$$$</td><td>Skip for now. Built for research, not for live products</td></tr>
+<tr><td>Copying data from LinkedIn or Indeed</td><td>Against their rules. Indeed's service is closed</td><td class="num">—</td><td class="t-bad">Do not. This is the danger from Part 03, and it is avoidable</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Cleaning duplicates is where quality is won</h3>
+<p>The same job appears on the company page, on two job boards and on a partner site. Duplicates are not a small annoyance — they are how you end up applying twice to the same company and embarrassing your client. Four things to do:</p>
+<ul>
+<li><strong>One company = one website address.</strong> Build a list of alternative names that point to the same address.</li>
+<li><strong>One job = company + cleaned title + city.</strong> Use a fingerprint of the text to separate genuinely different jobs at the same company.</li>
+<li><strong>Clean up titles.</strong> "Sr. SWE II", "Senior Software Engineer" and "Software Engineer (Senior)" are the same thing. A cheap AI call plus a saved list handles this — the same titles come up again and again, so you only pay once.</li>
+<li><strong>Watch the age.</strong> Jobs older than about 3 weeks convert much worse. Record when it was posted and lower the score as it gets older.</li>
+</ul>
+
+<div class="box rec">
+<span class="tag">The channel almost nobody uses</span>
+<p>The thing that works best of all is not an application. It is <strong>sending a short message directly to the hiring manager</strong> soon after a job appears on the company's own page. It works several times better than any form, and it is completely outside the crowded competition. It is late in the plan only because it needs the rest of the system first — but do not forget it exists. It is your premium plan.</p>
+</div>
+</section>
+
+<section id="f9">
+<span class="eyebrow">Part 09</span>
+<h2>How to match jobs to people</h2>
+<p>Do not build machine learning. Build a funnel of filters that get more expensive as fewer jobs survive, so the expensive AI step only ever looks at about 60 jobs per person per day.</p>
+
+<div class="tw wide">
+<table>
+<caption>Per candidate, per day. Notice how the cost stays tiny because AI only sees the last 60.</caption>
+<thead><tr><th>Step</th><th class="num">Jobs in</th><th class="num">Jobs out</th><th>How</th><th class="num">Cost</th></tr></thead>
+<tbody>
+<tr><td>0 · Collect and clean</td><td class="num">~4,200</td><td class="num">~2,500</td><td>Remove duplicates, clean titles</td><td class="num">$0.00</td></tr>
+<tr><td>1 · Throw out the impossible</td><td class="num">2,500</td><td class="num">~180</td><td>Plain database rules: wrong country, no visa, wrong level, salary too low, company on the avoid list, already applied, job too old</td><td class="num">$0.00</td></tr>
+<tr><td>2 · Find the closest</td><td class="num">180</td><td class="num">60</td><td>Mathematical similarity between the profile and the job text</td><td class="num">~$0.01</td></tr>
+<tr><td>3 · AI scores them</td><td class="num">60</td><td class="num">60</td><td>AI reads each job against this person and gives a score with reasons. Runs overnight</td><td class="num">$0.14–0.29</td></tr>
+<tr><td>4 · Sort and limit</td><td class="num">60</td><td class="num">15–25</td><td>Keep only above the minimum score, maximum 2 per company, mix of levels</td><td class="num">$0.00</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box plain">
+<span class="tag">The most important line in this table</span>
+<p><strong>Step 1 removes 93% of the jobs and costs nothing.</strong></p>
+<p>Every rule you can write as a simple database question is a rule you never pay AI to think about. Resist the temptation to "let the AI figure it out" — it costs about 100× more and is worse at exactly these simple checks.</p>
+</div>
+
+<h3>What the AI should give back</h3>
+<p>Ask for a structured answer, not just a number:</p>
+<div class="box">
+<p class="kv"><b>score</b> 0 to 100<br>
+<b>sub-scores</b> required skills · level · industry · location and visa · salary · career direction · company type<br>
+<b>deal-breakers</b> for example: needs security clearance, office only in wrong city<br>
+<b>evidence</b> for each sub-score: a quote from the job advert and a quote from the CV<br>
+<b>hints</b> what the CV should emphasise for this job<br>
+<b>confidence</b> 0 to 1</p>
+</div>
+
+<p>The <strong>evidence</strong> part is the clever bit and most people skip it. By forcing the AI to quote the actual words from the job advert and the actual words from the CV, it cannot make up a reason. It also gives you three free things: your employee trusts the list, the candidate sees "why this job" in their portal, and you can check the AI when a score looks wrong.</p>
+<p>A score with no explanation is a score you can never improve.</p>
+
+<h3>Which AI to use, and what it costs</h3>
+<div class="tw wide">
+<table>
+<thead><tr><th>Model</th><th>Price per million tokens</th><th>Use it for</th></tr></thead>
+<tbody>
+<tr><td>Claude Haiku 4.5</td><td class="num">$1 in / $5 out</td><td>High volume, simple work: cleaning titles, reading emails, first-pass scoring</td></tr>
+<tr><td>Claude Sonnet 5</td><td class="num">$2 in / $10 out</td><td>Match scoring with reasons, adjusting CVs, the "did we invent something?" check. Most of your spend</td></tr>
+<tr><td>Claude Opus 5</td><td class="num">$5 in / $25 out</td><td>Your business questions and weekly analysis. Low volume, high value</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Two tricks cut this bill roughly in half. Use both from day one:</p>
+<ul>
+<li><strong>Batch requests.</strong> Scoring runs at 2am for a list used at 9am, so it does not need to be fast. Sending it as a batch costs <strong>50% less</strong>. Free money.</li>
+<li><strong>Prompt caching.</strong> You score 60 jobs against the same candidate profile. That profile is the same text 60 times. Caching it means you only pay full price once. Note it only works if the profile text is long enough (the minimum varies by model), so check that caching is actually happening rather than assuming.</li>
+</ul>
+<p>All together — scoring, CV adjusting, safety checks and reading emails — expect about <strong>$0.45 per candidate per day, or $8–15 per month</strong>. Set a monthly alert per candidate anyway, so a mistake in your code that doubles usage wakes you up instead of surprising you in the bill.</p>
+
+<h3>The part that becomes your real advantage</h3>
+<p>At first your score is just a sensible guess. But after about 2,000 applications where you recorded what happened, you can compare: <em>which scores actually led to a reply?</em> Then adjust. At that point the number changes meaning completely — from "the AI thinks this is a 73" to <strong>"people like you applying to jobs like this get a reply 11% of the time."</strong></p>
+<p>That is genuinely useful to a candidate, and no competitor can copy it, because the value is in your recorded results, not in the code.</p>
+<p>Be realistic about timing: this needs Part 12 running first and several months of data. Build the simple score now; this comes later.</p>
+</section>
+
+<section id="f10">
+<span class="eyebrow">Part 10</span>
+<h2>What to automate and what to leave to people</h2>
+<p>You asked me to split this properly. The line is <em>not</em> about what is technically possible — almost everything is possible. It is about rules, legal risk, and the difference between a mistake you can fix and a mistake that ends the company.</p>
+
+<div class="tw wide">
+<table>
+<thead><tr><th>Activity</th><th>Decision</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Collecting jobs from company career pages</td><td><span class="pill auto">Full auto</span></td><td>Open, public, meant to be read</td></tr>
+<tr><td>Removing duplicates, cleaning titles</td><td><span class="pill auto">Full auto</span></td><td>Nothing leaves your system</td></tr>
+<tr><td>Scoring and sorting jobs</td><td><span class="pill auto">Full auto</span></td><td>Read-only. Worst case is a bad suggestion someone skips</td></tr>
+<tr><td>Building the daily work list</td><td><span class="pill auto">Full auto</span></td><td>Same</td></tr>
+<tr><td>Writing a CV version for a job</td><td><span class="pill assist">AI, then checked</span></td><td>AI may only rearrange and emphasise facts that already exist. Anything new is blocked, not reviewed</td></tr>
+<tr><td>Answering form questions</td><td><span class="pill assist">AI, then checked</span></td><td>Pulled from the saved answers. Legal ones — visa, clearance, notice period, salary — are confirmed by the candidate once and then copied <em>exactly</em>, never re-written by AI</td></tr>
+<tr><td>Filling in the form fields</td><td><span class="pill assist">AI, then checked</span></td><td>Filled from stored data, employee looks before sending</td></tr>
+<tr><td>Clicking send on a company website</td><td><span class="pill assist">Auto later</span></td><td>Only with: signed permission, a proven safety-check record, candidate opted in, sensible speed limits, full log, and an off switch. This is month 7+, not month 1</td></tr>
+<tr><td>Anything at all on LinkedIn or Indeed</td><td><span class="pill human">People only</span></td><td>Against their rules. Enforcement got harder in 2026 and now targets tool makers too. A person, at human speed, in the candidate's own browser</td></tr>
+<tr><td>Reading reply emails</td><td><span class="pill auto">Full auto</span></td><td>Your own inbox, your own data</td></tr>
+<tr><td>Candidate reports</td><td><span class="pill auto">Full auto</span></td><td>Just showing data you already have</td></tr>
+<tr><td>Stating a fact about the candidate</td><td><span class="pill never">Never</span></td><td>Visa status, degrees, years of experience, certificates. A false answer found by a company is not a mistake — it is a false statement made in your client's name</td></tr>
+<tr><td>Solving CAPTCHAs, hiding your IP, fake accounts</td><td><span class="pill never">Never</span></td><td>This is not automation, it is hiding. It changes your legal position, not just your risk of a ban</td></tr>
+<tr><td>Talking to candidates, especially bad news</td><td><span class="pill human">People only</span></td><td>Trust is what you actually sell. Someone with no replies for three weeks needs a human being</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box plain">
+<span class="tag">A simple test for any new automation</span>
+<p>Ask yourself: <strong>if this goes wrong 100 times before anyone notices, what happens?</strong></p>
+<ul>
+<li>A bad job suggestion → someone skips it. Fine, automate it.</li>
+<li>A badly written CV → embarrassing, but fixable. Automate with a check.</li>
+<li>A false visa answer, or 100 automatic LinkedIn actions → your client is harmed and possibly you too. <strong>Never automate.</strong></li>
+</ul>
+<p>Use this test, not excitement about AI, to decide what to build.</p>
+</div>
+</section>
+
+<section id="f11">
+<span class="eyebrow">Part 11</span>
+<h2>Stopping bad applications before they go out</h2>
+<p>You said it yourself: 50 bad applications are worse than 30 good ones. The way to make that real is a gate that runs <em>before</em> sending and simply refuses, rather than a review that finds problems afterwards.</p>
+
+<h3>Hard stops — the application cannot be sent</h3>
+<div class="tw wide">
+<table>
+<thead><tr><th>Check</th><th>When it blocks</th><th>Why it must block</th></tr></thead>
+<tbody>
+<tr><td>Duplicate</td><td>Same job, or same company and job title within 60 days</td><td>The most visible and most embarrassing mistake</td></tr>
+<tr><td>Wrong place or no visa</td><td>Office job outside their cities, or they cannot legally work there</td><td>Certain rejection. Wastes a slot and looks careless</td></tr>
+<tr><td>Wrong level</td><td>More than two levels above or below them</td><td>This is what triggers LinkedIn's "you don't match" warning</td></tr>
+<tr><td>Missing requirement</td><td>Needs a licence, clearance or specific degree they do not have</td><td>Same</td></tr>
+<tr><td>Wrong document</td><td>Old CV version, or another candidate's file attached</td><td>A data leak that looks like a small mistake</td></tr>
+<tr><td>Dead job</td><td>Closed, or posted over 30 days ago</td><td>Counts toward the target but delivers nothing</td></tr>
+<tr><td>Company on the avoid list</td><td>Including their <em>current employer</em></td><td>This can cost the candidate their job. Never allow it</td></tr>
+<tr><td>Score too low</td><td>Below the plan's minimum</td><td>This is what makes "good application" mean something</td></tr>
+<tr><td class="t-bad">Invented facts</td><td>Any written text claims something not in the saved profile facts</td><td><strong>No override. Not for anyone. Ever.</strong> See below</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box risk">
+<span class="tag">The one rule with no exceptions</span>
+<p>This check compares every fact in the generated CV, cover letter and answers against what the candidate actually confirmed. A year of experience they do not have. A degree they did not finish. A "yes" to a visa question that should be "no".</p>
+<p>These are not quality problems. They are false statements made in your client's name. One of them, found by a company, can end that client relationship and damage your business. So: hard block, no way for an employee to override it, and it alerts you immediately.</p>
+</div>
+
+<h3>Warnings — allowed, but the employee must give a reason</h3>
+<ul>
+<li>More than two applications to the same company this month</li>
+<li>Salary below what the candidate asked for</li>
+<li>CV not adjusted, when their plan includes adjusting</li>
+<li>AI was not confident, or the sub-scores disagree with each other</li>
+</ul>
+<p>Warnings matter because the reasons become data. If employees override "salary too low" forty times a week, then the candidate's stated minimum is wrong and somebody should talk to them.</p>
+
+<h3>Checks after the fact</h3>
+<ul>
+<li><strong>Check 5% at random</strong> per employee per week. AI grades them against a written standard — and then <em>you</em> check a few of the AI's grades. An automatic checker that nobody checks slowly goes wrong without anyone noticing.</li>
+<li><strong>Look at fast rejections.</strong> Anything rejected within 24 hours gets flagged automatically. That speed usually means an obvious mismatch or a broken submission. It is the cheapest quality signal you will ever get.</li>
+<li><strong>Look at silent candidates.</strong> Anyone with no replies for 14 days triggers a required review of their CV, targeting and job types. This is the check that saves accounts before they cancel.</li>
+</ul>
+
+<h3>The funnel you should watch every week</h3>
+<div class="tw wide">
+<table>
+<caption>Example for one medium-specific candidate, one week, in the new system. The percentage column is the useful part — if one row suddenly changes, you know exactly where to look.</caption>
+<thead><tr><th>Stage</th><th class="num">Count</th><th class="num">Passed on</th><th style="width:150px">&nbsp;</th></tr></thead>
+<tbody>
+<tr><td>Survived the basic filters</td><td class="num">900</td><td class="num">—</td><td><span class="bartrack"><span class="bar" style="width:100%"></span></span></td></tr>
+<tr><td>Closest matches, scored by AI</td><td class="num">300</td><td class="num">33%</td><td><span class="bartrack"><span class="bar" style="width:33%"></span></span></td></tr>
+<tr><td>Good enough to apply</td><td class="num">110</td><td class="num">37%</td><td><span class="bartrack"><span class="bar" style="width:37%"></span></span></td></tr>
+<tr><td>Employee said yes</td><td class="num">82</td><td class="num">75%</td><td><span class="bartrack"><span class="bar" style="width:75%"></span></span></td></tr>
+<tr><td>Passed the safety checks</td><td class="num">75</td><td class="num">91%</td><td><span class="bartrack"><span class="bar" style="width:91%"></span></span></td></tr>
+<tr><td>Confirmation received</td><td class="num">71</td><td class="num">95%</td><td><span class="bartrack"><span class="bar" style="width:95%"></span></span></td></tr>
+<tr><td>Company replied at all</td><td class="num">26</td><td class="num">37%</td><td><span class="bartrack"><span class="bar" style="width:37%"></span></span></td></tr>
+<tr><td>Interview or screening call</td><td class="num">4</td><td class="num">15%</td><td><span class="bartrack"><span class="bar" style="width:15%"></span></span></td></tr>
+</tbody>
+</table>
+</div>
+<p>Look at the "confirmation received" row. If it falls from 95% to 70%, something is silently failing — a broken connection, an expired login, or someone recording work they did not do. Without proof (Part 12) that row does not exist, and the problem stays invisible for weeks.</p>
+</section>
+
+<section id="f12">
+<span class="eyebrow">Part 12</span>
+<h2>Proof — build this first</h2>
+<p class="lede">This is the most valuable thing in this whole document, the cheapest to build, and the one that makes everything else possible. About two weeks of work for one developer.</p>
+
+<h3>How it works</h3>
+<p>Give every candidate their own email address on your domain — for example <code>rahul.sharma@apply.yourcompany.com</code> — and use it on every application. Send all mail arriving there into your system, have a cheap AI read each message, and record what it says.</p>
+<p>Companies reply with one of a few things, and each is useful:</p>
+<div class="tw wide">
+<table>
+<thead><tr><th>Email type</th><th>What you get from it</th></tr></thead>
+<tbody>
+<tr><td>Confirmation</td><td>Proof the application really was sent, with a timestamp, independent of what the employee typed</td></tr>
+<tr><td>Rejection</td><td>A result you can learn from, with the reason if they gave one</td></tr>
+<tr><td class="t-good">Interview invitation</td><td>An instant alert to the candidate and employee. The single most valuable event in the business</td></tr>
+<tr><td>Recruiter reaching out</td><td>A warm lead that today probably dies in an inbox nobody watches</td></tr>
+<tr><td>Test or task request</td><td>Usually has a deadline. Easy to miss, expensive to miss</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box rec">
+<span class="tag">Use your own email addresses, not Gmail access</span>
+<p>The obvious alternative is to ask candidates to connect their Gmail. Do not. Google requires a special review and a paid security audit for that kind of access — months of work and thousands of dollars for a solo developer.</p>
+<p>Your own addresses, using Cloudflare Email Routing or Postmark, take a weekend, need no approval, and actually give you <em>cleaner</em> data, because that inbox contains only job application mail and nothing else.</p>
+</div>
+
+<h3>What this one thing unlocks</h3>
+<ul>
+<li><strong>You can prove your work.</strong> This alone lets you charge more than any $15/month browser tool, because they cannot prove anything.</li>
+<li><strong>You learn your real reply rate and interview rate</strong> — per website, per employee, per score level. This is how you find out whether the whole strategy is working.</li>
+<li><strong>Fake numbers become impossible</strong> instead of something you have to police. Nobody can fake a confirmation email from a company they never contacted.</li>
+<li><strong>You start collecting the results</strong> that Part 09's improvement depends on. Every day without this is a day of data you can never get back.</li>
+<li><strong>Candidates trust you.</strong> The portal shows real confirmations, not a number someone typed.</li>
+<li><strong>Interviews get answered fast.</strong> Today an invitation might sit unseen for a day. A 5-minute alert is a better outcome for the candidate and a good story for your marketing.</li>
+</ul>
+
+<p>For companies that send no confirmation email, also save a screenshot or the reference number at the moment of sending. Store a fingerprint of it so it cannot be edited later.</p>
+
+<div class="box warn">
+<span class="tag">Start this week, before anything else</span>
+<p>You do not need the rest of the system to start. Set up the domain, create the addresses, and store the incoming mail — even if nothing reads it yet.</p>
+<p>Two weeks from now you will know your real submission rate and your real reply rate. Those two numbers tell you whether everything else in this plan is pointed in the right direction. Everything else can wait. <strong>This cannot, because the data it captures cannot be recovered later.</strong></p>
+</div>
+</section>
+
+<section id="f13">
+<span class="eyebrow">Part 13</span>
+<h2>Your team: what to measure and what to pay for</h2>
+
+<h3>Measurements that cause bad behaviour</h3>
+<div class="tw wide">
+<table>
+<thead><tr><th>If you measure this</th><th>Here is what your team will actually do</th></tr></thead>
+<tbody>
+<tr><td class="t-bad">Applications per day</td><td>Send the same job to everyone, avoid any form that takes more than a minute — which means avoiding exactly the websites that work</td></tr>
+<tr><td class="t-bad">Applications per hour</td><td>The same, but worse. Guarantees 100% one-click only</td></tr>
+<tr><td class="t-bad">Hours logged in the tool</td><td>Sit in the tool without doing much</td></tr>
+<tr><td class="t-bad">Anything they type themselves</td><td>Type a good number. This is not a measurement, it is an opinion</td></tr>
+<tr><td class="t-bad">Interview rate, as a personal target</td><td>Quietly focus on easy candidates and give up on hard ones. Track it, but do not pay on it per person</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Measurements worth running the business on</h3>
+<div class="tw wide">
+<table>
+<caption>Every one of these comes from what the system saw. None can be produced by the person being measured.</caption>
+<thead><tr><th>Measurement</th><th>What it means</th><th>What you use it for</th></tr></thead>
+<tbody>
+<tr><td>Good applications delivered</td><td>Above the score minimum, passed checks, has proof</td><td>The main number, and the basis for bonuses</td></tr>
+<tr><td>Proof rate</td><td>How many applications have a confirmation</td><td>Your honesty check. Should be over 90%. Look closely at anyone below</td></tr>
+<tr><td>Candidate coverage</td><td>How many of their candidates hit the weekly target</td><td>Catches someone who serves three candidates well and ignores two</td></tr>
+<tr><td>Waiting time</td><td>How long a good job sits before someone acts on it</td><td>Fresh jobs convert better. This is the earliest warning that someone is overloaded</td></tr>
+<tr><td>Blocked rate</td><td>How often their applications get stopped by checks, and why</td><td>Should fall as they learn. Rising means a problem</td></tr>
+<tr><td>First application speed</td><td>Hours from a candidate finishing signup to their first application</td><td>The strongest early warning of a candidate cancelling</td></tr>
+<tr><td>Reply rate</td><td>Over the last 14–30 days, on their applications</td><td>Team quality signal — not an individual target</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>How to pay them</h3>
+<p>Base salary, plus a <em>capped</em> bonus per good application, plus a quarterly team bonus based on interviews the whole group produced. Three rules:</p>
+<ul>
+<li><strong>Never pay on a number an employee can create.</strong> If you pay on good applications, then the score minimum and the scoring itself must be controlled by you, versioned, and impossible for an employee to change. Otherwise you have just moved the problem one level up.</li>
+<li><strong>Cap the volume bonus.</strong> An unlimited volume bonus will eventually beat any quality check you build. Money always wins against rules.</li>
+<li><strong>Make the outcome bonus a team bonus.</strong> Individual interview targets make people fight over the easy candidates. A team bonus makes them help each other with the hard ones.</li>
+</ul>
+
+<div class="box warn">
+<span class="tag">Even good measurements can be gamed</span>
+<p>"Good applications delivered" can be gamed in exactly one way: by lowering the score minimum. That is why the minimum is a setting <em>you</em> control, the scoring is versioned, and any change to either is written to the log.</p>
+<p>Build that control at the same time as the measurement — not after someone finds the gap.</p>
+</div>
+</section>
+
+<section id="f14">
+<span class="eyebrow">Part 14</span>
+<h2>The three screens</h2>
+
+<h3>1. The employee screen — a queue, not a dashboard</h3>
+<p>This is the most important screen in your company, because this is where your profit is made or lost.</p>
+<p>The key decision: <strong>show one job at a time, not a list.</strong> A list makes people pick the easy ones, open ten tabs, and get distracted. A queue keeps them moving — and it gives you clean timing data, which is how you learn what to automate next.</p>
+<p>Each card shows: the job, the match score and the quotes explaining it, the prepared CV, the filled-in answers. Two buttons: <strong>Send</strong> or <strong>Skip (choose a reason)</strong>. Nothing else on the screen.</p>
+<div class="tw wide">
+<table>
+<thead><tr><th>Section</th><th>What it does</th></tr></thead>
+<tbody>
+<tr><td>The Queue</td><td>One job at a time, keyboard shortcuts, no list view</td></tr>
+<tr><td>My Candidates</td><td>Progress against target, how many good jobs exist for them, days since last reply, notes</td></tr>
+<tr><td>Problems</td><td>Blocked applications, failed sends, missing candidate information</td></tr>
+<tr><td>My Numbers</td><td>Exactly the numbers you see about them. Nothing hidden — surprise metrics destroy trust</td></tr>
+<tr><td>Handbook</td><td>How to do things, and the rules for each website</td></tr>
+</tbody>
+</table>
+</div>
+<div class="box plain">
+<span class="tag">Important for adoption</span>
+<p>Your team will not leave the spreadsheet unless the new screen is <strong>faster</strong> than the spreadsheet. Speed is how you get them to use it. Control is a side effect. If version 1 is slower, they will find ways around it and you will have built it for nothing.</p>
+</div>
+
+<h3>2. The candidate screen — builds trust and collects data</h3>
+<div class="tw wide">
+<table>
+<thead><tr><th>Show them</th><th>Keep hidden</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Every application: company, job title, date, link, status</td><td>—</td><td>This is what they are paying for. Showing it is your advantage</td></tr>
+<tr><td>The confirmation email</td><td>—</td><td>Proof. No competitor at your price does this</td></tr>
+<tr><td><strong>Why this job was chosen</strong></td><td>The exact number</td><td>Show "Strong / Good / Stretch" instead of "62". A candidate who sees 62 will argue about the 62. A word says the same thing without starting a fight</td></tr>
+<tr><td>A weekly note when few jobs exist for them</td><td>—</td><td>Answers "why only 12 this week?" before they ask, and makes honesty a feature</td></tr>
+<tr><td>Interviews, replies, progress over time</td><td>—</td><td>The story of whether it is working</td></tr>
+<tr><td>Editable preferences and companies to avoid</td><td>—</td><td>Every edit improves your matching. The portal is data collection dressed as a report</td></tr>
+<tr><td>A named contact person</td><td>Employee workload and performance</td><td>Personal feel without showing how the business runs</td></tr>
+<tr><td>—</td><td>Your costs, check details, other candidates</td><td>Obvious</td></tr>
+</tbody>
+</table>
+</div>
+<p>Give them small actions that create useful data: mark "I heard back", block a company, ask for more or fewer of a job type, upload a new CV, confirm an interview happened. Each is one click and each is worth more to your matching than a page of signup text.</p>
+
+<h3>3. Your screen — what needs a decision today</h3>
+<p>The usual mistake is building twelve charts nobody acts on. The rule here: <strong>the first screen shows only things that need a decision today.</strong> If nothing needs you, it should say so. Everything else is one click deeper.</p>
+<div class="tw wide">
+<table>
+<thead><tr><th>Section</th><th>What it answers</th></tr></thead>
+<tbody>
+<tr><td>Today</td><td>What needs your decision, what broke, how much spare capacity you have</td></tr>
+<tr><td>Candidates</td><td>Each one: profile, progress, available jobs, results, and whether they make you money</td></tr>
+<tr><td>Employees</td><td>Workload, coverage, quality, waiting time</td></tr>
+<tr><td>Pipeline</td><td>The funnel from Part 11, clickable at every stage</td></tr>
+<tr><td>Quality</td><td>What got blocked and why, random check results, invented-fact alerts</td></tr>
+<tr><td>Money</td><td>Cost and profit per candidate, AI spend, cost per interview</td></tr>
+<tr><td>Questions</td><td>Ask anything; plus your Monday summary</td></tr>
+<tr><td>Automation</td><td>Which steps run automatically, how often they succeed, <strong>and an off switch for each</strong></td></tr>
+<tr><td>Settings</td><td>Plans, score minimums, website rules, who can see what</td></tr>
+</tbody>
+</table>
+</div>
+<p>Those off switches are not a nice extra. When a company changes their application form at 3am and your auto-fill starts producing nonsense, you need to turn off <em>that one step</em> without stopping everything — and you need to see that it happened.</p>
+</section>
+
+<section id="f15">
+<span class="eyebrow">Part 15</span>
+<h2>Alerts</h2>
+<p>One rule decides whether alerts help or hurt: <strong>every alert must say who should act and what they should do.</strong> An alert nobody owns teaches everybody to ignore the whole channel.</p>
+
+<div class="tw wide">
+<table>
+<thead><tr><th>How often</th><th>Alert</th><th>Who acts, and how</th></tr></thead>
+<tbody>
+<tr><td rowspan="5"><strong>Instantly</strong></td><td class="t-good">Interview invitation arrived</td><td>Candidate and employee. Reply within the hour. The most valuable alert you have</td></tr>
+<tr><td>Invented-fact check triggered</td><td>You. Look at it immediately</td></tr>
+<tr><td>An application failed to send</td><td>Employee. Retry or report it</td></tr>
+<tr><td>A candidate's account got restricted</td><td>You. Stop all activity on that account now</td></tr>
+<tr><td>A test or task with a deadline arrived</td><td>Candidate and employee</td></tr>
+<tr><td rowspan="2"><strong>Every hour</strong></td><td>An employee's queue is empty</td><td>System widens the search first, then tells you. An empty queue means a candidate is not being served</td></tr>
+<tr><td>A job source returned nothing or gave errors</td><td>You. A quietly broken connection starves everyone</td></tr>
+<tr><td rowspan="5"><strong>Daily, 8am summary</strong></td><td>Candidates behind their weekly target</td><td>Employee. Fix it today</td></tr>
+<tr><td>Employees below coverage</td><td>Team leader</td></tr>
+<tr><td>Signup not finished after 24 hours</td><td>Whoever handles candidates. Chase them</td></tr>
+<tr><td>Applications with no confirmation after 24 hours</td><td>Employee. Check or send again</td></tr>
+<tr><td>Candidates with no reply for 14 days</td><td>Required review of their whole approach</td></tr>
+<tr><td rowspan="4"><strong>Weekly</strong></td><td>Reply and interview rates by source and employee</td><td>You. Strategy</td></tr>
+<tr><td>Spare capacity, and whether to hire</td><td>You</td></tr>
+<tr><td>Is the scoring still accurate?</td><td>You</td></tr>
+<tr><td>Cost per good application and per interview</td><td>You</td></tr>
+<tr><td rowspan="4"><strong>When it happens</strong></td><td>Candidate got a job</td><td>Close their account, ask for a testimonial and a referral</td></tr>
+<tr><td>Plan ends in 7 days</td><td>Renewal conversation</td></tr>
+<tr><td>Candidate looks likely to cancel</td><td>Reach out before they ask for a refund</td></tr>
+<tr><td>Not enough jobs found this week</td><td>Automatic honest note to the candidate plus credit, per your contract rule</td></tr>
+</tbody>
+</table>
+</div>
+<p>Keep instant alerts to a small number per person per day. Everything else goes in the daily summary. If you find yourself adding a fifth instant alert, one of the first four probably is not really instant.</p>
+
+<h3>How to build the automation itself</h3>
+<p>Do not write one long script that goes step 1, step 2, step 3. It will break at step nine when a website is slow, and then nothing after it runs.</p>
+<p>Instead, make each step <strong>announce what it did</strong>, and let other steps listen. "Candidate finished signup" → the profile builder wakes up. "Profile ready" → the assignment suggester and the job searcher both wake up, separately. "Application sent" → the proof watcher starts.</p>
+<p>This gives you automatic retries, means one failure does not break everything else, and lets you re-run a whole day after fixing a bug. A long script gives you none of that.</p>
+</section>
+
+<section id="f16">
+<span class="eyebrow">Part 16</span>
+<h2>How many people you need</h2>
+<p>"Candidates per employee" is the wrong unit, because candidates differ hugely in how much work they take. The right unit is <strong>minutes</strong>: how many employee minutes you have, versus how many you promised, limited by how many good jobs exist.</p>
+
+<figure class="wide">
+<div class="figtitle">Minutes per application, by where you apply</div>
+<div class="figsub">"With help" means the computer finds, sorts, prepares and checks it first</div>
+<svg viewBox="0 0 900 226" role="img" aria-label="Grouped bar chart of minutes per application. One-click sites: 1.6 by hand, 1.05 with help. Standard company sites: 6.0 by hand, 1.75 with help. Complex company sites: 12.0 by hand, 4.75 with help.">
+  <g font-family="IBM Plex Mono, monospace" font-size="12.5">
+    <line x1="230" y1="12" x2="230" y2="182" stroke="var(--grid)" stroke-width="1"/>
+    <line x1="324" y1="12" x2="324" y2="182" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="418" y1="12" x2="418" y2="182" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="513" y1="12" x2="513" y2="182" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="607" y1="12" x2="607" y2="182" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="701" y1="12" x2="701" y2="182" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="796" y1="12" x2="796" y2="182" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <text x="230" y="198" fill="var(--ink-3)" font-size="11" text-anchor="middle">0</text>
+    <text x="324" y="198" fill="var(--ink-3)" font-size="11" text-anchor="middle">2</text>
+    <text x="418" y="198" fill="var(--ink-3)" font-size="11" text-anchor="middle">4</text>
+    <text x="513" y="198" fill="var(--ink-3)" font-size="11" text-anchor="middle">6</text>
+    <text x="607" y="198" fill="var(--ink-3)" font-size="11" text-anchor="middle">8</text>
+    <text x="701" y="198" fill="var(--ink-3)" font-size="11" text-anchor="middle">10</text>
+    <text x="796" y="198" fill="var(--ink-3)" font-size="11" text-anchor="middle">12</text>
+    <text x="513" y="218" fill="var(--ink-3)" font-size="11" text-anchor="middle">minutes per application</text>
+
+    <text x="218" y="32" text-anchor="end" fill="var(--ink)">One-click sites</text>
+    <rect x="230" y="18" width="75" height="19" rx="4" fill="var(--s2)"><title>One-click, by hand: 1.6 minutes</title></rect><text x="313" y="33" fill="var(--ink-2)" font-size="11">1.6</text>
+    <rect x="230" y="41" width="49" height="19" rx="4" fill="var(--s1)"><title>One-click, with help: 1.05 minutes</title></rect><text x="287" y="56" fill="var(--ink-2)" font-size="11">1.05</text>
+
+    <text x="218" y="88" text-anchor="end" fill="var(--ink)">Company sites</text>
+    <rect x="230" y="74" width="283" height="19" rx="4" fill="var(--s2)"><title>Greenhouse, Lever, Ashby, by hand: 6.0 minutes</title></rect><text x="521" y="89" fill="var(--ink-2)" font-size="11">6.0</text>
+    <rect x="230" y="97" width="82" height="19" rx="4" fill="var(--s1)"><title>Greenhouse, Lever, Ashby, with help: 1.75 minutes</title></rect><text x="320" y="112" fill="var(--ink-2)" font-size="11">1.75</text>
+
+    <text x="218" y="144" text-anchor="end" fill="var(--ink)">Complex sites</text>
+    <rect x="230" y="130" width="566" height="19" rx="4" fill="var(--s2)"><title>Workday, iCIMS, by hand: 12.0 minutes</title></rect><text x="804" y="145" fill="var(--ink-2)" font-size="11">12.0</text>
+    <rect x="230" y="153" width="224" height="19" rx="4" fill="var(--s1)"><title>Workday, iCIMS, with help: 4.75 minutes</title></rect><text x="462" y="168" fill="var(--ink-2)" font-size="11">4.75</text>
+  </g>
+</svg>
+<div class="legend"><span><i class="sw" style="background:var(--s2)"></i>By hand — employee finds, reads and fills</span><span><i class="sw" style="background:var(--s1)"></i>With help — computer finds, sorts and prepares</span></div>
+<figcaption>The biggest saving is exactly where you want to move: company websites drop from 6 minutes to 1.75. That is what makes the whole strategy affordable.</figcaption>
+</figure>
+
+<h3>Three stages</h3>
+<div class="tw wide">
+<table>
+<caption>Notice that Stage B's minutes per application barely improve. That is because you move to harder websites on purpose. The win is that you need far fewer applications.</caption>
+<thead><tr><th>Stage</th><th>Where the applications go</th><th class="num">Min/app</th><th class="num">Apps per day</th><th class="num">Apps per candidate</th><th class="num">Candidates per employee</th></tr></thead>
+<tbody>
+<tr><td>A — Now</td><td>Mostly one-click, one job shared across 5 people</td><td class="num">1.12</td><td class="num">up to 320</td><td class="num">50</td><td class="num">5</td></tr>
+<tr><td>B — With AI help</td><td>Mostly company sites, each job chosen for one person</td><td class="num">2.18</td><td class="num">165</td><td class="num">15</td><td class="num t-good">11</td></tr>
+<tr><td>C — Partly automatic</td><td>Same, with most sending done automatically</td><td class="num">1.18</td><td class="num">303</td><td class="num">15</td><td class="num t-good">20</td></tr>
+</tbody>
+</table>
+</div>
+<p>All based on 359 usable minutes per employee per day, after breaks, meetings and fixing mistakes. Stage C assumes about 70% of company-website applications send themselves, with the employee handling the exceptions and spot-checking. That needs the permissions, safety record and logging from Parts 10 and 18 — do not try it before those exist.</p>
+
+<h3>How many people at each size</h3>
+<div class="tw wide">
+<table>
+<caption>Total includes: one team leader per 8 employees, one quality checker per 25 employees, one candidate-support person per 60 candidates. Notice that candidate support does <em>not</em> shrink with automation — talking to people does not automate, and pretending it does is how these businesses get bad reviews.</caption>
+<thead><tr><th class="num">Candidates</th><th class="num">A — staff</th><th class="num">A — total</th><th class="num">B — staff</th><th class="num">B — total</th><th class="num">C — staff</th><th class="num">C — total</th></tr></thead>
+<tbody>
+<tr><td class="num">10</td><td class="num">2</td><td class="num">3</td><td class="num">1</td><td class="num">2</td><td class="num">1</td><td class="num">2</td></tr>
+<tr><td class="num">25</td><td class="num">5</td><td class="num">7</td><td class="num">3</td><td class="num">5</td><td class="num">2</td><td class="num">4</td></tr>
+<tr><td class="num">50</td><td class="num">10</td><td class="num">13</td><td class="num">5</td><td class="num">7</td><td class="num">3</td><td class="num">5</td></tr>
+<tr><td class="num">100</td><td class="num">20</td><td class="num">26</td><td class="num">10</td><td class="num">14</td><td class="num">5</td><td class="num t-good">9</td></tr>
+<tr><td class="num">500</td><td class="num">100</td><td class="num">126</td><td class="num">46</td><td class="num">63</td><td class="num">25</td><td class="num t-good">39</td></tr>
+<tr><td class="num">1,000</td><td class="num">200</td><td class="num">250</td><td class="num">91</td><td class="num">124</td><td class="num">50</td><td class="num t-good">76</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box plain">
+<span class="tag">The number that matters most</span>
+<p>At 1,000 candidates, the difference between how you work now and Stage C is <strong>174 fewer people</strong>.</p>
+<p>At $700 per person per month, that is about <strong>$1,460,000 saved every year</strong> — against an AI and hosting bill of maybe $30,000. That is the entire reason to build this.</p>
+</div>
+
+<h3>How to know when an employee is overloaded</h3>
+<p>Not by counting candidates. Three signals, best first:</p>
+<ul>
+<li><strong>Waiting time is going up.</strong> Good jobs are sitting unused. This appears <em>before</em> quality drops, so it is your earliest warning.</li>
+<li><strong>Coverage falls below 100%.</strong> Some candidates hit their target and others do not. An overloaded person quietly drops their hardest candidates.</li>
+<li><strong>Promised minutes above 85% of available minutes.</strong> Above 85% there is no room for a sick day or a difficult candidate.</li>
+</ul>
+
+<div class="box rec">
+<span class="tag">Exactly when to hire</span>
+<p>Hire another employee when <strong>promised minutes go above 85% of team capacity for two weeks in a row</strong>, or when jobs typically wait more than 24 hours.</p>
+<p>Hire a team leader at 8 employees.</p>
+<p>And hire someone to take daily operations off you when your own screen shows you spending <strong>more than 10 hours a week on problems</strong> — because at that point you have stopped building, and the building is what makes the money work.</p>
+</div>
+</section>
+
+<section id="f17">
+<span class="eyebrow">Part 17</span>
+<h2>Money</h2>
+<p>The numbers below are examples — put your own in. What matters is the <em>shape</em>: a cost that is mostly salaries becomes a cost that is mostly small and fixed.</p>
+
+<figure class="wide">
+<div class="figtitle">What it costs you to serve one candidate for one month</div>
+<div class="figsub">Example · price $249/month · employee cost $700/month</div>
+<svg viewBox="0 0 900 250" role="img" aria-label="Stacked bars of monthly cost per candidate. Now: 140 dollars salary, 28 management, 0 AI, 18 other, total 186, 25 percent profit. Stage B: 64 salary, 13 management, 12 AI, 15 other, total 104, 58 percent profit. Stage C: 35 salary, 7 management, 12 AI, 15 other, total 69, 72 percent profit.">
+  <g font-family="IBM Plex Mono, monospace" font-size="12.5">
+    <line x1="160" y1="10" x2="160" y2="176" stroke="var(--grid)" stroke-width="1"/>
+    <line x1="311" y1="10" x2="311" y2="176" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="463" y1="10" x2="463" y2="176" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="614" y1="10" x2="614" y2="176" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <line x1="766" y1="10" x2="766" y2="176" stroke="var(--grid)" stroke-width="1" stroke-dasharray="2 3"/>
+    <text x="160" y="192" fill="var(--ink-3)" font-size="11" text-anchor="middle">$0</text>
+    <text x="311" y="192" fill="var(--ink-3)" font-size="11" text-anchor="middle">$50</text>
+    <text x="463" y="192" fill="var(--ink-3)" font-size="11" text-anchor="middle">$100</text>
+    <text x="614" y="192" fill="var(--ink-3)" font-size="11" text-anchor="middle">$150</text>
+    <text x="766" y="192" fill="var(--ink-3)" font-size="11" text-anchor="middle">$200</text>
+
+    <text x="148" y="38" text-anchor="end" fill="var(--ink)">Now</text>
+    <rect x="160" y="22" width="422" height="28" rx="4" fill="var(--s1)"><title>Employee salary $140</title></rect>
+    <rect x="584" y="22" width="83" height="28" rx="4" fill="var(--s2)"><title>Management $28</title></rect>
+    <rect x="669" y="22" width="54" height="28" rx="4" fill="var(--s4)"><title>Tools, hosting, card fees $18</title></rect>
+    <text x="733" y="41" fill="var(--ink)" font-weight="600">$186</text>
+    <text x="790" y="41" fill="var(--signal)" font-size="11">25% profit</text>
+
+    <text x="148" y="94" text-anchor="end" fill="var(--ink)">Stage B</text>
+    <rect x="160" y="78" width="193" height="28" rx="4" fill="var(--s1)"><title>Employee salary $64</title></rect>
+    <rect x="355" y="78" width="38" height="28" rx="4" fill="var(--s2)"><title>Management $13</title></rect>
+    <rect x="395" y="78" width="35" height="28" rx="4" fill="var(--s3)"><title>AI $12</title></rect>
+    <rect x="432" y="78" width="44" height="28" rx="4" fill="var(--s4)"><title>Tools, hosting, card fees $15</title></rect>
+    <text x="486" y="97" fill="var(--ink)" font-weight="600">$104</text>
+    <text x="543" y="97" fill="var(--good)" font-size="11">58% profit</text>
+
+    <text x="148" y="150" text-anchor="end" fill="var(--ink)">Stage C</text>
+    <rect x="160" y="134" width="104" height="28" rx="4" fill="var(--s1)"><title>Employee salary $35</title></rect>
+    <rect x="266" y="134" width="19" height="28" rx="4" fill="var(--s2)"><title>Management $7</title></rect>
+    <rect x="287" y="134" width="35" height="28" rx="4" fill="var(--s3)"><title>AI $12</title></rect>
+    <rect x="324" y="134" width="44" height="28" rx="4" fill="var(--s4)"><title>Tools, hosting, card fees $15</title></rect>
+    <text x="378" y="153" fill="var(--ink)" font-weight="600">$69</text>
+    <text x="425" y="153" fill="var(--good)" font-size="11">72% profit</text>
+
+    <text x="160" y="222" fill="var(--ink-3)" font-size="11">You charge $249. The space between the end of each bar and $249 is your profit.</text>
+  </g>
+</svg>
+<div class="legend">
+  <span><i class="sw" style="background:var(--s1)"></i>Employee salary</span>
+  <span><i class="sw" style="background:var(--s2)"></i>Management</span>
+  <span><i class="sw" style="background:var(--s3)"></i>AI</span>
+  <span><i class="sw" style="background:var(--s4)"></i>Tools, hosting, card fees</span>
+</div>
+</figure>
+
+<div class="tw wide">
+<table>
+<caption>Same figures as a table. Replace the price and salary with your real numbers — the pattern is what matters.</caption>
+<thead><tr><th>Line</th><th class="num">Now</th><th class="num">Stage B</th><th class="num">Stage C</th></tr></thead>
+<tbody>
+<tr><td>Candidates per employee</td><td class="num">5</td><td class="num">11</td><td class="num">20</td></tr>
+<tr><td>Employee salary share</td><td class="num">$140</td><td class="num">$64</td><td class="num">$35</td></tr>
+<tr><td>Management</td><td class="num">$28</td><td class="num">$13</td><td class="num">$7</td></tr>
+<tr><td>AI</td><td class="num">$0</td><td class="num">$12</td><td class="num">$12</td></tr>
+<tr><td>Tools, hosting, card fees</td><td class="num">$18</td><td class="num">$15</td><td class="num">$15</td></tr>
+<tr><td><strong>Total cost</strong></td><td class="num">$186</td><td class="num">$104</td><td class="num">$69</td></tr>
+<tr><td><strong>Profit at $249</strong></td><td class="num t-bad">$63</td><td class="num">$145</td><td class="num t-good">$180</td></tr>
+<tr><td><strong>Profit %</strong></td><td class="num t-bad">25%</td><td class="num">58%</td><td class="num t-good">72%</td></tr>
+<tr><td>Total profit per candidate (3.5 months)</td><td class="num">$220</td><td class="num">$508</td><td class="num t-good">$630</td></tr>
+<tr><td>Profit ÷ cost to find a customer ($200)</td><td class="num t-bad">1.1×</td><td class="num">2.5×</td><td class="num t-good">3.2×</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box plain">
+<span class="tag">The most important line in the table</span>
+<p>Look at the last row. Right now, if you pay $200 to get a customer, you earn about $220 from them in total. That is <strong>1.1×</strong> — basically breaking even, before any refund, before support time, before your own hours.</p>
+<p><strong>This is why growth feels so hard.</strong> You literally cannot afford to pay for customers. You can only grow through referrals and personal effort.</p>
+<p>At Stage C it becomes 3.2×. Now advertising works. So automation is not mainly about cutting costs — <strong>it is the thing that lets you buy growth at all.</strong></p>
+</div>
+
+<h3>Why the AI spend is such a good deal</h3>
+<p>About $12 of AI per candidate per month removes about $105 of human work. That is <strong>$9 of salary saved for every $1 of AI spent</strong>. Very few things you can buy have that ratio. Specifically:</p>
+<ul>
+<li>Searching and checking jobs — the biggest single block of employee time today — drops to zero human minutes</li>
+<li>Filling forms drops from 6 minutes to 1.75 on the websites you most want to use</li>
+<li>Quality checking, which does not happen at all today, becomes free</li>
+</ul>
+<p>Also worth noting: AI cost stays the same per candidate, but <strong>hosting cost barely grows at all.</strong> Your $150/month of hosting serves 50 candidates or 500. By 500 candidates, hosting is under $1 per candidate.</p>
+
+<h3>Six numbers to track per candidate</h3>
+<p>Once you record AI usage, task timings and assignments, cost per candidate becomes a real number instead of an average. Track these:</p>
+<ol>
+<li>What they cost you</li>
+<li>Your profit on them</li>
+<li>Days until their first application</li>
+<li>Days until their first reply</li>
+<li>Days until their first interview</li>
+<li>How they ended: got a job / gave up / time finished</li>
+</ol>
+<p>Numbers 3 to 6 are also your best early warning of someone about to cancel. And when you look at number 2, expect to find that your most specific candidates cost 2–3× more to serve while paying the same — which is exactly why Part 05 prices by how specific they are.</p>
+</section>
+
+<section id="f18">
+<span class="eyebrow">Part 18</span>
+<h2>Safety and law</h2>
+<p>You handle CVs, personal details, maybe passwords, and you act in other people's names. Your candidates are in several countries, so several sets of rules apply at once. Two items here can genuinely end the company.</p>
+
+<div class="box risk">
+<span class="tag">Danger 1 — holding candidates' passwords</span>
+<p>If you keep candidates' LinkedIn or Indeed passwords, that is your single biggest risk. It breaks those websites' rules, it makes you responsible for your client's most important professional account, and one infected employee laptop exposes every candidate at once.</p>
+<p>Worse: using several candidates' accounts from one computer links those accounts together in the platform's eyes. That is the pattern that gets them <em>all</em> banned together.</p>
+<p><strong>The goal: no candidate passwords anywhere in your system.</strong> Applying on company websites needs none. If a login is truly unavoidable, use a browser extension the candidate installs themselves and can remove at any time — never a stored password. While you are still changing over: use a proper password vault (not your database), where the employee never sees the actual password and every use is logged.</p>
+</div>
+
+<div class="box risk">
+<span class="tag">Danger 2 — applying as someone else</span>
+<p>You submit applications in your candidate's name. That needs a <strong>signed permission form</strong> for each candidate, saying what you may send, as whom, on which websites, and with what claims. Store it and link it to every application record.</p>
+<p>Many application forms have a box saying "I confirm this information is true." Your permission form must clearly cover the candidate letting you tick that box — and your invented-facts check must make sure it is never ticked falsely. Without both, one wrong answer stops being a mistake and becomes a false statement.</p>
+</div>
+
+<h3>Privacy, across several countries at once</h3>
+<p>Because you serve Europe, the US and Asia, use <strong>GDPR (the European rule) as your baseline</strong>. It is the strictest, so following it mostly covers the others too. In practice:</p>
+<ul>
+<li><strong>Reason for holding data</strong> — for the core service it is "we need it to do the job you paid for". For anything extra, ask permission separately.</li>
+<li><strong>Sensitive information</strong> — CVs often contain nationality, health, religion or photos. Detect it when reading the CV, keep it out of AI prompts where it is not needed, and never let it affect a matching decision.</li>
+<li><strong>Candidate rights</strong> — they can ask to see their data, correct it, delete it, or take it elsewhere, and you have 30 days. Build the export and delete functions early. Adding deletion later, across a history log, is genuinely painful.</li>
+<li><strong>How long you keep things</strong> — delete CVs and application content 12 months after the candidate leaves. Keep the anonymous totals forever. Your learning data does not need names.</li>
+<li><strong>Your suppliers</strong> — keep a list (hosting, AI provider, job data, email) and have a data agreement with each. Tell candidates who they are.</li>
+<li><strong>Your employees</strong> — each signs a data agreement and a confidentiality agreement. Employees in other countries count as suppliers in legal terms.</li>
+<li><strong>Where the data lives</strong> — <strong>decide before you write your first database table.</strong> If you will have many European candidates, their data should sit on European servers. Choosing the region at the start is free. Splitting a live database later is a project.</li>
+<li><strong>India</strong> has the DPDP Act 2023 and <strong>California</strong> has CCPA/CPRA. Both are largely covered if you follow the above.</li>
+<li><strong>If data leaks</strong>, GDPR gives you 72 hours to report it. Write the plan now, not during the emergency.</li>
+</ul>
+
+<h3>The EU AI law — probably not your problem, with one warning</h3>
+<p>Europe's AI Act treats "AI used for hiring" as high risk. But that rule is aimed at <strong>companies using AI to choose between candidates</strong>. You do the opposite — you choose jobs for a person. That is outside the rule. Also, the strict parts were pushed back from August 2026 to <strong>2 December 2027</strong>.</p>
+<p>Three things that <em>do</em> apply:</p>
+<ul>
+<li>The transparency rules started on 2 August 2026 and are being enforced now.</li>
+<li>If you ever build scoring that ranks <em>candidates</em> — deciding which clients get more effort — that is automatic decision-making about people, and you should get advice first.</li>
+<li><strong>Never advertise your matching system as a tool for employers to screen candidates.</strong> That one sentence in your marketing would pull you into the strict rules and a compliance process you cannot afford.</li>
+</ul>
+<p>None of this is legal advice. It is a map of where to spend one hour with a lawyer. With candidates in several countries, one hour is cheap.</p>
+
+<h3>Who can see what</h3>
+<ul>
+<li>Four levels: <strong>candidate</strong> (only their own data), <strong>employee</strong> (only their assigned candidates, no passwords, no bulk download), <strong>team leader</strong> (their group), <strong>owner</strong> (everything plus the log).</li>
+<li><strong>Enforce this in the database itself, not only in your code.</strong> One forgotten line in one page should not be able to show another candidate's CV.</li>
+<li>CVs in private storage with links that expire. No public folders, ever — badly configured storage is the most common way small companies leak data.</li>
+<li>Log who viewed what, downloaded what, and changed permissions. <strong>Alert specially on bulk downloads</strong> — an employee downloading 200 CVs is either leaving or has been hacked.</li>
+</ul>
+
+<h3>What gets accounts banned</h3>
+<p>The specific patterns, so you can avoid them:</p>
+<ul>
+<li>Any automatic action on LinkedIn — searching, applying, connecting, messaging</li>
+<li>Server IP addresses and automated-browser signatures</li>
+<li>Identical answer text and identical timing across many accounts</li>
+<li>One computer or internet connection used for several candidate accounts — this links them, and bans spread across the whole group</li>
+<li>Activity at hours that make no sense for the account's stated location</li>
+<li>CAPTCHA-solving services and IP hiding — this is the line between aggressive and dishonest</li>
+</ul>
+<p>Put the rules in your code, not in a document. The "automation rule" field on each job source from Part 07 is read by the sending code, so a source marked "people only" is simply unreachable by automation. Rules in a document get broken. Rules in code do not.</p>
+</section>
+
+<section id="f19">
+<span class="eyebrow">Part 19</span>
+<h2>About "AI agents"</h2>
+<p>You listed eight AI agents. I want to push back, because building eight of them alone is one of the most reliable ways to lose six months.</p>
+
+<div class="box plain">
+<span class="tag">What "agent" actually means</span>
+<p>An <strong>agent</strong> is an AI that decides its own steps — it thinks, picks a tool, looks at the result, thinks again, and stops when it decides it is done.</p>
+<p>A <strong>pipeline</strong> is when <em>you</em> decide the steps and AI just does one specific job inside each one.</p>
+<p>Agents are right when you cannot predict the steps in advance. Pipelines are right when the same thing happens thousands of times a day — because they are cheaper, they give the same answer every time, and you can explain to a candidate exactly why something happened.</p>
+</div>
+
+<div class="tw wide">
+<table>
+<thead><tr><th>You called it</th><th>It should be</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Candidate Agent</td><td><span class="pill auto">Pipeline</span> + a chat box</td><td>Reading a CV into a profile is a fixed job. The chat is a separate small thing</td></tr>
+<tr><td>Job Research Agent</td><td><span class="pill auto">Pipeline</span></td><td>Download from a list of sources every night. There is nothing to decide</td></tr>
+<tr><td>Matching Agent</td><td><span class="pill auto">Pipeline</span></td><td>One scored answer per job. Must give the same result every time so you can improve it</td></tr>
+<tr><td>Application Prep Agent</td><td><span class="pill auto">Pipeline</span></td><td>Template plus saved answers plus careful generation. Freedom here only creates the risk of invented facts</td></tr>
+<tr><td>Quality Agent</td><td><span class="pill auto">Pipeline</span></td><td>Mostly simple rules, with one AI call for the invented-facts check</td></tr>
+<tr><td>Monitoring Agent</td><td><span class="pill auto">Pipeline</span></td><td>Read email, decide the type, record it</td></tr>
+<tr><td>Operations Agent</td><td><span class="pill auto">Pipeline</span> + AI writing</td><td>Simple maths finds the unusual numbers. AI only writes the sentence explaining them</td></tr>
+<tr><td>Form filling</td><td><span class="pill human">Real agent</span></td><td>Every website is different and unpredictable. This genuinely needs to adapt</td></tr>
+<tr><td>CEO Agent</td><td><span class="pill human">Real agent</span></td><td>Open questions with no fixed path</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><strong>Two real agents, seven pipelines.</strong> Accepting this will save you months and a lot of AI cost.</p>
+
+<h3>How they should talk to each other</h3>
+<p>Through the shared record of what happened — <em>not</em> by chatting to each other. AI agents talking to AI agents is where things quietly go wrong: errors pile up invisibly, you cannot repeat a run, and debugging means reading conversation transcripts.</p>
+<p>Every part writes down what it did, and every part reads what it needs. If the matching step fails, the work list is simply empty and you get an alert. Nothing downstream gets confused by a strange message.</p>
+
+<h3>Where people stay involved permanently</h3>
+<ul>
+<li>Confirming the profile at signup — one review that shapes everything after it</li>
+<li>Any new fact about the candidate</li>
+<li>The first few applications for each new candidate, until the list has proven itself</li>
+<li>Overriding a warning, with a reason recorded</li>
+<li>Any website marked "people only"</li>
+<li>Bad news, and every strategy conversation</li>
+</ul>
+
+<div class="box rec">
+<span class="tag">About the form-filling agent</span>
+<p>Use a mixed approach, not a pure AI one. Write fixed instructions for the forms you see most often (you will meet the same three systems over and over), and use AI only when the page is unfamiliar. This is cheaper and works better than letting AI handle every click.</p>
+<p>And run it on your employee's computer first, before ever considering running it on a server.</p>
+</div>
+</section>
+
+<section id="f20">
+<span class="eyebrow">Part 20</span>
+<h2>Answering your own questions</h2>
+<p>Your questions are all answerable — but not by pointing AI at your database and hoping. Three layers, most important first.</p>
+
+<h3>Layer 1 — Prepared questions, not raw tables</h3>
+<p>Write about 30 ready-made calculations, each with a plain description: "good applications delivered", "reply rate last 28 days", "waiting time", "cost per good application", "how many more candidates we can take". <strong>The AI uses these, never your raw database.</strong></p>
+<p>This is the difference between an AI that gives correct numbers and one that gives wrong numbers confidently. A wrong number, delivered smoothly, is worse than no answer at all.</p>
+
+<h3>Layer 2 — Work out <em>why</em>, do not ask AI to guess</h3>
+<p>"Why did applications drop this week?" should never be answered by AI opinion. Calculate it. Total applications is just a few things multiplied together, so you can check each one:</p>
+<div class="box">
+<p class="kv"><b>total</b> = active candidates × working days × applications per candidate per day<br><br>
+<b>so a drop comes from one or more of</b><br>
+· fewer active candidates (someone finished or left)<br>
+· fewer working days (sickness, holiday)<br>
+· each employee doing less (overloaded, harder forms)<br>
+· fewer good jobs available<br>
+· more applications blocked by checks</p>
+</div>
+<p>Show the list in order of size, <em>then</em> let AI write the sentence. Like this:</p>
+<p><em>"Applications fell 18%. 11 points of that was three candidates finishing their plan, 5 points was fewer senior backend jobs being posted, 2 points was more blocks after Tuesday's duplicate-check change."</em></p>
+<p>That is useful. "It looks like activity was lower this week" is not.</p>
+
+<div class="tw wide">
+<table>
+<caption>Your questions, and what actually answers each one.</caption>
+<thead><tr><th>Your question</th><th>How it gets answered</th><th>What you must build first</th></tr></thead>
+<tbody>
+<tr><td>Why did applications drop?</td><td>The breakdown above</td><td>History log with times</td></tr>
+<tr><td>Who is overloaded?</td><td>Promised minutes vs available minutes, plus waiting time</td><td>Capacity in minutes, task timings</td></tr>
+<tr><td>Which candidates lack good jobs?</td><td>Good jobs found vs what their plan promises</td><td>How specific they are, match scores</td></tr>
+<tr><td>Which website gives the best interviews?</td><td>Group results by where the application went</td><td><strong>Record the source at the moment of applying.</strong> You cannot add this later</td></tr>
+<tr><td>How many more candidates can we take?</td><td>Total available minutes minus total promised minutes</td><td>Part 16's model, running live</td></tr>
+<tr><td>What does each candidate cost?</td><td>Salary share + recorded AI cost + hosting</td><td>AI usage recorded from day one</td></tr>
+<tr><td>Who is most likely to get an interview?</td><td>Your improved scoring, applied to their current applications</td><td>About 2,000 recorded results</td></tr>
+<tr><td>Why are rejections increasing?</td><td>Group rejections by reason, source, employee and score range. Find which group moved</td><td>Rejection reasons read from email</td></tr>
+<tr><td>If we add 100 candidates, how many employees?</td><td>A small calculator built from Part 16</td><td>The capacity model written as code</td></tr>
+<tr><td class="t-good">What should we automate next?</td><td>Sort every step by (minutes used per month × cost) ÷ how hard it is</td><td><strong>Start and finish times on every task</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box plain">
+<span class="tag">The clever part</span>
+<p>Look at that last row. If every piece of work records when it started and when it finished, you automatically get a sorted list of where your employees' time actually goes.</p>
+<p>Then <strong>"what should we automate next?" stops being an opinion and becomes a sorted table.</strong> That is two extra columns in one table, added in week three, and you never have to guess again.</p>
+</div>
+</section>
+
+<section id="f21">
+<span class="eyebrow">Part 21</span>
+<h2>Which tools to use</h2>
+<p>Chosen for one developer who needs to ship, not to look impressive. Everything below aims at the same goal: the fewest moving parts that still work.</p>
+
+<div class="tw wide">
+<table>
+<caption>"Start" means 0–100 candidates, buildable alone. "Growing" is 100–500. "Big" is 500+.</caption>
+<thead><tr><th>Part</th><th>Start</th><th>Growing</th><th>Big</th></tr></thead>
+<tbody>
+<tr><td>Database</td><td>Supabase (which is PostgreSQL plus extras)</td><td>+ a copy for reports</td><td>+ a separate system for the history log</td></tr>
+<tr><td>Login and permissions</td><td>Supabase built-in</td><td>same</td><td>+ company sign-on for staff</td></tr>
+<tr><td>The app itself</td><td>Next.js + TypeScript on Vercel — all three screens in one project</td><td>same</td><td>Split the job pipeline into its own service</td></tr>
+<tr><td>Background jobs</td><td>Inngest (or Trigger.dev) — handles retries, scheduling, failures</td><td>same</td><td>same, or Temporal</td></tr>
+<tr><td>AI</td><td>Claude — Haiku for volume, Sonnet for scoring and writing, Opus for your questions</td><td>same + testing setup</td><td>same</td></tr>
+<tr><td>Job data</td><td>Company career pages + Adzuna free tier + JSearch</td><td>+ a unified service</td><td>+ paid dataset</td></tr>
+<tr><td>Incoming email</td><td>Cloudflare Email Routing or Postmark</td><td>same</td><td>same</td></tr>
+<tr><td>Form filling</td><td>Playwright + Stagehand, on employee computers</td><td>+ Browserbase if needed on a server</td><td>same</td></tr>
+<tr><td>Passwords and secrets</td><td>Supabase Vault, Infisical or Doppler</td><td>same</td><td>+ rotation policy</td></tr>
+<tr><td>Reports and charts</td><td>Metabase (free, self-hosted)</td><td>same</td><td>+ data warehouse</td></tr>
+<tr><td>Error tracking</td><td>Sentry + PostHog</td><td>+ connection health checks</td><td>+ on-call</td></tr>
+<tr><td>Payments</td><td>Stripe</td><td>same</td><td>same</td></tr>
+<tr><td>Signatures</td><td>Documenso or Dropbox Sign</td><td>same</td><td>same</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>The tools you asked about specifically</h3>
+<div class="tw wide">
+<table>
+<thead><tr><th>Tool</th><th>My answer</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>n8n / Make / Zapier</td><td class="t-bad">Not as the main system</td><td><strong>You are a developer — that changes everything.</strong> Drag-and-drop workflows become impossible to manage past about 20 of them. You cannot test them properly, cannot review changes, and they charge per run — which punishes exactly your highest-volume step. <strong>Use n8n only for small side things</strong>: a Slack message, a form, a Sheets bridge while you migrate. Never put candidate data or the matching logic inside it</td></tr>
+<tr><td>Retool</td><td class="t-bad">Skip</td><td>Costs per user, and the employee screen <em>is</em> your product, not an internal tool. Only use it as a two-week stopgap for basic admin pages</td></tr>
+<tr><td>Airtable as your database</td><td class="t-bad">No</td><td>Row limits, no proper history log, and moving off it later costs more than starting properly</td></tr>
+<tr><td>Supabase</td><td class="t-good">Yes</td><td>Database, login, file storage and per-user access rules in one service. For one person building three different screens, the access rules alone make it worth it</td></tr>
+<tr><td>PostgreSQL</td><td class="t-good">Yes — the centre of everything</td><td>Normal data, flexible data, similarity search, and a real history log. One database for all of it</td></tr>
+<tr><td>Python</td><td>Only if you prefer it</td><td>Nothing here needs it. One language across the whole project is a real advantage when you work alone</td></tr>
+<tr><td>A separate search database (Pinecone, Weaviate)</td><td class="t-bad">No</td><td>PostgreSQL handles this fine and keeps everything in one place. A second database is a second thing to keep in sync</td></tr>
+<tr><td>A paid CV reader (Affinda, RChilli)</td><td>Probably not</td><td>They charge $40–200 per 1,000 CVs. With 5–50 new candidates a month, an AI call costs cents and gives you exactly the format you want</td></tr>
+<tr><td>Kubernetes, microservices, your own login system, a mobile app</td><td class="t-bad">No</td><td>Each is months of work solving a problem you do not have</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>Build it or buy it?</h3>
+<div class="tw wide">
+<table>
+<thead><tr><th>Thing</th><th>Decision</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Candidate database and management</td><td><strong>Build</strong></td><td>This is your core. No existing product connects candidate → job → application → result the way you need</td></tr>
+<tr><td>Job matching</td><td><strong>Build</strong></td><td>Your advantage. Nobody sells one trained on your results</td></tr>
+<tr><td>Application tracking</td><td><strong>Build</strong></td><td>Core, and nothing off the shelf does it right</td></tr>
+<tr><td>Employee screen</td><td><strong>Build</strong></td><td>This is where your profit is made</td></tr>
+<tr><td>Candidate screen</td><td><strong>Build, but simple</strong></td><td>It is mostly just showing data you already have</td></tr>
+<tr><td>Getting job listings</td><td><strong>Connect</strong></td><td>Use the free company pages and a paid service. Never build scrapers for LinkedIn</td></tr>
+<tr><td>Reading CVs</td><td><strong>Use AI</strong></td><td>Cheap, and the candidate checks the result once</td></tr>
+<tr><td>Login, scheduling, alerts, secrets, signatures, payments, charts</td><td><strong>Buy</strong></td><td>Every hour here is an hour not spent on matching, and none of it makes you different from competitors</td></tr>
+<tr><td>Data warehouse</td><td><strong>Wait</strong></td><td>Daily summary tables and Metabase get you to several hundred candidates</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="f22">
+<span class="eyebrow">Part 22</span>
+<h2>Build order</h2>
+<p>Assuming about 20–25 focused hours of building per week, while still running the business. The phases barely overlap, because you cannot split yourself in two.</p>
+
+<div class="stage">
+<h4>Phase 0 · Weeks 1–2 · Start proving the work</h4>
+<p class="kv"><b>Build</b> A domain, one email address per candidate, and somewhere to store incoming mail. One database table for applications with the columns you will need forever. A rule that every application must have a confirmation — even while you are still using the spreadsheet.</p>
+<p class="kv"><b>You get</b> Within two weeks you know your real sending rate and real reply rate.<br><b>Effort</b> Low — about 15 hours.<br><b>Risk</b> Your team may resist. Explain it protects them from being blamed unfairly.</p>
+<p><strong>This is the best two weeks in the whole plan</strong>, because it tells you whether everything after it points in the right direction — and because this data cannot be recovered later.</p>
+</div>
+
+<div class="stage">
+<h4>Phase 1 · Weeks 3–7 · The backbone</h4>
+<p class="kv"><b>Build</b> The database tables from Part 07. A Next.js app with login and per-role access. Employee screen version 1 — their candidates, and logging applications with proof required. Your screen version 1 — one "Today" page built from real data. Move off the spreadsheet, keeping a read-only copy.</p>
+<p class="kv"><b>You get</b> Every number now comes from the system instead of from a person.<br><b>Effort</b> Medium.<br><b>Risk</b> Adoption. Make the new screen genuinely faster than the sheet.</p>
+</div>
+
+<div class="stage">
+<h4>Phase 2 · Weeks 6–9 · Knowing what happened</h4>
+<p class="kv"><b>Build</b> AI that reads incoming email and sorts it into confirmation / rejection / interview / recruiter / test. Automatic recording of each. Instant interview alerts. Candidate screen version 1, read-only.</p>
+<p class="kv"><b>You get</b> Real reply and interview rates, broken down by website, employee and score. This is the first time you can answer "is what we do actually working?" You also get a big retention win — candidates can finally see the work.<br><b>Needs</b> Phase 0.</p>
+</div>
+
+<div class="stage">
+<h4>Phase 3 · Weeks 8–14 · Jobs and matching</h4>
+<p class="kv"><b>Build</b> Connections to Greenhouse, Lever and Ashby, plus Adzuna and one more. Company and duplicate cleanup. Similarity search. Basic filters, then overnight AI scoring. A daily sorted list per candidate.</p>
+<p class="kv"><b>You get</b> Employees stop searching — that is roughly 25–30% of their time, and your first real capacity gain.<br><b>Risk</b> The matching will be mediocre for 4–6 weeks. <strong>Run it alongside manual searching and only switch when the list clearly beats the human.</strong> If you switch too early your team stops trusting it, and trust is expensive to rebuild.</p>
+</div>
+
+<div class="stage">
+<h4>Phase 4 · Weeks 14–20 · Help with the actual applying</h4>
+<p class="kv"><b>Build</b> The saved answers per candidate. AI that adjusts the CV per job, with the no-invented-facts rule. The safety check gate. A form auto-filler for your top three application systems, running on employee computers.</p>
+<p class="kv"><b>You get</b> Minutes per application fall and quality rises. <strong>This is where 5 candidates per employee becomes 11.</strong><br><b>Effort</b> High — the auto-filler is the hardest thing in this plan.</p>
+</div>
+
+<div class="stage">
+<h4>Phase 5 · Weeks 20–26 · Numbers, alerts, and a portal that sells</h4>
+<p class="kv"><b>Build</b> The 30 prepared calculations and daily summary tables. The alert system from Part 15. Candidate screen version 2 — with match reasons, weekly summary, editable preferences, honest notes about job supply. Cost per candidate including AI.</p>
+<p class="kv"><b>You get</b> You can now price, forecast and hire based on facts. The candidate screen becomes a sales tool rather than an obligation.</p>
+</div>
+
+<div class="stage">
+<h4>Phase 6 · Months 7–12 · Improving, automating, understanding</h4>
+<p class="kv"><b>Build</b> Improved scoring based on your recorded results. Automatic sending on company websites — opt-in per candidate, signed permission, off switch, full log. An AI you can ask business questions. A capacity calculator.</p>
+<p class="kv"><b>You get</b> 11 candidates per employee becomes 20, plus an advantage competitors cannot copy.<br><b>Needs</b> A proven safety-check record. Do not start automatic sending before the checks have been catching real mistakes for months.</p>
+</div>
+
+<div class="box warn">
+<span class="tag">Do NOT build these in year one</span>
+<p>A mobile app. A version other companies can rebrand. Your own LinkedIn scrapers. Custom-trained AI models. A separate search database. Kubernetes. A public API. Interview coaching as a separate product. A marketplace. European servers unless European volume forces it.</p>
+<p>Each one is a real project that would push something above off the list, and none of them changes your profit per candidate.</p>
+</div>
+</section>
+
+<section id="f23">
+<span class="eyebrow">Part 23</span>
+<h2>What to do first, second, and later</h2>
+<p>The score is <strong>(how much it helps × how much work it removes) ÷ how hard it is</strong>, each rated 1 to 5. Use it as a tie-breaker, not a rule — what depends on what matters more. Two high-scoring items are deliberately last because they are unsafe without the things before them.</p>
+
+<div class="tw wide">
+<table>
+<caption>Grouped by priority. Within a group, order sometimes follows what depends on what, rather than the score.</caption>
+<thead><tr><th>Thing to build</th><th>When</th><th class="num">Helps</th><th class="num">Saves work</th><th class="num">Hard</th><th class="num">Score</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>Proof — email addresses and confirmations</td><td><span class="pill p0">Do now</span></td><td class="num">5</td><td class="num">4</td><td class="num">1</td><td class="num t-good">20.0</td><td>Two weeks. Start today</td></tr>
+<tr><td>AI reading reply emails</td><td><span class="pill p0">Do now</span></td><td class="num">5</td><td class="num">5</td><td class="num">2</td><td class="num">12.5</td><td>Unlocks every result number</td></tr>
+<tr><td>Task start and finish times</td><td><span class="pill p0">Do now</span></td><td class="num">3</td><td class="num">4</td><td class="num">1</td><td class="num">12.0</td><td>Two columns. Tells you what to automate, forever</td></tr>
+<tr><td>The database and history log</td><td><span class="pill p0">Do now</span></td><td class="num">5</td><td class="num">3</td><td class="num">2</td><td class="num">7.5</td><td>Everything else sits on this</td></tr>
+<tr><td>Employee queue screen</td><td><span class="pill p0">Do now</span></td><td class="num">5</td><td class="num">4</td><td class="num">3</td><td class="num">6.7</td><td>Where your profit is made</td></tr>
+<tr><td>Change what you sell to "good applications per week"</td><td><span class="pill p0">Do now</span></td><td class="num">5</td><td class="num">1</td><td class="num">1</td><td class="num">5.0</td><td>A business decision, not code. One afternoon</td></tr>
+<tr><td>Stop storing candidate passwords</td><td><span class="pill p0">Do now</span></td><td class="num">5</td><td class="num">2</td><td class="num">2</td><td class="num">5.0</td><td>Removes your biggest danger</td></tr>
+<tr><td>Basic filters and duplicate removal</td><td><span class="pill p1">Next</span></td><td class="num">4</td><td class="num">5</td><td class="num">2</td><td class="num">10.0</td><td>Does 93% of matching for free</td></tr>
+<tr><td>The safety check gate</td><td><span class="pill p1">Next</span></td><td class="num">5</td><td class="num">4</td><td class="num">2</td><td class="num">10.0</td><td>Required before any automation</td></tr>
+<tr><td>Recording AI cost per candidate</td><td><span class="pill p1">Next</span></td><td class="num">3</td><td class="num">3</td><td class="num">1</td><td class="num">9.0</td><td>One column. Do it on your first AI call</td></tr>
+<tr><td>Company career page connections</td><td><span class="pill p1">Next</span></td><td class="num">5</td><td class="num">5</td><td class="num">3</td><td class="num">8.3</td><td>The main strategy change, in code</td></tr>
+<tr><td>AI match scoring with reasons</td><td><span class="pill p1">Next</span></td><td class="num">5</td><td class="num">5</td><td class="num">3</td><td class="num">8.3</td><td></td></tr>
+<tr><td>Saved answers per candidate</td><td><span class="pill p1">Next</span></td><td class="num">4</td><td class="num">4</td><td class="num">2</td><td class="num">8.0</td><td>Underrated. Removes the biggest repeated typing</td></tr>
+<tr><td>Daily totals and your Today page</td><td><span class="pill p1">Next</span></td><td class="num">4</td><td class="num">3</td><td class="num">2</td><td class="num">6.0</td><td></td></tr>
+<tr><td>Signed permission forms</td><td><span class="pill p1">Next</span></td><td class="num">4</td><td class="num">1</td><td class="num">1</td><td class="num">4.0</td><td>Legally required, and very cheap</td></tr>
+<tr><td>Candidate screen version 1</td><td><span class="pill p1">Next</span></td><td class="num">4</td><td class="num">2</td><td class="num">2</td><td class="num">4.0</td><td>Trust and retention</td></tr>
+<tr><td>Alert system</td><td><span class="pill p2">Later</span></td><td class="num">3</td><td class="num">4</td><td class="num">2</td><td class="num">6.0</td><td></td></tr>
+<tr><td>AI adjusting the CV per job</td><td><span class="pill p2">Later</span></td><td class="num">4</td><td class="num">4</td><td class="num">3</td><td class="num">5.3</td><td>Where the better results come from</td></tr>
+<tr><td>Form auto-filler</td><td><span class="pill p2">Later</span></td><td class="num">4</td><td class="num">5</td><td class="num">4</td><td class="num">5.0</td><td>Hardest item on this list</td></tr>
+<tr><td>Improving scoring from results</td><td><span class="pill p2">Later</span></td><td class="num">5</td><td class="num">4</td><td class="num">4</td><td class="num">5.0</td><td>Needs about 2,000 recorded outcomes first</td></tr>
+<tr><td>Capacity calculator</td><td><span class="pill p2">Later</span></td><td class="num">3</td><td class="num">3</td><td class="num">2</td><td class="num">4.5</td><td></td></tr>
+<tr><td>The 30 prepared calculations</td><td><span class="pill p2">Later</span></td><td class="num">4</td><td class="num">3</td><td class="num">3</td><td class="num">4.0</td><td>Required before the question-answering AI</td></tr>
+<tr><td>Automatic sending</td><td><span class="pill p3">Much later</span></td><td class="num">5</td><td class="num">5</td><td class="num">5</td><td class="num">5.0</td><td><strong>Scores high, deliberately last.</strong> Unsafe without mature checks, permissions and logging</td></tr>
+<tr><td>Messaging hiring managers directly</td><td><span class="pill p3">Much later</span></td><td class="num">4</td><td class="num">3</td><td class="num">4</td><td class="num">3.0</td><td>Works best of all, but needs the system first</td></tr>
+<tr><td>Company reply-rate intelligence</td><td><span class="pill p3">Much later</span></td><td class="num">3</td><td class="num">4</td><td class="num">4</td><td class="num">3.0</td><td>Gets better the longer you run</td></tr>
+<tr><td>AI you can ask business questions</td><td><span class="pill p3">Much later</span></td><td class="num">3</td><td class="num">3</td><td class="num">4</td><td class="num">2.3</td><td>Nice, but not essential</td></tr>
+<tr><td>European servers</td><td><span class="pill p3">Much later</span></td><td class="num">2</td><td class="num">1</td><td class="num">5</td><td class="num">0.4</td><td>Unless volume forces it — but pick the region now</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section id="f24">
+<span class="eyebrow">Part 24</span>
+<h2>If I were you, this is what I would build</h2>
+
+<p class="lede">One system, on one database, where <strong>no number is ever typed by a person</strong>. Everything below comes from that one idea.</p>
+
+<h3>What it is</h3>
+<p>One website with three doors — one for you, one for your employees, one for candidates. Behind all three, one database.</p>
+<p>Every night, the system downloads jobs from company career pages, removes duplicates, throws out the ones that are impossible for each person, scores the rest with AI, and puts a sorted list on each employee's screen before they start work. Every application saves proof. Every reply lands in your email system, gets read automatically, and becomes a record. Those records produce every number you use to run the business.</p>
+
+<h3>How your employees work</h3>
+<p>They open their screen and see one job. The job, why it matched, a prepared CV, filled-in answers. They click Send or Skip. They never search for a job, never retype an answer, never open a spreadsheet, and never touch a candidate's password — because there isn't one any more. Their numbers are the same numbers you see. They handle 11 candidates instead of 5, and later 20.</p>
+
+<h3>How candidates experience it</h3>
+<p>They upload a CV. AI fills in their profile and they just correct it. They answer 25 questions once. Then they watch: every application, with the company, the date, the confirmation, and — the thing nobody else shows — <em>why that job was chosen for them</em>. When there are not enough good jobs, they are told honestly and given credit. Your weakest point becomes the reason they trust you.</p>
+
+<h3>What AI does, and does not do</h3>
+<p>AI finds, sorts, writes drafts and checks. People decide, click send, and talk. Two real agents; everything else is a fixed pipeline. AI never states a fact about a candidate that is not in their confirmed profile, and never touches LinkedIn.</p>
+
+<h3>What you see</h3>
+<p>One screen showing only what needs your decision today. A Monday summary that explains changes with actual calculations, not guesses. Underneath: cost and profit per candidate, how many more candidates you can take, and a sorted list of where employee time actually went last week.</p>
+
+<div class="tw wide">
+<table>
+<caption>Your thirteen questions, answered in one line each.</caption>
+<thead><tr><th>Question</th><th>Answer</th></tr></thead>
+<tbody>
+<tr><td>What does it look like?</td><td>One web app, one database, one history log, three screens, one nightly job</td></tr>
+<tr><td>How do employees work in it?</td><td>One job at a time. Send or skip. No searching, no retyping, no spreadsheet</td></tr>
+<tr><td>How do candidates use it?</td><td>Check an AI-built profile, answer 25 questions once, then see every application with proof and reasons</td></tr>
+<tr><td>How is AI used?</td><td>Finding, cleaning, scoring, drafting, checking, reading email — plus two real agents</td></tr>
+<tr><td>What is automated?</td><td>Everything from collecting jobs to building the work list, and everything from proof to reports</td></tr>
+<tr><td>What stays human?</td><td>Clicking send, judgement calls, stating facts, anything on LinkedIn, and every conversation</td></tr>
+<tr><td>What do you see?</td><td>What needs deciding today; profit per candidate; spare capacity; where the time went</td></tr>
+<tr><td>Productivity gain</td><td>5 → 11 → 20 candidates per employee, and results get <em>better</em>, not worse</td></tr>
+<tr><td>Cost reduction</td><td>$186 → $69 per candidate per month. $9 of salary saved per $1 of AI</td></tr>
+<tr><td>Profit</td><td>25% → 72%. Return on advertising 1.1× → 3.2×, which is what finally makes growth possible</td></tr>
+<tr><td>How it scales</td><td>174 fewer people at 1,000 candidates — about $1.46M a year saved</td></tr>
+<tr><td>Build first</td><td>Proof. Two weeks. Then the database, the employee screen, the email reader</td></tr>
+<tr><td>Do not build yet</td><td>Automatic sending, agent swarms, mobile app, rebrandable version, your own scrapers, improved scoring</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="box rec">
+<span class="tag">If you do only one thing after reading this</span>
+<p>Set up the candidate email addresses this week, and require a confirmation for every application — <strong>before you write a single line of the real system.</strong></p>
+<p>Two weeks of work. Almost no cost. It turns your service from "trust me" into "here is the proof", and it starts saving the results data that everything else depends on.</p>
+<p>Every day you wait is a day of data you can never get back.</p>
+</div>
+</section>
+
+<section id="f25">
+<span class="eyebrow">Part 25</span>
+<h2>Word list and sources</h2>
+
+<h3>Words I used that may be unfamiliar</h3>
+<dl class="gloss">
+<dt>ATS</dt><dd>The software a company uses to collect job applications. Common ones: Greenhouse, Lever, Ashby, Workday. When you apply on a company's careers page, you are usually using one.</dd>
+<dt>API</dt><dd>A way for one program to ask another program for information, without a human clicking anything.</dd>
+<dt>Agent</dt><dd>An AI that decides its own steps. Different from a pipeline, where you decide the steps.</dd>
+<dt>Pipeline</dt><dd>A fixed sequence of steps that you designed. AI does one specific job inside each step.</dd>
+<dt>Token</dt><dd>How AI usage is measured and charged. Roughly three-quarters of a word.</dd>
+<dt>Prompt caching</dt><dd>When you send the same text to AI many times, you pay full price once and much less afterwards.</dd>
+<dt>Batch</dt><dd>Sending many AI requests together, accepting a slower answer, for 50% off.</dd>
+<dt>Embedding / similarity search</dt><dd>Turning text into numbers so a computer can find "things that mean roughly the same" without exact word matching.</dd>
+<dt>Row-level security</dt><dd>The database itself refuses to show a person data that is not theirs — so a mistake in your code cannot leak it.</dd>
+<dt>GDPR</dt><dd>The European privacy law. The strictest one, so following it mostly covers the others.</dd>
+<dt>ToS</dt><dd>Terms of Service. The rules a website makes you agree to. Breaking them can get accounts banned.</dd>
+<dt>Conversion rate</dt><dd>Out of 100 applications, how many turn into the next step (a reply, or an interview).</dd>
+</dl>
+
+<h3>Where the facts came from</h3>
+<p>The market and platform facts in Parts 03, 08, 10 and 18 come from these. Figures are as reported in 2026 — check anything you plan to put in a contract.</p>
+<h4>How many applications, and what works</h4>
+<ul>
+<li><a href="https://www.clever.cv/blog/ai-job-application-flood-how-to-stand-out-2026">11,000 applications a minute on LinkedIn</a></li>
+<li><a href="https://www.thehirehub.ai/blog/ai-generated-job-applications">244 applications per open job</a></li>
+<li><a href="https://www.skillfuel.com/recruiters-friction-job-applications-ai-hiring/">Companies adding friction because of AI applications</a></li>
+<li><a href="https://resutrack.com/blog/how-many-job-applications-to-get-interview-2026">How many applications per interview, 2026</a></li>
+<li><a href="https://www.applykpi.com/articles/application-to-interview-ratio-benchmarks.html">Application to interview rates</a></li>
+<li><a href="https://www.pin.com/blog/recruitment-funnel-benchmarks/">Hiring funnel benchmarks</a></li>
+</ul>
+<h4>Website rules and job data</h4>
+<ul>
+<li><a href="https://www.anybiz.io/blogs/linkedin-automation-what-actually-changed/">LinkedIn's 2026 automation crackdown</a></li>
+<li><a href="https://connectsafely.ai/articles/is-linkedin-automation-safe-tos-scraping-guide-2026">LinkedIn rules on automation and copying data</a></li>
+<li><a href="https://rolesapi.com/blog/does-indeed-have-an-api/">What happened to Indeed's public job data</a></li>
+<li><a href="https://docs.indeed.com/legal-terms/additional-api-terms-and-guidelines">Indeed's own terms</a></li>
+<li><a href="https://cavuno.com/blog/ats-platforms-public-job-posting-apis">Which application systems publish jobs openly</a></li>
+<li><a href="https://jobspipe.dev/blog/best-jobs-api-2026">Job data services compared, 2026</a></li>
+</ul>
+<h4>Competitors and prices</h4>
+<ul>
+<li><a href="https://www.resumly.ai/best/best-ai-auto-apply-tools">AI auto-apply tools compared</a></li>
+<li><a href="https://www.liftmycv.com/blog/lazyapply-alternatives/">LazyApply and competitor pricing</a></li>
+<li><a href="https://bestreverserecruiters.com/reverse-recruiting-cost/">What human job-search services charge</a></li>
+<li><a href="https://www.careerify.io/reverse-recruiter-cost">Reverse recruiter cost guide, 2026</a></li>
+</ul>
+<h4>Law</h4>
+<ul>
+<li><a href="https://www.noon.ai/blog/articles/258-ai-hiring-compliance">Which AI hiring rules are actually in force</a></li>
+<li><a href="https://www.thehirehub.ai/blog/ai-hiring-compliance-in-2026-the-recruiter-s-guide-to-nyc-local-law-144-and-the-eu-ai-act">New York Local Law 144 and the EU AI Act</a></li>
+<li><a href="https://employsome.com/blog/ai-laws-hr/">AI and HR laws around the world</a></li>
+</ul>
+<h4>Tools</h4>
+<ul>
+<li><a href="https://futurepicker.com/en/ai-browser-automation-browser-use-stagehand-skyvern-playwright-2026-en/">Form-filling tools compared</a></li>
+<li><a href="https://www.digitalapplied.com/blog/browser-automation-ai-agents-playwright-stagehand-2026">Playwright and Stagehand for filling forms</a></li>
+<li><a href="https://www.edenai.co/post/best-resume-parser-apis">CV reading services and prices</a></li>
+</ul>
+<p class="kv" style="margin-top:26px">Claude prices in Part 09 are the published list prices on the date of this document. Nothing here is legal advice.</p>
+</section>
+
+
+</article>
+</div>
+</div>
+
+</body>
+</html>

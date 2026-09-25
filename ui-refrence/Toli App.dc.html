@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#212429}
+a{color:#D4F26A}a:hover{color:#F2F4F6}
+input::placeholder{color:#A3A9B3;opacity:.7}
+@keyframes tsIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes tsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes tsScan{0%{top:8%}50%{top:86%}100%{top:8%}}
+@keyframes tsSpin{to{transform:rotate(360deg)}}
+@keyframes tsDraw{from{stroke-dashoffset:700}to{stroke-dashoffset:0}}
+@keyframes tsPop{0%{opacity:0;transform:scale(2.4) rotate(-30deg)}60%{opacity:1;transform:scale(.92) rotate(-10deg)}100%{opacity:1;transform:scale(1) rotate(-12deg)}}
+@keyframes tsToast{0%{opacity:0;transform:translateY(20px) scale(.95)}100%{opacity:1;transform:none}}
+@keyframes tsRise{0%{opacity:0;transform:translateY(160px) scale(.9)}70%{opacity:1;transform:translateY(-6px)}100%{transform:none}}
+@keyframes tsStub{0%,30%{transform:none}55%,80%{transform:translateY(14px) rotate(4deg)}100%{transform:none}}
+@keyframes tsPushIn{from{opacity:0;transform:translateX(56px)}to{opacity:1;transform:none}}
+@keyframes tsPopIn{from{opacity:0;transform:translateX(-56px)}to{opacity:1;transform:none}}
+@keyframes tsFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes tsTicketIn{from{opacity:0;transform:translateY(90px) rotate(3deg) scale(.94)}to{opacity:1;transform:none}}
+@keyframes tsTicketBack{from{opacity:0;transform:translateY(-40px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes tsShimmer{to{background-position:-200% 0}}
+@keyframes tsStubOff{from{transform:none}to{transform:translate(12px,10px) rotate(14deg)}}
+@keyframes tsIconIn{from{opacity:0;transform:scale(.6) rotate(-8deg)}to{opacity:1;transform:none}}
+@keyframes tsDash{to{background-position:20px 0}}
+@keyframes tsBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+@keyframes tsBlink{50%{opacity:0}}
+@keyframes tsGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes tsPulse{0%{box-shadow:0 0 0 0 rgba(212,242,106,.6)}100%{box-shadow:0 0 0 18px rgba(212,242,106,0)}}
+</style>
+</helmet>
+<div style="width:100%;height:{{ page.minH }};display:flex;align-items:center;justify-content:center;background:#212429;font-family:'Bricolage Grotesque',sans-serif;color:#F2F4F6;overflow:hidden">
+<div style="flex:none;display:flex;gap:40px;align-items:center;transform:scale({{ scale }});transform-origin:center">
+
+<sc-if value="{{ page.side }}" hint-placeholder-val="{{ false }}">
+  <div style="width:220px;max-height:800px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="margin-left:-4px"><div style="position:relative;width:78px;height:44px;font-size:40px;font-weight:800;letter-spacing:-.06em;line-height:44px;flex:none"><span style="position:absolute;inset:0;text-align:center;color:#F2F4F6;clip-path:polygon(0 0,100% 0,100% 55%,95% 62%,90% 55%,85% 62%,80% 55%,75% 62%,70% 55%,65% 62%,60% 55%,55% 62%,50% 55%,45% 62%,40% 55%,35% 62%,30% 55%,25% 62%,20% 55%,15% 62%,10% 55%,5% 62%,0 55%)">toli</span><span style="position:absolute;inset:0;text-align:center;color:#D4F26A;opacity:1;transform:translate(3px,4px) rotate(3deg);clip-path:polygon(0 55%,5% 62%,10% 55%,15% 62%,20% 55%,25% 62%,30% 55%,35% 62%,40% 55%,45% 62%,50% 55%,55% 62%,60% 55%,65% 62%,70% 55%,75% 62%,80% 55%,85% 62%,90% 55%,95% 62%,100% 55%,100% 100%,0 100%)">toli</span></div></div>
+      <span style="font-size:13px;color:#A3A9B3">Clickable prototype · every screen</span>
+    </div>
+    <sc-for list="{{ side }}" as="g" hint-placeholder-count="3">
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span style="font:700 10px 'JetBrains Mono',monospace;letter-spacing:.12em;color:#A3A9B3;padding:0 10px 3px">{{ g.label }}</span>
+        <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+          <div onClick="{{ it.go }}" style="padding:5px 10px;border-radius:9px;font-size:13px;cursor:pointer;background:{{ it.bg }};color:{{ it.fg }}" style-hover="background:#393E47">{{ it.label }}</div>
+        </sc-for>
+      </div>
+    </sc-for>
+    <div onClick="{{ reset }}" style="padding:10px;border-radius:12px;border:1.5px solid #393E47;text-align:center;font-size:13px;color:#A3A9B3;cursor:pointer" style-hover="color:#F2F4F6">Reset demo data</div>
+  </div>
+</sc-if>
+
+<div style="flex:none;width:390px;height:800px;box-sizing:border-box;padding:10px;border-radius:56px;background:#0E0F11;box-shadow:0 40px 80px rgba(0,0,0,.45)">
+<div style="position:relative;width:370px;height:780px;border-radius:46px;background:#2B2F36;overflow:hidden">
+  <div style="position:absolute;top:0;left:0;right:0;height:44px;padding:0 30px;display:flex;align-items:center;justify-content:space-between;font:700 13px 'JetBrains Mono',monospace;z-index:6;color:{{ statusFg }};transition:color .3s">
+    <span>21:41</span><span style="opacity:.7;white-space:nowrap">{{ netLabel }}</span>
+  </div>
+  <div style="position:absolute;top:44px;left:0;right:0;bottom:0">
+
+<!-- SPLASH -->
+<sc-if value="{{ is.splash }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;padding-bottom:40px">
+  <div style="position:relative;display:flex;width:150px;height:92px;animation:tsIconIn .6s cubic-bezier(.2,.9,.3,1.3) both">
+    <div style="width:108px;height:92px;background:#D4F26A;border-radius:18px 0 0 18px"></div>
+    <div style="width:42px;height:92px;transform-origin:left bottom;animation:tsStubOff .7s 1s cubic-bezier(.3,1.5,.5,1) both"><div style="width:100%;height:100%;box-sizing:border-box;background:#D4F26A;border-radius:0 18px 18px 0;border-left:3px dashed #1F2A00"></div></div>
+    <div style="position:absolute;left:100px;top:-8px;width:16px;height:16px;border-radius:50%;background:#2B2F36"></div>
+    <div style="position:absolute;left:100px;bottom:-8px;width:16px;height:16px;border-radius:50%;background:#2B2F36"></div>
+  </div>
+  <div style="animation:tsIn .6s 1.3s both"><div style="position:relative;width:154px;height:85px;font-size:80px;font-weight:800;letter-spacing:-.06em;line-height:85px;flex:none"><span style="position:absolute;inset:0;text-align:center;color:#F2F4F6;clip-path:polygon(0 0,100% 0,100% 55%,95% 62%,90% 55%,85% 62%,80% 55%,75% 62%,70% 55%,65% 62%,60% 55%,55% 62%,50% 55%,45% 62%,40% 55%,35% 62%,30% 55%,25% 62%,20% 55%,15% 62%,10% 55%,5% 62%,0 55%)">toli</span><span style="position:absolute;inset:0;text-align:center;color:#D4F26A;opacity:1;transform:translate(6px,7px) rotate(3deg);clip-path:polygon(0 55%,5% 62%,10% 55%,15% 62%,20% 55%,25% 62%,30% 55%,35% 62%,40% 55%,45% 62%,50% 55%,55% 62%,60% 55%,65% 62%,70% 55%,75% 62%,80% 55%,85% 62%,90% 55%,95% 62%,100% 55%,100% 100%,0 100%)">toli</span></div></div>
+  <div style="position:absolute;left:80px;right:80px;bottom:64px;display:flex;flex-direction:column;align-items:center;gap:10px;animation:tsFadeIn .4s .5s both">
+    <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;color:#A3A9B3">LOADING YOUR TRIPS</span>
+    <div style="width:100%;height:3px;border-radius:3px;background:#393E47;overflow:hidden"><div style="height:100%;background:#D4F26A;transform-origin:left;animation:tsGrow 2.4s cubic-bezier(.4,0,.2,1) both"></div></div>
+  </div>
+</div>
+</sc-if>
+
+<!-- WELCOME -->
+<sc-if value="{{ is.welcome }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;top:-44px;left:0;right:0;bottom:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="position:relative;height:500px;flex:none;background:#D4F26A;color:#1F2A00;padding:74px 28px 34px;box-sizing:border-box;display:flex;flex-direction:column">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div style="margin-left:-6px"><div style="position:relative;width:108px;height:60px;font-size:56px;font-weight:800;letter-spacing:-.06em;line-height:60px;flex:none"><span style="position:absolute;inset:0;text-align:center;color:#1F2A00;clip-path:polygon(0 0,100% 0,100% 55%,95% 62%,90% 55%,85% 62%,80% 55%,75% 62%,70% 55%,65% 62%,60% 55%,55% 62%,50% 55%,45% 62%,40% 55%,35% 62%,30% 55%,25% 62%,20% 55%,15% 62%,10% 55%,5% 62%,0 55%)">toli</span><span style="position:absolute;inset:0;text-align:center;color:#1F2A00;opacity:0.5;transform:translate(4px,5px) rotate(3deg);clip-path:polygon(0 55%,5% 62%,10% 55%,15% 62%,20% 55%,25% 62%,30% 55%,35% 62%,40% 55%,45% 62%,50% 55%,55% 62%,60% 55%,65% 62%,70% 55%,75% 62%,80% 55%,85% 62%,90% 55%,95% 62%,100% 55%,100% 100%,0 100%)">toli</span></div></div>
+      <span style="font:700 11px 'JetBrains Mono',monospace;letter-spacing:.12em;padding-top:10px">ADMIT ALL</span>
+    </div>
+    <div style="flex:1"></div>
+    <span style="font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:.95;animation:tsIn .6s .15s both">One trip.</span>
+    <span style="font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:.95;animation:tsIn .6s .3s both">One tab.</span>
+    <span style="font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:.95;animation:tsIn .6s .45s both">Zero awkward.</span>
+    <div style="position:absolute;left:28px;right:28px;bottom:-1px;height:2px;background:repeating-linear-gradient(90deg,rgba(31,42,0,.45) 0 10px,transparent 10px 20px);animation:tsDash 1.2s linear infinite"></div>
+    <div style="position:absolute;left:-16px;bottom:-16px;width:32px;height:32px;border-radius:50%;background:#2B2F36"></div>
+    <div style="position:absolute;right:-16px;bottom:-16px;width:32px;height:32px;border-radius:50%;background:#2B2F36"></div>
+  </div>
+  <div style="flex:1;padding:26px 28px 30px;display:flex;flex-direction:column">
+    <span style="font-size:15px;line-height:1.45;color:#A3A9B3;text-wrap:pretty">Unlimited expenses and every kind of split, free. Toli works out who pays whom.</span>
+    <div style="flex:1"></div>
+    <div onClick="{{ nav.create }}" style="height:56px;border-radius:18px;background:#F2F4F6;color:#212429;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;cursor:pointer" style-hover="background:#D4F26A;color:#1F2A00">Get started</div>
+    <div onClick="{{ nav.invite }}" style="height:44px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#A3A9B3;cursor:pointer" style-hover="color:#F2F4F6">I have an invite link</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- SKELETON LOADING -->
+<sc-if value="{{ is.loading }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;gap:12px;padding:8px 18px 0;animation:tsFadeIn .25s both">
+  <div style="display:flex;align-items:center;gap:12px;height:48px">
+    <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(90deg,#393E47 25%,#474D57 50%,#393E47 75%);background-size:200% 100%;animation:tsShimmer 1.3s linear infinite"></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="width:60%;height:14px;border-radius:6px;background:linear-gradient(90deg,#393E47 25%,#474D57 50%,#393E47 75%);background-size:200% 100%;animation:tsShimmer 1.3s linear infinite"></div><div style="width:40%;height:10px;border-radius:5px;background:linear-gradient(90deg,#393E47 25%,#474D57 50%,#393E47 75%);background-size:200% 100%;animation:tsShimmer 1.3s linear infinite"></div></div>
+  </div>
+  <div style="height:168px;border-radius:24px;background:linear-gradient(90deg,#393E47 25%,#474D57 50%,#393E47 75%);background-size:200% 100%;animation:tsShimmer 1.3s linear infinite"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div style="height:96px;border-radius:20px;background:linear-gradient(90deg,#393E47 25%,#474D57 50%,#393E47 75%);background-size:200% 100%;animation:tsShimmer 1.3s linear infinite"></div><div style="height:96px;border-radius:20px;background:linear-gradient(90deg,#393E47 25%,#474D57 50%,#393E47 75%);background-size:200% 100%;animation:tsShimmer 1.3s linear infinite"></div></div>
+  <div style="border-radius:24px;background:#212429;padding:14px 16px;display:flex;flex-direction:column;gap:14px">
+    <sc-for list="{{ skelRows }}" as="s" hint-placeholder-count="4">
+      <div style="display:flex;align-items:center;gap:12px"><div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(90deg,#393E47 25%,#474D57 50%,#393E47 75%);background-size:200% 100%;animation:tsShimmer 1.3s linear infinite"></div><div style="flex:1;height:12px;border-radius:6px;background:linear-gradient(90deg,#393E47 25%,#474D57 50%,#393E47 75%);background-size:200% 100%;animation:tsShimmer 1.3s linear infinite"></div><div style="width:56px;height:12px;border-radius:6px;background:linear-gradient(90deg,#393E47 25%,#474D57 50%,#393E47 75%);background-size:200% 100%;animation:tsShimmer 1.3s linear infinite"></div></div>
+    </sc-for>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center"><div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;background:#F2F4F6;color:#212429;font-size:13px;font-weight:600;white-space:nowrap;animation:tsToast .4s .1s both">
+    <div style="width:14px;height:14px;border-radius:50%;border:2.5px solid #A3A9B3;border-top-color:#212429;animation:tsSpin .7s linear infinite"></div>Syncing {{ tripName }} · 3 changes
+  </div></div>
+</div>
+</sc-if>
+
+<!-- EMPTY TRIP -->
+<sc-if value="{{ is.empty }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ nav.trips }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ tripName }}</span><span style="font-size:12px;color:#A3A9B3">{{ create.template }} · {{ create.count }} people</span></div>
+    <div onClick="{{ nav.invite }}" style="height:44px;padding:0 14px;border-radius:14px;background:#393E47;display:flex;align-items:center;font-size:14px;font-weight:600;cursor:pointer">Invite</div>
+  </div>
+  <div style="flex:1;padding:4px 18px 110px;display:flex;flex-direction:column;gap:14px">
+    <div style="position:relative;border:2px dashed #393E47;border-radius:24px;padding:28px 22px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+      <span style="font-size:56px;font-weight:800;letter-spacing:-.04em;line-height:1;color:#393E47">₹0</span>
+      <span style="font-size:18px;font-weight:600">No expenses yet</span>
+      <span style="font-size:13px;line-height:1.45;color:#A3A9B3;max-width:240px">The first ticket prints when someone pays for something.</span>
+    </div>
+    <div style="background:#212429;border-radius:22px;padding:6px 16px">
+      <div style="display:flex;gap:12px;align-items:center;min-height:54px;border-bottom:1px solid #2B2F36"><span style="font:700 12px 'JetBrains Mono',monospace;color:#D4F26A">01</span><span style="font-size:14px">Tap + and type the amount. That's all it needs.</span></div>
+      <div style="display:flex;gap:12px;align-items:center;min-height:54px;border-bottom:1px solid #2B2F36"><span style="font:700 12px 'JetBrains Mono',monospace;color:#D4F26A">02</span><span style="font-size:14px">Share the link so friends can see their balance, no install.</span></div>
+      <div style="display:flex;gap:12px;align-items:center;min-height:54px"><span style="font:700 12px 'JetBrains Mono',monospace;color:#D4F26A">03</span><span style="font-size:14px">Start a kitty if you're pooling cash.</span></div>
+    </div>
+    <div style="flex:1"></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;color:#D4F26A;animation:tsBounce 1.4s ease-in-out infinite"><span style="font-size:13px;font-weight:600">Add the first one</span><span style="font-size:20px">↓</span></div>
+  </div>
+</div>
+</sc-if>
+
+<!-- CREATE -->
+<sc-if value="{{ is.create }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ back }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <span style="font-size:20px;font-weight:600">New trip</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:4px 18px 20px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:20px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-size:12px;color:#A3A9B3">Trip name · the only thing we need</span>
+      <input value="{{ tripName }}" onChange="{{ create.setName }}" placeholder="Goa Weekend" style="font:800 30px 'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;background:transparent;border:0;border-bottom:2px solid #D4F26A;color:#F2F4F6;outline:none;padding:4px 0 8px;width:100%">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-size:12px;color:#A3A9B3">Template · presets categories</span>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+        <sc-for list="{{ create.templates }}" as="t" hint-placeholder-count="6">
+          <div onClick="{{ t.pick }}" style="height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};transition:background .2s">{{ t.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <div style="flex:1;padding:12px 14px;border-radius:14px;background:#212429;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#A3A9B3">Dates</span><span style="font-size:14px;font-weight:600">12 – 15 Oct</span></div>
+      <div style="flex:1;padding:12px 14px;border-radius:14px;background:#212429;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#A3A9B3">Base currency</span><span style="font-size:14px;font-weight:600">₹ INR</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <span style="font-size:12px;color:#A3A9B3">Who's coming · {{ create.count }} people</span>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <sc-for list="{{ create.members }}" as="m" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:999px;border:1.5px {{ m.border }} #393E47;background:#212429">
+            <div style="width:28px;height:28px;border-radius:50%;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">{{ m.init }}</div>
+            <span style="font-size:14px;font-weight:600">{{ m.name }}</span><span style="font-size:11px;color:#A3A9B3">{{ m.sub }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:8px">
+        <input value="{{ newMember }}" onChange="{{ create.setNew }}" onKeyDown="{{ create.key }}" placeholder="Add by name" style="flex:1;min-width:0;height:48px;box-sizing:border-box;padding:0 14px;border-radius:14px;border:0;background:#393E47;color:#F2F4F6;font:400 15px 'Bricolage Grotesque',sans-serif;outline:none">
+        <div onClick="{{ create.add }}" style="width:48px;height:48px;border-radius:14px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;cursor:pointer">+</div>
+      </div>
+      <span style="font-size:12px;line-height:1.4;color:#A3A9B3">Nobody needs the app yet. Ghost members hold balances and can claim their spot from the invite link later.</span>
+    </div>
+  </div>
+  <div style="padding:10px 18px 24px">
+    <div onClick="{{ create.go }}" style="height:56px;border-radius:18px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;cursor:pointer">Create trip</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- TRIPS -->
+<sc-if value="{{ is.trips }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 18px 12px">
+    <span style="font-size:28px;font-weight:800;letter-spacing:-.02em">Your trips</span>
+    <div onClick="{{ nav.create }}" style="height:40px;padding:0 14px;border-radius:14px;background:#393E47;display:flex;align-items:center;font-size:14px;font-weight:600;cursor:pointer">+ New</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:4px 18px 24px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:14px">
+    <div onClick="{{ nav.loading }}" style="position:relative;background:#D4F26A;color:#1F2A00;border-radius:24px;overflow:hidden;cursor:pointer">
+      <div style="padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between;font:700 11px 'JetBrains Mono',monospace;letter-spacing:.1em"><span>ACTIVE · DAY 2 OF 4</span><span>GOA</span></div>
+        <span style="font-size:28px;font-weight:800;letter-spacing:-.02em">{{ tripName }}</span>
+        <span style="font-size:13px;opacity:.75">12 – 15 Oct · {{ create.count }} people · {{ home.count }} expenses</span>
+      </div>
+      <div style="border-top:2px dashed rgba(31,42,0,.35);margin:0 18px"></div>
+      <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px">{{ home.heroLabel }}</span><span style="font-size:22px;font-weight:800">{{ home.heroAmt }}</span></div>
+      <div style="position:absolute;left:-10px;top:111px;width:20px;height:20px;border-radius:50%;background:#2B2F36"></div>
+      <div style="position:absolute;right:-10px;top:111px;width:20px;height:20px;border-radius:50%;background:#2B2F36"></div>
+    </div>
+    <div style="background:#212429;border-radius:24px;padding:18px 20px;display:flex;flex-direction:column;gap:6px">
+      <span style="font:700 11px 'JetBrains Mono',monospace;letter-spacing:.1em;color:#A3A9B3">PLANNING</span>
+      <span style="font-size:20px;font-weight:600">Coorg Offsite</span>
+      <span style="font-size:13px;color:#A3A9B3">Nov · 8 people · 3 bookings · ₹64,000 planned</span>
+    </div>
+    <div style="position:relative;background:#212429;border-radius:24px;padding:18px 20px;display:flex;flex-direction:column;gap:6px;overflow:hidden">
+      <span style="font:700 11px 'JetBrains Mono',monospace;letter-spacing:.1em;color:#A3A9B3">ARCHIVED</span>
+      <span style="font-size:20px;font-weight:600">Manali Road Trip</span>
+      <span style="font-size:13px;color:#A3A9B3">Mar 2026 · 6 people · ₹48,300 spent</span>
+      <div style="position:absolute;right:18px;top:26px;padding:6px 10px;border:2.5px solid #A3A9B3;border-radius:8px;font:700 13px 'JetBrains Mono',monospace;letter-spacing:.08em;color:#A3A9B3;transform:rotate(-12deg)">SETTLED</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- HOME -->
+<sc-if value="{{ is.home }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ nav.trips }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+      <span style="font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ tripName }}</span>
+      <span style="font-size:12px;color:#A3A9B3">12 – 15 Oct · Day 2 of 4</span>
+    </div>
+    <div onClick="{{ nav.invite }}" style="height:44px;padding:0 14px;border-radius:14px;background:#393E47;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;cursor:pointer">Invite</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:2px 18px 110px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:12px">
+    <sc-if value="{{ offlineOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:#393E47;font-size:13px;line-height:1.35"><div style="width:8px;height:8px;flex:none;border-radius:50%;background:#A3A9B3"></div><span><b>Offline.</b> 2 changes saved on this phone. They sync when you're back.</span></div></sc-if>
+    <div style="position:relative;background:#D4F26A;color:#1F2A00;border-radius:24px;overflow:hidden">
+      <div style="padding:18px 20px 16px;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:600">{{ home.heroLabel }}</span><span style="font:700 11px 'JetBrains Mono',monospace;opacity:.7">LIVE</span></div>
+        <span style="font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:1">{{ home.heroAmt }}</span>
+      </div>
+      <div style="border-top:2px dashed rgba(31,42,0,.35);margin:0 18px"></div>
+      <div style="padding:12px 14px 12px 20px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px">Group spent <b>{{ home.spent }}</b></span>
+        <div onClick="{{ nav.settle }}" style="height:40px;padding:0 16px;border-radius:14px;background:#1F2A00;color:#D4F26A;display:flex;align-items:center;font-size:14px;font-weight:600;cursor:pointer">Settle up →</div>
+      </div>
+      <div style="position:absolute;left:-10px;top:88px;width:20px;height:20px;border-radius:50%;background:#2B2F36"></div>
+      <div style="position:absolute;right:-10px;top:88px;width:20px;height:20px;border-radius:50%;background:#2B2F36"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
+      <div onClick="{{ nav.kitty }}" style="background:#212429;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer">
+        <div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:#A3A9B3">Kitty</span><span style="font:700 11px 'JetBrains Mono',monospace;color:{{ kit.flagFg }}">{{ kit.flag }}</span></div>
+        <span style="font-size:20px;font-weight:800">{{ kit.remaining }} <span style="font-size:12px;font-weight:400;color:#A3A9B3">left</span></span>
+        <div style="height:6px;border-radius:6px;background:#393E47;overflow:hidden"><div style="height:100%;width:{{ kit.pct }}%;background:#D4F26A;border-radius:6px;transition:width .6s"></div></div>
+      </div>
+      <div onClick="{{ nav.budget }}" style="background:#212429;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer">
+        <div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:#A3A9B3">Budget</span><span style="font:700 11px 'JetBrains Mono',monospace;color:#A3A9B3">{{ bud.usedPct }}%</span></div>
+        <span style="font-size:20px;font-weight:800">{{ bud.spent }} <span style="font-size:12px;font-weight:400;color:#A3A9B3">of ₹30k</span></span>
+        <div style="height:6px;border-radius:6px;background:#393E47;overflow:hidden"><div style="height:100%;width:{{ bud.barPct }}%;background:#F2F4F6;border-radius:6px;transition:width .6s"></div></div>
+      </div>
+    </div>
+    <div style="background:#212429;border-radius:24px;padding:8px 16px">
+      <div style="display:flex;justify-content:space-between;padding:10px 0 4px"><span style="font-size:15px;font-weight:600">Balances</span><span style="font-size:12px;color:#A3A9B3">Tap to trace</span></div>
+      <sc-for list="{{ home.bals }}" as="b" hint-placeholder-count="4">
+        <div onClick="{{ b.open }}" style="display:flex;align-items:center;gap:12px;height:52px;cursor:pointer;border-top:1px solid #2B2F36">
+          <div style="width:34px;height:34px;border-radius:50%;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800">{{ b.init }}</div>
+          <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">{{ b.name }}</span><span style="font-size:11px;color:#A3A9B3">{{ b.sub }}</span></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font:700 15px 'JetBrains Mono',monospace;color:{{ b.fg }}">{{ b.net }}</span><span style="font-size:11px;color:#A3A9B3">{{ b.word }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:#212429;border-radius:24px;padding:8px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 4px"><span style="font-size:15px;font-weight:600">Recent</span><span onClick="{{ nav.scan }}" style="font-size:12px;color:#D4F26A;cursor:pointer">Scan a bill</span></div>
+      <sc-for list="{{ home.recent }}" as="e" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:12px;height:58px;border-top:1px solid #2B2F36">
+          <div style="width:36px;height:36px;border-radius:12px;background:#393E47;display:flex;align-items:center;justify-content:center;font:700 13px 'JetBrains Mono',monospace">{{ e.mark }}</div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.title }}</span><span style="font-size:11px;color:#A3A9B3">{{ e.meta }}</span></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font:700 14px 'JetBrains Mono',monospace">{{ e.amt }}</span><span style="font-size:11px;color:#A3A9B3">{{ e.yours }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ADD EXPENSE -->
+<sc-if value="{{ is.add }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 4px">
+    <div onClick="{{ back }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <span style="flex:1;font-size:20px;font-weight:600">Add expense</span>
+    <div onClick="{{ add.repeat }}" style="height:36px;padding:0 12px;border-radius:12px;background:#212429;display:flex;align-items:center;font-size:12px;color:#A3A9B3;cursor:pointer">↻ {{ add.repeatLabel }}</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 18px 6px">
+    <div style="display:flex;align-items:baseline;gap:2px"><span style="font-size:34px;font-weight:600;color:#A3A9B3">₹</span><span style="font-size:64px;font-weight:800;letter-spacing:-.04em;line-height:1;color:{{ add.amtFg }}">{{ add.amtDisp }}</span><span style="width:3px;height:52px;background:#D4F26A;margin-left:4px;animation:tsBlink 1s steps(1) infinite"></span></div>
+    <span style="font:500 13px 'JetBrains Mono',monospace;color:#D4F26A">{{ add.per }}</span>
+  </div>
+  <div style="padding:6px 18px;display:flex;flex-direction:column;gap:8px">
+    <input value="{{ add.title }}" onChange="{{ add.setTitle }}" placeholder="What for? (optional)" style="height:40px;box-sizing:border-box;padding:0 14px;border-radius:12px;border:0;background:#212429;color:#F2F4F6;font:400 14px 'Bricolage Grotesque',sans-serif;outline:none;text-align:center">
+    <div style="display:flex;gap:8px">
+      <div onClick="{{ add.cyclePayer }}" style="flex:1;height:44px;border-radius:14px;background:#393E47;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer"><span style="font-size:10px;color:#A3A9B3">PAID BY</span><span style="font-size:13px;font-weight:600">{{ add.payer }}</span></div>
+      <div onClick="{{ nav.split }}" style="flex:1.3;height:44px;border-radius:14px;background:#393E47;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer"><span style="font-size:10px;color:#A3A9B3">SPLIT</span><span style="font-size:13px;font-weight:600">{{ add.mode }} ›</span></div>
+      <div onClick="{{ nav.scan }}" style="width:56px;height:44px;border-radius:14px;background:#393E47;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer"><span style="font-size:10px;color:#A3A9B3">BILL</span><span style="font-size:13px;font-weight:600">Scan</span></div>
+    </div>
+    <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none">
+      <sc-for list="{{ add.cats }}" as="c" hint-placeholder-count="8">
+        <div onClick="{{ c.pick }}" style="flex:none;height:32px;padding:0 12px;border-radius:999px;display:flex;align-items:center;font-size:12px;font-weight:600;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="flex:1;padding:6px 18px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:8px">
+    <sc-for list="{{ add.keys }}" as="k" hint-placeholder-count="12">
+      <div onClick="{{ k.press }}" style="border-radius:16px;background:#212429;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;cursor:pointer;user-select:none" style-active="background:#393E47;transform:scale(.96)">{{ k.label }}</div>
+    </sc-for>
+  </div>
+  <div style="padding:10px 18px 22px">
+    <div onClick="{{ add.save }}" style="height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:17px;font-weight:600;cursor:pointer;background:{{ add.saveBg }};color:{{ add.saveFg }};transition:background .2s">Save &amp; tear stubs <span style="font-family:'JetBrains Mono',monospace">✂</span></div>
+  </div>
+  <sc-if value="{{ add.dupOn }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:-44px 0 0 0;background:rgba(14,15,17,.7);display:flex;align-items:flex-end;z-index:8;animation:tsIn .2s both">
+      <div style="width:100%;background:#393E47;border-radius:28px 28px 0 0;padding:22px 20px 28px;display:flex;flex-direction:column;gap:12px">
+        <span style="font-size:20px;font-weight:600">Already logged?</span>
+        <span style="font-size:14px;line-height:1.4;color:#A3A9B3">{{ add.dupText }}</span>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <div onClick="{{ add.dupSkip }}" style="flex:1;height:50px;border-radius:16px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;cursor:pointer">Same one, skip</div>
+          <div onClick="{{ add.dupSave }}" style="flex:1;height:50px;border-radius:16px;background:#212429;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer">Save anyway</div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<!-- SPLIT -->
+<sc-if value="{{ is.split }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ back }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:20px;font-weight:600">Split {{ sp.amount }}</span><span style="font-size:12px;color:#A3A9B3">Paid by {{ add.payer }}</span></div>
+  </div>
+  <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 18px 4px;flex:none">
+    <sc-for list="{{ sp.modes }}" as="m" hint-placeholder-count="6">
+      <div onClick="{{ m.pick }}" style="flex:none;height:36px;padding:0 14px;border-radius:12px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;cursor:pointer;background:{{ m.bg }};color:{{ m.fg }}">{{ m.label }}<span style="font:700 9px 'JetBrains Mono',monospace;opacity:.7">{{ m.tag }}</span></div>
+    </sc-for>
+  </div>
+  <div style="padding:8px 18px 0;font-size:13px;line-height:1.4;color:#A3A9B3">{{ sp.help }}</div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:12px 18px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:10px">
+    <sc-for list="{{ sp.rows }}" as="r" hint-placeholder-count="4">
+      <div style="background:#212429;border-radius:20px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;opacity:{{ r.op }};transition:opacity .2s">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div onClick="{{ r.toggle }}" style="width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;cursor:pointer;background:{{ r.chkBg }};color:#1F2A00;border:1.5px solid #393E47">{{ r.chk }}</div>
+          <div style="width:34px;height:34px;border-radius:50%;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800">{{ r.init }}</div>
+          <span style="flex:1;font-size:15px;font-weight:600">{{ r.name }}</span>
+          <span style="font:700 16px 'JetBrains Mono',monospace">{{ r.amt }}</span>
+        </div>
+        <sc-if value="{{ r.step }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:10px;padding-left:38px">
+            <div onClick="{{ r.dec }}" style="width:36px;height:36px;border-radius:12px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;user-select:none">−</div>
+            <div style="flex:1;height:36px;border-radius:12px;background:#2B2F36;display:flex;align-items:center;justify-content:center;font:700 14px 'JetBrains Mono',monospace">{{ r.val }}</div>
+            <div onClick="{{ r.inc }}" style="width:36px;height:36px;border-radius:12px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;user-select:none">+</div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+  <div style="padding:10px 18px 22px;display:flex;flex-direction:column;gap:10px;background:#2B2F36">
+    <div style="display:flex;align-items:center;justify-content:space-between;min-height:36px;padding:0 4px">
+      <span style="font-size:14px;font-weight:600;color:{{ sp.statusFg }}">{{ sp.status }}</span>
+      <sc-if value="{{ sp.canDist }}" hint-placeholder-val="{{ false }}">
+        <div onClick="{{ sp.distribute }}" style="height:34px;padding:0 12px;border-radius:12px;background:#393E47;display:flex;align-items:center;font-size:12px;font-weight:600;cursor:pointer">Distribute equally</div>
+      </sc-if>
+    </div>
+    <div onClick="{{ back }}" style="height:56px;border-radius:18px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;cursor:pointer">Done</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- BALANCE TRACE -->
+<sc-if value="{{ is.balance }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ back }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <span style="font-size:20px;font-weight:600">Balance trace</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 24px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:14px">
+    <div style="display:flex;gap:8px">
+      <sc-for list="{{ der.pick }}" as="p" hint-placeholder-count="4">
+        <div onClick="{{ p.pick }}" style="flex:1;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer;background:{{ p.bg }};color:{{ p.fg }}">{{ p.name }}</div>
+      </sc-for>
+    </div>
+    <div style="background:#D4F26A;color:#1F2A00;border-radius:24px;padding:18px 20px;display:flex;flex-direction:column;gap:4px">
+      <span style="font-size:14px">{{ der.name }} {{ der.word }}</span>
+      <span style="font-size:48px;font-weight:800;letter-spacing:-.03em;line-height:1">{{ der.net }}</span>
+      <span style="font-size:12px;opacity:.7">{{ der.count }} lines add up to this number</span>
+    </div>
+    <div style="background:#212429;border-radius:24px;padding:6px 16px">
+      <sc-for list="{{ der.lines }}" as="l" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-bottom:1px solid #2B2F36">
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px">{{ l.t }}</span><span style="font-size:11px;color:#A3A9B3">{{ l.sub }}</span></div>
+          <span style="font:700 14px 'JetBrains Mono',monospace">{{ l.v }}</span>
+        </div>
+      </sc-for>
+      <div style="display:flex;justify-content:space-between;align-items:center;height:52px"><span style="font-size:14px;font-weight:600">Net</span><span style="font:700 16px 'JetBrains Mono',monospace;color:#D4F26A">{{ der.net }}</span></div>
+    </div>
+    <span style="font-size:12px;line-height:1.4;color:#A3A9B3">Plus means the group owes them. Minus means they owe the group. All balances on the trip add up to ₹0.</span>
+  </div>
+</div>
+</sc-if>
+
+<!-- KITTY -->
+<sc-if value="{{ is.kitty }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ back }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:20px;font-weight:600">Kitty</span><span style="font-size:12px;color:#A3A9B3">The common pot · held by Rahul</span></div>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 24px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:14px">
+    <div style="background:#212429;border-radius:24px;padding:20px;display:flex;align-items:center;gap:18px">
+      <div style="position:relative;width:140px;height:140px;flex:none">
+        <svg width="140" height="140" viewBox="0 0 140 140" style="transform:rotate(-90deg)">
+          <circle cx="70" cy="70" r="62" fill="none" stroke="#393E47" stroke-width="14"></circle>
+          <circle cx="70" cy="70" r="62" fill="none" stroke="#D4F26A" stroke-width="14" stroke-linecap="round" stroke-dasharray="389.6" stroke-dashoffset="{{ kit.offset }}" style="transition:stroke-dashoffset .9s cubic-bezier(.2,.9,.3,1)"></circle>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:24px;font-weight:800">{{ kit.remaining }}</span><span style="font-size:11px;color:#A3A9B3">remaining</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;flex-direction:column"><span style="font-size:11px;color:#A3A9B3">Put in</span><span style="font:700 16px 'JetBrains Mono',monospace">{{ kit.total }}</span></div>
+        <div style="display:flex;flex-direction:column"><span style="font-size:11px;color:#A3A9B3">Spent from pot</span><span style="font:700 16px 'JetBrains Mono',monospace">{{ kit.spent }}</span></div>
+        <div style="display:flex;flex-direction:column"><span style="font-size:11px;color:#A3A9B3">Left</span><span style="font:700 16px 'JetBrains Mono',monospace">{{ kit.pct }}%</span></div>
+      </div>
+    </div>
+    <sc-if value="{{ kit.low }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#393E47;border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;animation:tsIn .3s both">
+        <span style="font-size:15px;font-weight:600">Running low: {{ kit.pct }}% left</span>
+        <span style="font-size:13px;line-height:1.4;color:#A3A9B3">At today's pace the pot needs {{ kit.topup }} more from each person to last 2 more days.</span>
+        <div onClick="{{ kit.doTopup }}" style="height:44px;border-radius:14px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;cursor:pointer">Log {{ kit.topup }} each</div>
+      </div>
+    </sc-if>
+    <div style="background:#212429;border-radius:24px;padding:8px 16px">
+      <div style="display:flex;justify-content:space-between;padding:10px 0 6px"><span style="font-size:15px;font-weight:600">Who put in</span><span style="font-size:12px;color:#A3A9B3">Refund at settle-up</span></div>
+      <sc-for list="{{ kit.people }}" as="p" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px solid #2B2F36">
+          <div style="display:flex;justify-content:space-between;font-size:14px"><span style="font-weight:600">{{ p.name }}</span><span style="font-family:'JetBrains Mono',monospace">{{ p.amt }} <span style="color:#A3A9B3">→ {{ p.refund }}</span></span></div>
+          <div style="height:6px;border-radius:6px;background:#393E47"><div style="height:100%;width:{{ p.w }}%;border-radius:6px;background:#D4F26A;transform-origin:left;animation:tsGrow .8s cubic-bezier(.2,.9,.3,1) both"></div></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="background:#212429;border-radius:24px;padding:8px 16px">
+      <div style="padding:10px 0 6px;font-size:15px;font-weight:600">Paid from the pot</div>
+      <sc-for list="{{ kit.spends }}" as="s" hint-placeholder-count="4">
+        <div style="display:flex;justify-content:space-between;align-items:center;height:44px;border-top:1px solid #2B2F36;font-size:14px"><span>{{ s.t }}</span><span style="font-family:'JetBrains Mono',monospace">{{ s.a }}</span></div>
+      </sc-for>
+    </div>
+    <span style="font-size:12px;line-height:1.4;color:#A3A9B3">Toli only keeps count. The cash stays with whoever holds the pot. Leftovers are returned in proportion to what each person put in.</span>
+  </div>
+</div>
+</sc-if>
+
+<!-- SETTLE -->
+<sc-if value="{{ is.settle }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ back }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <span style="flex:1;font-size:20px;font-weight:600">Settle up</span>
+    <div onClick="{{ stl.share }}" style="height:40px;padding:0 12px;border-radius:14px;background:#393E47;display:flex;align-items:center;font-size:13px;font-weight:600;cursor:pointer">WhatsApp</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 24px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:14px">
+    <sc-if value="{{ stl.open }}" hint-placeholder-val="{{ true }}">
+      <div style="background:#212429;border-radius:24px;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:flex-end;gap:14px">
+          <span style="font-size:56px;font-weight:800;letter-spacing:-.04em;line-height:.9;color:#A3A9B3;text-decoration:line-through;text-decoration-thickness:3px">{{ stl.before }}</span>
+          <span style="font-size:28px;color:#A3A9B3;line-height:1.4">→</span>
+          <span style="font-size:72px;font-weight:800;letter-spacing:-.04em;line-height:.9;color:#D4F26A">{{ stl.after }}</span>
+          <span style="font-size:13px;color:#A3A9B3;padding-bottom:6px">payments</span>
+        </div>
+        <div style="display:flex;padding:4px;border-radius:14px;background:#2B2F36">
+          <sc-for list="{{ stl.modes }}" as="m" hint-placeholder-count="2">
+            <div onClick="{{ m.pick }}" style="flex:1;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer;background:{{ m.bg }};color:{{ m.fg }};transition:background .2s">{{ m.label }}</div>
+          </sc-for>
+        </div>
+        <span style="font-size:12px;line-height:1.4;color:#A3A9B3">{{ stl.modeHelp }}</span>
+      </div>
+      <sc-for list="{{ stl.pays }}" as="p" hint-placeholder-count="3">
+        <div style="position:relative;background:#D4F26A;color:#1F2A00;border-radius:22px;overflow:hidden;animation:tsIn .35s both">
+          <div onClick="{{ p.trace }}" style="padding:14px 18px 12px;display:flex;align-items:center;gap:12px;cursor:pointer">
+            <div style="width:40px;height:40px;border-radius:50%;background:#1F2A00;color:#D4F26A;display:flex;align-items:center;justify-content:center;font-weight:800">{{ p.init }}</div>
+            <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">{{ p.line }}</span><span style="font-size:11px;opacity:.7">{{ p.why }}</span></div>
+            <span style="font-size:22px;font-weight:800">{{ p.amt }}</span>
+          </div>
+          <div style="border-top:2px dashed rgba(31,42,0,.35);margin:0 16px"></div>
+          <div style="padding:10px 12px;display:flex;gap:8px">
+            <div onClick="{{ p.remind }}" style="flex:1;height:38px;border-radius:12px;background:rgba(31,42,0,.12);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer">{{ p.remindLabel }}</div>
+            <div onClick="{{ p.paid }}" style="flex:1;height:38px;border-radius:12px;background:#1F2A00;color:#D4F26A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer">Mark as paid</div>
+            <div onClick="{{ p.view }}" style="height:38px;padding:0 10px;border-radius:12px;background:rgba(31,42,0,.12);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;cursor:pointer">Their view</div>
+          </div>
+          <div style="position:absolute;left:-9px;top:59px;width:18px;height:18px;border-radius:50%;background:#2B2F36"></div>
+          <div style="position:absolute;right:-9px;top:59px;width:18px;height:18px;border-radius:50%;background:#2B2F36"></div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ stl.kittyNote }}" hint-placeholder-val="{{ true }}">
+        <span style="font-size:12px;line-height:1.4;color:#A3A9B3">Kitty leftovers ({{ kit.remaining }}) are handed back by Rahul in proportion to contributions.</span>
+      </sc-if>
+      <div onPointerDown="{{ stl.down }}" onPointerUp="{{ stl.up }}" onPointerLeave="{{ stl.up }}" style="position:relative;height:60px;border-radius:20px;background:#393E47;overflow:hidden;cursor:pointer;user-select:none;touch-action:none;flex:none">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:{{ stl.fill }}%;background:#D4F26A"></div>
+        <div style="position:relative;height:100%;display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px;font-weight:600;color:{{ stl.btnFg }}">{{ stl.btnLabel }} <span style="font-family:'JetBrains Mono',monospace">✂</span></div>
+      </div>
+      <span style="font-size:12px;line-height:1.4;color:#A3A9B3;text-align:center">Each person gets a stub that opens their own UPI app. Toli never holds the money and can't see payments, so payers confirm them.</span>
+    </sc-if>
+    <sc-if value="{{ stl.done }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;background:#D4F26A;color:#1F2A00;border-radius:24px;padding:28px 22px;display:flex;flex-direction:column;gap:8px;animation:tsIn .4s both">
+        <span style="font:700 12px 'JetBrains Mono',monospace;letter-spacing:.12em">{{ tripName }}</span>
+        <span style="font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1">Everyone's square.</span>
+        <span style="font-size:14px;opacity:.75">{{ stl.recorded }} payments recorded. The trip is now read-only.</span>
+        <div style="position:absolute;right:20px;top:20px;padding:6px 10px;border:3px solid #1F2A00;border-radius:10px;font:700 14px 'JetBrains Mono',monospace;letter-spacing:.08em;animation:tsPop .5s .2s both">SETTLED</div>
+      </div>
+      <div onClick="{{ nav.recap }}" style="height:56px;border-radius:18px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;cursor:pointer">Open the trip recap →</div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<!-- INVITE WEB VIEW -->
+<sc-if value="{{ is.invite }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="margin:4px 14px 0;height:38px;border-radius:12px;background:#212429;display:flex;align-items:center;gap:10px;padding:0 6px 0 14px;flex:none">
+    <span style="flex:1;font:500 12px 'JetBrains Mono',monospace;color:#A3A9B3">toli.app/t/goa-wknd</span>
+    <div onClick="{{ back }}" style="width:28px;height:28px;border-radius:8px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer">✕</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:22px 20px 24px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <span style="font-size:14px;color:#A3A9B3">Aditya added you to</span>
+      <span style="font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1">{{ tripName }}</span>
+      <span style="font-size:13px;color:#A3A9B3">12 – 15 Oct · {{ create.count }} people · {{ home.spent }} spent</span>
+    </div>
+    <sc-if value="{{ inv.pick }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:18px;font-weight:600">Which one are you?</span>
+        <sc-for list="{{ inv.people }}" as="p" hint-placeholder-count="3">
+          <div onClick="{{ p.pick }}" style="height:56px;border-radius:16px;background:#212429;display:flex;align-items:center;gap:12px;padding:0 14px;cursor:pointer" style-hover="background:#393E47">
+            <div style="width:34px;height:34px;border-radius:50%;background:#393E47;display:flex;align-items:center;justify-content:center;font-weight:800">{{ p.init }}</div>
+            <span style="flex:1;font-size:16px;font-weight:600">{{ p.name }}</span><span style="font-size:18px;color:#A3A9B3">›</span>
+          </div>
+        </sc-for>
+        <span style="font-size:12px;color:#A3A9B3">No app or account needed to see what you owe.</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{ inv.owe }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;background:#D4F26A;color:#1F2A00;border-radius:24px;overflow:hidden;animation:tsIn .35s both">
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:4px"><span style="font-size:14px">{{ inv.name }}, you owe Aditya</span><span style="font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:1">{{ inv.amt }}</span></div>
+        <div style="border-top:2px dashed rgba(31,42,0,.35);margin:0 18px"></div>
+        <div style="padding:10px 20px 16px;display:flex;flex-direction:column">
+          <sc-for list="{{ inv.lines }}" as="l" hint-placeholder-count="2">
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0"><span>{{ l.t }}</span><span style="font-family:'JetBrains Mono',monospace">{{ l.v }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+      <div onClick="{{ inv.pay }}" style="height:56px;border-radius:18px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;cursor:pointer">Pay {{ inv.amt }} via UPI</div>
+      <span style="font-size:12px;color:#A3A9B3;text-align:center">Opens your UPI app with Aditya's UPI ID and the amount filled in.</span>
+    </sc-if>
+    <sc-if value="{{ inv.upi }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#212429;border-radius:24px;padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:16px;animation:tsIn .3s both">
+        <div style="width:44px;height:44px;border-radius:50%;border:4px solid #393E47;border-top-color:#D4F26A;animation:tsSpin .8s linear infinite"></div>
+        <span style="font-size:16px;font-weight:600">Opening your UPI app…</span>
+        <span style="font:500 11px 'JetBrains Mono',monospace;color:#A3A9B3;text-align:center">upi://pay?pa=aditya@okhdfc&amp;am={{ inv.raw }}&amp;tn=Goa Weekend</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{ inv.confirm }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#393E47;border-radius:24px;padding:22px 20px;display:flex;flex-direction:column;gap:12px;animation:tsIn .3s both">
+        <span style="font-size:22px;font-weight:600">Did the payment go through?</span>
+        <span style="font-size:13px;line-height:1.4;color:#A3A9B3">Toli can't see UPI payments, so we record whatever you tell us. Aditya sees it straight away.</span>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <div onClick="{{ inv.yes }}" style="flex:1;height:50px;border-radius:16px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;cursor:pointer">Yes, I paid</div>
+          <div onClick="{{ inv.no }}" style="flex:1;height:50px;border-radius:16px;background:#212429;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer">Not yet</div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ inv.done }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;background:#212429;border-radius:24px;padding:24px 20px;display:flex;flex-direction:column;gap:8px;animation:tsIn .3s both">
+        <span style="font-size:26px;font-weight:800">{{ inv.doneTitle }}</span>
+        <span style="font-size:13px;line-height:1.4;color:#A3A9B3">{{ inv.doneText }}</span>
+        <div style="position:absolute;right:18px;top:18px;padding:5px 9px;border:3px solid #D4F26A;color:#D4F26A;border-radius:10px;font:700 13px 'JetBrains Mono',monospace;animation:tsPop .5s both">{{ inv.stamp }}</div>
+      </div>
+      <div onClick="{{ nav.home }}" style="height:56px;border-radius:18px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;cursor:pointer">Get the Toli app</div>
+      <span style="font-size:12px;color:#A3A9B3;text-align:center">Your history comes with you when you claim your spot.</span>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<!-- SCAN -->
+<sc-if value="{{ is.scan }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ back }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <span style="flex:1;font-size:20px;font-weight:600">{{ scan.title }}</span>
+    <span style="padding:5px 9px;border-radius:8px;background:#D4F26A;color:#1F2A00;font:700 10px 'JetBrains Mono',monospace;letter-spacing:.08em">PRO</span>
+  </div>
+  <sc-if value="{{ scan.camera }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;margin:0 18px 24px;border-radius:28px;background:#0E0F11;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
+      <div style="width:200px;height:340px;background:#F2F4F6;border-radius:6px;transform:rotate(-3deg);padding:22px 18px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px">
+        <div style="height:10px;width:60%;background:#A3A9B3;border-radius:3px;align-self:center"></div>
+        <div style="height:6px;width:40%;background:#A3A9B3;opacity:.6;border-radius:3px;align-self:center;margin-bottom:10px"></div>
+        <sc-for list="{{ scan.sketch }}" as="w" hint-placeholder-count="7">
+          <div style="display:flex;justify-content:space-between"><div style="height:6px;width:{{ w }}%;background:#A3A9B3;border-radius:3px"></div><div style="height:6px;width:18%;background:#A3A9B3;border-radius:3px"></div></div>
+        </sc-for>
+        <div style="height:2px;background:#A3A9B3;margin-top:8px"></div>
+        <div style="display:flex;justify-content:space-between"><div style="height:8px;width:30%;background:#393E47;border-radius:3px"></div><div style="height:8px;width:24%;background:#393E47;border-radius:3px"></div></div>
+      </div>
+      <div style="position:absolute;left:24px;right:24px;height:3px;background:#D4F26A;box-shadow:0 0 24px 6px rgba(212,242,106,.5);animation:tsScan 1.8s ease-in-out infinite"></div>
+      <div style="position:absolute;inset:24px;border:2px solid rgba(242,244,246,.25);border-radius:20px"></div>
+      <div style="position:absolute;bottom:22px;left:0;right:0;text-align:center;font-size:14px;font-weight:600">Reading the bill…</div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ scan.draft }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 16px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:12px;animation:tsIn .35s both">
+      <span style="font-size:13px;line-height:1.4;color:#A3A9B3">Draft from your photo. Tap faces to assign each item. Tax and service follow each person's subtotal.</span>
+      <div style="background:#212429;border-radius:22px;padding:6px 14px">
+        <sc-for list="{{ scan.items }}" as="it" hint-placeholder-count="5">
+          <div style="display:flex;flex-direction:column;gap:8px;padding:10px 0;border-bottom:1px solid #2B2F36">
+            <div style="display:flex;justify-content:space-between;font-size:14px"><span style="font-weight:600">{{ it.n }}</span><span style="font-family:'JetBrains Mono',monospace">{{ it.a }}</span></div>
+            <div style="display:flex;gap:6px">
+              <sc-for list="{{ it.who }}" as="w" hint-placeholder-count="4">
+                <div onClick="{{ w.toggle }}" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;cursor:pointer;background:{{ w.bg }};color:{{ w.fg }};transition:background .15s">{{ w.init }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#A3A9B3;padding:10px 0 4px"><span>GST 5% + service 10%</span><span style="font-family:'JetBrains Mono',monospace">{{ scan.extra }}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:600;padding:4px 0 10px"><span>Total</span><span style="font-family:'JetBrains Mono',monospace">{{ scan.total }}</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+        <sc-for list="{{ scan.per }}" as="p" hint-placeholder-count="4">
+          <div style="background:#393E47;border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:12px;color:#A3A9B3">{{ p.name }}</span><span style="font:700 13px 'JetBrains Mono',monospace">{{ p.amt }}</span></div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="padding:6px 18px 22px">
+      <div onClick="{{ scan.confirm }}" style="height:56px;border-radius:18px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;gap:10px;font-size:17px;font-weight:600;cursor:pointer">Confirm &amp; tear stubs <span style="font-family:'JetBrains Mono',monospace">✂</span></div>
+    </div>
+  </sc-if>
+</div>
+</sc-if>
+
+<!-- BUDGET -->
+<sc-if value="{{ is.budget }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ back }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <span style="font-size:20px;font-weight:600">Budget</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 24px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:14px">
+    <div style="display:flex;flex-direction:column;gap:2px;padding:0 2px">
+      <span style="font-size:48px;font-weight:800;letter-spacing:-.04em;line-height:1">{{ bud.spent }}</span>
+      <span style="font-size:14px;color:#A3A9B3">of ₹30,000 · day 2 of 4</span>
+    </div>
+    <div style="background:{{ bud.msgBg }};color:{{ bud.msgFg }};border-radius:18px;padding:14px 16px;font-size:15px;font-weight:600">{{ bud.msg }}</div>
+    <div style="background:#212429;border-radius:24px;padding:16px">
+      <svg width="302" height="170" viewBox="0 -10 302 180" style="display:block;overflow:visible">
+        <line x1="0" x2="300" y1="{{ bud.budY }}" y2="{{ bud.budY }}" stroke="#A3A9B3" stroke-width="1.5" stroke-dasharray="3 5"></line>
+        <text x="0" y="{{ bud.budLabelY }}" fill="#A3A9B3" font-size="11" font-family="JetBrains Mono">budget ₹30k</text>
+        <line x1="0" x2="300" y1="140" y2="140" stroke="#393E47" stroke-width="1"></line>
+        <path d="{{ bud.proj }}" fill="none" stroke="#F2F4F6" stroke-width="2.5" stroke-dasharray="6 6" opacity=".6"></path>
+        <path d="{{ bud.actual }}" fill="none" stroke="#D4F26A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="700" style="animation:tsDraw 1.2s cubic-bezier(.2,.9,.3,1) both"></path>
+        <sc-for list="{{ bud.dots }}" as="d" hint-placeholder-count="3">
+          <circle cx="{{ d.x }}" cy="{{ d.y }}" r="5" fill="#D4F26A" stroke="#212429" stroke-width="3"></circle>
+        </sc-for>
+        <circle cx="300" cy="{{ bud.projY }}" r="5" fill="none" stroke="#F2F4F6" stroke-width="2"></circle>
+        <sc-for list="{{ bud.xl }}" as="x" hint-placeholder-count="5">
+          <text x="{{ x.x }}" y="160" fill="#A3A9B3" font-size="10" font-family="JetBrains Mono" text-anchor="middle">{{ x.l }}</text>
+        </sc-for>
+      </svg>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px">
+      <div style="background:#212429;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#A3A9B3">Booked before trip</span><span style="font:700 16px 'JetBrains Mono',monospace">{{ bud.committed }}</span></div>
+      <div style="background:#212429;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#A3A9B3">Spent on the trip</span><span style="font:700 16px 'JetBrains Mono',monospace">{{ bud.inTrip }}</span></div>
+    </div>
+    <div style="background:#212429;border-radius:24px;padding:8px 16px">
+      <div style="padding:10px 0 6px;font-size:15px;font-weight:600">By category</div>
+      <sc-for list="{{ bud.cats }}" as="c" hint-placeholder-count="5">
+        <div style="display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px solid #2B2F36">
+          <div style="display:flex;justify-content:space-between;font-size:14px"><span>{{ c.cat }}</span><span style="font-family:'JetBrains Mono',monospace">{{ c.amt }}</span></div>
+          <div style="height:6px;border-radius:6px;background:#393E47"><div style="height:100%;width:{{ c.w }}%;border-radius:6px;background:#D4F26A;transform-origin:left;animation:tsGrow .8s cubic-bezier(.2,.9,.3,1) both"></div></div>
+        </div>
+      </sc-for>
+    </div>
+    <span style="font-size:12px;color:#A3A9B3">Everyone gets a nudge at 75% and 100% of the budget.</span>
+  </div>
+</div>
+</sc-if>
+
+<!-- PLAN -->
+<sc-if value="{{ is.plan }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 18px 12px">
+    <span style="font-size:28px;font-weight:800;letter-spacing:-.02em">Plan</span>
+    <div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font:700 14px 'JetBrains Mono',monospace">{{ plan.total }}</span><span style="font-size:11px;color:#A3A9B3">{{ plan.vs }}</span></div>
+  </div>
+  <div style="display:flex;gap:6px;padding:0 18px 10px">
+    <sc-for list="{{ plan.days }}" as="d" hint-placeholder-count="4">
+      <div onClick="{{ d.pick }}" style="flex:1;height:52px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:{{ d.bg }};color:{{ d.fg }};transition:background .2s"><span style="font-size:11px;opacity:.75">{{ d.dow }}</span><span style="font-size:16px;font-weight:800">{{ d.n }}</span></div>
+    </sc-for>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 110px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:12px">
+    <div style="position:relative;height:130px;border-radius:22px;background-color:#212429;background-image:repeating-linear-gradient(0deg,transparent 0 23px,#2B2F36 23px 24px),repeating-linear-gradient(90deg,transparent 0 23px,#2B2F36 23px 24px);overflow:hidden;flex:none">
+      <sc-for list="{{ plan.pins }}" as="p" hint-placeholder-count="3">
+        <div style="position:absolute;left:{{ p.x }}%;top:{{ p.y }}%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#D4F26A;display:flex;align-items:center;justify-content:center;animation:tsIn .4s both"><span style="transform:rotate(45deg);font:700 11px 'JetBrains Mono',monospace;color:#1F2A00">{{ p.n }}</span></div>
+      </sc-for>
+      <span style="position:absolute;left:12px;bottom:10px;font:700 10px 'JetBrains Mono',monospace;letter-spacing:.1em;color:#A3A9B3">MAP · {{ plan.pinCount }} PLACES</span>
+    </div>
+    <sc-for list="{{ plan.items }}" as="it" hint-placeholder-count="3">
+      <div style="display:flex;gap:12px;animation:tsIn .35s both">
+        <div style="width:44px;flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:14px"><span style="font:700 12px 'JetBrains Mono',monospace">{{ it.time }}</span><div style="flex:1;width:2px;background:#393E47;border-radius:2px"></div></div>
+        <div style="flex:1;min-width:0;background:#212429;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:700 10px 'JetBrains Mono',monospace;letter-spacing:.1em;color:#A3A9B3">{{ it.n }} · {{ it.type }}</span><span style="font-size:11px;color:#A3A9B3">{{ it.place }}</span></div>
+          <span style="font-size:16px;font-weight:600">{{ it.title }}</span>
+          <sc-if value="{{ it.hasCost }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span style="padding:4px 8px;border-radius:8px;background:#393E47;font:500 11px 'JetBrains Mono',monospace">est {{ it.est }}</span>
+              <span style="padding:4px 8px;border-radius:8px;background:{{ it.actBg }};color:{{ it.actFg }};font:500 11px 'JetBrains Mono',monospace">{{ it.act }}</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<!-- VAULT -->
+<sc-if value="{{ is.vault }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 18px 12px">
+    <span style="font-size:28px;font-weight:800;letter-spacing:-.02em">Vault</span>
+    <span style="padding:6px 10px;border-radius:10px;background:#212429;font:700 11px 'JetBrains Mono',monospace;color:#D4F26A">✓ ALL OFFLINE</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 110px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:12px">
+    <div style="background:#393E47;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px">
+      <div style="width:10px;height:10px;border-radius:50%;background:#D4F26A;animation:tsPulse 1.6s infinite"></div>
+      <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:11px;color:#A3A9B3">NEXT UP · in 1h 20m</span><span style="font-size:15px;font-weight:600">Scuba · Grande Island, 12:00</span></div>
+      <span style="font:700 12px 'JetBrains Mono',monospace">SCB-4471</span>
+    </div>
+    <sc-for list="{{ vault.items }}" as="b" hint-placeholder-count="4">
+      <div onClick="{{ b.toggle }}" style="position:relative;background:{{ b.bg }};color:{{ b.fg }};border-radius:22px;overflow:hidden;cursor:pointer;transition:background .25s">
+        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;font:700 10px 'JetBrains Mono',monospace;letter-spacing:.1em;opacity:.7"><span>{{ b.type }} · {{ b.provider }}</span><span>{{ b.when }}</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:20px;font-weight:800;letter-spacing:-.01em">{{ b.title }}</span><span style="font:700 13px 'JetBrains Mono',monospace">{{ b.cost }}</span></div>
+          <div style="display:flex;gap:10px;font-size:12px;opacity:.75"><span>{{ b.ref }}</span><span>·</span><span>{{ b.covers }}</span></div>
+        </div>
+        <sc-if value="{{ b.open }}" hint-placeholder-val="{{ false }}">
+          <div style="border-top:2px dashed rgba(31,42,0,.35);margin:0 14px"></div>
+          <div style="padding:14px 16px 16px;display:flex;gap:14px;align-items:center;animation:tsIn .3s both">
+            <div style="width:84px;height:84px;flex:none;border-radius:10px;background:#1F2A00;display:flex;align-items:center;justify-content:center;font:700 10px 'JetBrains Mono',monospace;color:#D4F26A;text-align:center">QR<br>placeholder</div>
+            <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+              <span style="font:700 22px 'JetBrains Mono',monospace;letter-spacing:.06em">{{ b.pnr }}</span>
+              <span>{{ b.detail }}</span>
+              <span style="opacity:.7">{{ b.link }}</span>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+    <div style="background:#212429;border-radius:22px;padding:8px 16px">
+      <div style="padding:10px 0 6px;font-size:15px;font-weight:600">Documents</div>
+      <sc-for list="{{ vault.docs }}" as="d" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:12px;height:52px;border-top:1px solid #2B2F36">
+          <div style="width:34px;height:40px;border-radius:6px;background:#393E47;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;box-sizing:border-box;font:700 8px 'JetBrains Mono',monospace;color:#A3A9B3">PDF</div>
+          <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:14px">{{ d.n }}</span><span style="font-size:11px;color:#A3A9B3">{{ d.s }}</span></div>
+          <span style="font:700 10px 'JetBrains Mono',monospace;color:#D4F26A">✓ OFFLINE</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- FEED -->
+<sc-if value="{{ is.feed }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 18px 12px">
+    <span style="font-size:28px;font-weight:800;letter-spacing:-.02em">Trip feed</span>
+    <div onClick="{{ nav.recap }}" style="height:40px;padding:0 14px;border-radius:14px;background:#393E47;display:flex;align-items:center;font-size:13px;font-weight:600;cursor:pointer">Recap</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 110px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:16px">
+    <sc-for list="{{ feed }}" as="g" hint-placeholder-count="2">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:700 11px 'JetBrains Mono',monospace;letter-spacing:.12em;color:#A3A9B3">{{ g.label }}</span>
+        <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:36px;height:36px;flex:none;border-radius:12px;display:flex;align-items:center;justify-content:center;font:700 12px 'JetBrains Mono',monospace;background:{{ it.bg }};color:{{ it.fg }}">{{ it.mark }}</div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;padding-top:2px">
+              <span style="font-size:14px;line-height:1.35">{{ it.text }}</span>
+              <sc-if value="{{ it.photo }}" hint-placeholder-val="{{ false }}">
+                <div style="height:140px;border-radius:16px;background:repeating-linear-gradient(135deg,#212429 0 10px,#393E47 10px 11px);display:flex;align-items:center;justify-content:center;font:500 11px 'JetBrains Mono',monospace;color:#A3A9B3">photo · Chapora Fort</div>
+              </sc-if>
+              <span style="font:500 11px 'JetBrains Mono',monospace;color:#A3A9B3">{{ it.t }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<!-- RECAP -->
+<sc-if value="{{ is.recap }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;animation:{{ anim }}">
+  <div style="display:flex;align-items:center;gap:12px;padding:8px 18px 12px">
+    <div onClick="{{ back }}" style="width:44px;height:44px;flex:none;border-radius:14px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">‹</div>
+    <span style="flex:1;font-size:20px;font-weight:600">Trip recap</span>
+  </div>
+  <div style="flex:1;overflow-y:auto;scrollbar-width:none;padding:0 18px 16px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;grid-auto-rows:max-content;gap:12px">
+    <div style="position:relative;background:#D4F26A;color:#1F2A00;border-radius:26px;overflow:hidden;flex:none;animation:tsRise .6s cubic-bezier(.2,.9,.3,1) both">
+      <div style="padding:20px 20px 14px;display:flex;flex-direction:column;gap:2px">
+        <span style="font:700 11px 'JetBrains Mono',monospace;letter-spacing:.12em">{{ tripName }} · 12–15 OCT</span>
+        <span style="font-size:54px;font-weight:800;letter-spacing:-.04em;line-height:1">{{ recap.total }}</span>
+        <span style="font-size:13px;opacity:.75">{{ recap.sub }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:rgba(31,42,0,.2);border-top:1px solid rgba(31,42,0,.2);border-bottom:1px solid rgba(31,42,0,.2)">
+        <sc-for list="{{ recap.stats }}" as="s" hint-placeholder-count="3">
+          <div style="background:#D4F26A;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:10px;opacity:.7">{{ s.k }}</span><span style="font-size:13px;font-weight:800">{{ s.v }}</span><span style="font-size:10px;opacity:.7">{{ s.s }}</span></div>
+        </sc-for>
+      </div>
+      <div style="padding:12px 20px;display:flex;flex-direction:column;gap:6px">
+        <sc-for list="{{ recap.people }}" as="p" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px">
+            <span style="width:56px;font-weight:600">{{ p.name }}</span>
+            <div style="flex:1;height:8px;border-radius:8px;background:rgba(31,42,0,.15)"><div style="height:100%;width:{{ p.w }}%;border-radius:8px;background:#1F2A00;transform-origin:left;animation:tsGrow .9s .3s cubic-bezier(.2,.9,.3,1) both"></div></div>
+            <span style="width:64px;text-align:right;font:700 12px 'JetBrains Mono',monospace">{{ p.amt }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;padding:0 14px 12px">
+        <div style="height:84px;border-radius:12px;background:repeating-linear-gradient(135deg,#C4E25A 0 8px,#B8D650 8px 9px);display:flex;align-items:center;justify-content:center;font:500 10px 'JetBrains Mono',monospace">photo</div>
+        <div style="height:84px;border-radius:12px;background:repeating-linear-gradient(135deg,#C4E25A 0 8px,#B8D650 8px 9px);display:flex;align-items:center;justify-content:center;font:500 10px 'JetBrains Mono',monospace">photo</div>
+        <div style="height:84px;border-radius:12px;background:repeating-linear-gradient(135deg,#C4E25A 0 8px,#B8D650 8px 9px);display:flex;align-items:center;justify-content:center;font:500 10px 'JetBrains Mono',monospace">photo</div>
+      </div>
+      <div style="background:#1F2A00;color:#D4F26A;padding:12px 20px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:20px;font-weight:800;letter-spacing:-.04em">toli</span><span style="font:500 11px 'JetBrains Mono',monospace">Split your next trip · toli.app</span></div>
+    </div>
+    <div onClick="{{ recap.toggle }}" style="display:flex;align-items:center;justify-content:space-between;background:#212429;border-radius:18px;padding:12px 16px;cursor:pointer">
+      <span style="font-size:14px">Hide per-person amounts</span>
+      <div style="width:46px;height:28px;border-radius:14px;background:{{ recap.swBg }};position:relative;transition:background .2s"><div style="position:absolute;top:3px;left:{{ recap.swX }}px;width:22px;height:22px;border-radius:50%;background:#F2F4F6;transition:left .2s"></div></div>
+    </div>
+  </div>
+  <div style="padding:6px 18px 22px;display:flex;gap:8px">
+    <div onClick="{{ recap.share }}" style="flex:1;height:56px;border-radius:18px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;cursor:pointer">Share to WhatsApp</div>
+    <div onClick="{{ recap.save }}" style="width:100px;height:56px;border-radius:18px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer">Save</div>
+  </div>
+</div>
+</sc-if>
+
+  </div>
+
+  <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(180deg,rgba(43,47,54,0),#2B2F36 45%);display:flex;align-items:flex-end;padding:0 14px 16px;box-sizing:border-box;z-index:4">
+      <div style="flex:1;height:64px;border-radius:24px;background:#212429;display:flex;align-items:center;justify-content:space-around;padding:0 6px">
+        <div onClick="{{ nav.home }}" style="width:56px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;color:{{ tab.home }}"><span style="font-size:13px;font-weight:600">Trip</span><div style="width:5px;height:5px;border-radius:50%;background:{{ tab.home }}"></div></div>
+        <div onClick="{{ nav.plan }}" style="width:56px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;color:{{ tab.plan }}"><span style="font-size:13px;font-weight:600">Plan</span><div style="width:5px;height:5px;border-radius:50%;background:{{ tab.plan }}"></div></div>
+        <div onClick="{{ nav.add }}" style="width:60px;height:60px;border-radius:22px;background:#D4F26A;color:#1F2A00;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:400;cursor:pointer;transform:translateY(-16px);box-shadow:0 12px 24px rgba(0,0,0,.35)" style-active="transform:translateY(-14px) scale(.94)">+</div>
+        <div onClick="{{ nav.vault }}" style="width:56px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;color:{{ tab.vault }}"><span style="font-size:13px;font-weight:600">Vault</span><div style="width:5px;height:5px;border-radius:50%;background:{{ tab.vault }}"></div></div>
+        <div onClick="{{ nav.feed }}" style="width:56px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;color:{{ tab.feed }}"><span style="font-size:13px;font-weight:600">Feed</span><div style="width:5px;height:5px;border-radius:50%;background:{{ tab.feed }}"></div></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;left:18px;right:18px;bottom:112px;z-index:30;background:#F2F4F6;color:#212429;border-radius:16px;padding:14px 16px;font-size:14px;font-weight:600;box-shadow:0 16px 32px rgba(0,0,0,.4);animation:tsToast .35s cubic-bezier(.2,.9,.3,1.2) both">{{ toast }}</div>
+  </sc-if>
+
+  <sc-if value="{{ ovOn }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:20;background:rgba(20,22,25,.9);opacity:{{ ov.opacity }};transition:opacity .4s">
+      <div style="position:absolute;top:58px;left:0;right:0;text-align:center;font:700 11px 'JetBrains Mono',monospace;letter-spacing:.14em;color:#A3A9B3">{{ ov.headline }}</div>
+      <sc-for list="{{ ov.avatars }}" as="a" hint-placeholder-count="3">
+        <div style="position:absolute;left:{{ a.left }}px;top:80px;width:52px;display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;background:{{ a.bg }};color:{{ a.fg }};transform:scale({{ a.scale }});transition:background .25s,transform .35s cubic-bezier(.2,.9,.3,1.6)">{{ a.init }}</div>
+          <span style="font-size:12px;font-weight:600">{{ a.name }}</span>
+          <span style="font:700 11px 'JetBrains Mono',monospace;color:{{ a.lfg }}">{{ a.label }}</span>
+        </div>
+      </sc-for>
+      <div style="position:absolute;inset:0;animation:tsRise .5s cubic-bezier(.2,.9,.3,1) both">
+        <div style="position:absolute;left:30px;top:234px;width:310px;height:190px;box-sizing:border-box;padding:18px 20px;background:#D4F26A;color:#1F2A00;border-radius:24px 24px 0 0;display:flex;flex-direction:column;gap:8px;transform:{{ ov.mainT }};transition:transform .4s cubic-bezier(.2,.9,.3,1.3)">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="background:#1F2A00;color:#D4F26A;font-size:11px;font-weight:600;padding:5px 10px;border-radius:999px">{{ ov.label }}</span><span style="font:500 11px 'JetBrains Mono',monospace;opacity:.7">{{ tripName }}</span></div>
+          <span style="font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ov.title }}</span>
+          <span style="font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1">{{ ov.amount }}</span>
+          <span style="font-size:12px;opacity:.75">{{ ov.sub }}</span>
+          <sc-if value="{{ ov.perf }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;left:20px;right:20px;bottom:-1px;border-top:2px dashed rgba(31,42,0,.4)"></div>
+          </sc-if>
+          <sc-if value="{{ ov.torn }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;left:12px;right:12px;bottom:-6px;height:6px;background:linear-gradient(135deg,#D4F26A 4.5px,transparent 0) 0 0/9px 6px repeat-x,linear-gradient(-135deg,#D4F26A 4.5px,transparent 0) 0 0/9px 6px repeat-x"></div>
+          </sc-if>
+          <div style="position:absolute;left:-12px;bottom:0;width:24px;height:12px;border-radius:12px 12px 0 0;background:#16181B"></div>
+          <div style="position:absolute;right:-12px;bottom:0;width:24px;height:12px;border-radius:12px 12px 0 0;background:#16181B"></div>
+        </div>
+        <sc-for list="{{ ov.pieces }}" as="p" hint-placeholder-count="3">
+          <div style="position:absolute;left:{{ p.left }}px;top:424px;width:{{ p.w }}px;height:110px;opacity:{{ p.opacity }};transform:{{ p.outerT }};transition:{{ p.outerTr }}">
+            <div style="width:100%;height:100%;transform:{{ p.innerT }};transition:{{ p.innerTr }}">
+              <div style="position:relative;width:100%;height:100%;transform:{{ p.coreT }};transition:{{ p.coreTr }}">
+                <sc-if value="{{ p.zig }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;left:0;right:0;top:-6px;height:6px;background:linear-gradient(45deg,#D4F26A 4.5px,transparent 0) 0 100%/9px 6px repeat-x,linear-gradient(-45deg,#D4F26A 4.5px,transparent 0) 0 100%/9px 6px repeat-x"></div>
+                </sc-if>
+                <div style="width:100%;height:100%;box-sizing:border-box;background:#D4F26A;color:#1F2A00;border-radius:{{ p.radius }};box-shadow:{{ p.shadow }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
+                  <div style="width:30px;height:30px;border-radius:50%;background:#1F2A00;color:#D4F26A;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">{{ p.init }}</div>
+                  <span style="font-size:12px;font-weight:600">{{ p.name }}</span>
+                  <span style="font:700 13px 'JetBrains Mono',monospace">{{ p.amt }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;transition&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;slide&quot;,&quot;ticket&quot;,&quot;fade&quot;],&quot;default&quot;:&quot;slide&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;offline&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;speed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.4,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;},&quot;screen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;splash&quot;,&quot;loading&quot;,&quot;empty&quot;,&quot;welcome&quot;,&quot;create&quot;,&quot;trips&quot;,&quot;home&quot;,&quot;add&quot;,&quot;split&quot;,&quot;balance&quot;,&quot;kitty&quot;,&quot;settle&quot;,&quot;invite&quot;,&quot;scan&quot;,&quot;budget&quot;,&quot;plan&quot;,&quot;vault&quot;,&quot;feed&quot;,&quot;recap&quot;],&quot;default&quot;:&quot;splash&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;embedded&quot;:{&quot;editor&quot;:null,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const fmt = n => '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
+const sfmt = n => (n > 0 ? '+' : n < 0 ? '−' : '') + fmt(n);
+const L = '#D4F26A', OA = '#1F2A00', TX = '#F2F4F6', MU = '#A3A9B3', RA = '#393E47', CA = '#212429';
+const CATS = ['Food', 'Drinks', 'Travel', 'Stay', 'Activities', 'Shopping', 'Fuel', 'Misc'];
+const MEM0 = [['Aditya', 'A'], ['Rahul', 'R'], ['Neha', 'N'], ['Jay', 'J']];
+const EXP0 = [
+  { id: 1, title: 'Casa Anjuna · 2 rooms', cat: 'Stay', amount: 4000, payer: 0, parts: [1000, 1000, 1000, 1000], day: 1, time: '14:10', committed: true },
+  { id: 2, title: "Dinner at Fisherman's Wharf", cat: 'Food', amount: 1200, payer: 0, parts: [600, 600, 0, 0], day: 1, time: '21:30' },
+  { id: 3, title: 'Cab to Baga', cat: 'Travel', amount: 800, payer: 1, parts: [200, 200, 200, 200], day: 2, time: '10:05' },
+];
+const KS0 = [{ t: 'Fuel · 2 scooters', cat: 'Fuel', a: 4200, day: 1, time: '11:00' }, { t: 'Toll · Patradevi', cat: 'Tolls', a: 800, day: 1, time: '12:15' }, { t: 'Breakfast at Artjuna', cat: 'Food', a: 2400, day: 2, time: '09:10' }, { t: 'Scooter rentals', cat: 'Travel', a: 4600, day: 2, time: '09:40' }];
+const SCAN = [{ n: 'Mezze platter', a: 850, w: [1, 1, 1, 1] }, { n: 'Lamb souvlaki', a: 720, w: [0, 1, 0, 0] }, { n: 'Grilled prawns', a: 1100, w: [1, 0, 0, 1] }, { n: 'Kingfisher × 4', a: 800, w: [1, 1, 0, 1] }, { n: 'Fresh lime soda × 2', a: 240, w: [0, 0, 1, 0] }];
+const PLAN = {
+  1: [['06:40', 'Travel', 'Flight BLR → GOI', 'Dabolim', 0, null], ['14:00', 'Stay', 'Check in · Casa Anjuna', 'Anjuna', 4000, 4000], ['21:30', 'Meal', "Dinner · Fisherman's Wharf", 'Cavelossim', 1500, 1200]],
+  2: [['10:00', 'Travel', 'Scooters for the day', 'Anjuna', 4000, 4600], ['12:00', 'Activity', 'Scuba · Grande Island', 'Vasco', 12000, null], ['18:30', 'Free time', 'Sunset at Chapora Fort', 'Chapora', 0, null]],
+  3: [['07:00', 'Activity', 'Dudhsagar Falls day trip', 'Mollem', 6000, null], ['20:00', 'Meal', 'Curlies, Anjuna', 'Anjuna', 3000, null]],
+  4: [['11:00', 'Stay', 'Check out', 'Anjuna', 0, null], ['13:00', 'Meal', 'Lunch · Vinayak', 'Assagao', 1600, null], ['17:25', 'Travel', 'Flight GOI → BLR', 'Mopa', 0, null]],
+};
+const PINS = [[18, 30], [52, 62], [78, 34], [34, 72]];
+const BOOK = [
+  { id: 'f2', type: 'FLIGHT', provider: 'IndiGo', when: 'TUE 15 OCT · 17:25', title: 'GOI → BLR', cost: '₹16,800', ref: 'PNR M3P9TR', covers: '4 travellers', pnr: 'M3P9TR', detail: '6E-5318 · Seats 14A–14D · Gate opens 16:40', link: 'Paid by Aditya before the trip' },
+  { id: 'h1', type: 'HOTEL', provider: 'Casa Anjuna', when: '12–15 OCT', title: '2 rooms · 3 nights', cost: '₹4,000', ref: 'Conf HT-88213', covers: '4 guests', pnr: 'HT-88213', detail: 'Check-out 11:00 · Breakfast included', link: 'Linked to expense · split 4 ways' },
+  { id: 's1', type: 'ACTIVITY', provider: 'Goa Dive Co.', when: 'SUN 13 OCT · 12:00', title: 'Scuba · Grande Island', cost: '₹12,000', ref: 'Voucher SCB-4471', covers: '4 divers', pnr: 'SCB-4471', detail: 'Pickup 10:30 from Baga jetty', link: 'Not yet linked to an expense' },
+  { id: 'f1', type: 'FLIGHT', provider: 'IndiGo', when: 'SAT 12 OCT · 06:40', title: 'BLR → GOI', cost: '₹18,400', ref: 'PNR X7K2LQ', covers: '4 travellers', pnr: 'X7K2LQ', detail: '6E-2143 · Completed', link: 'Paid by Aditya before the trip' },
+];
+const SCREENS = [['SYSTEM STATES', [['splash', 'Splash + loading'], ['loading', 'Skeleton loading'], ['empty', 'Empty trip']]], ['R1 · SPLITTING CORE', [['welcome', 'Welcome'], ['create', 'Create trip'], ['trips', 'Trips'], ['home', 'Trip home'], ['add', 'Add expense'], ['split', 'Split editor'], ['balance', 'Balance trace'], ['kitty', 'Kitty'], ['settle', 'Settle up'], ['invite', 'Invite link (web)']]], ['R2 · CONTEXT + PLANNING', [['scan', 'Receipt scan'], ['budget', 'Budget burn-down'], ['plan', 'Itinerary + map']]], ['R3 · VAULT + MEMORY', [['vault', 'Bookings vault'], ['feed', 'Trip feed'], ['recap', 'Recap card']]]];
+const TAB_SCREENS = ['home', 'plan', 'vault', 'feed', 'empty'];
+
+class Component extends DCLogic {
+  state = this.init();
+  timers = [];
+  init() {
+    return {
+      scale: 1, screen: (this.props && this.props.screen) || 'splash', hist: [], dir: 'tab', tripName: 'Goa Weekend', template: 'Beach trip',
+      members: MEM0.map(([name, init], i) => ({ name, init, ghost: i > 0 })), newMember: '',
+      expenses: EXP0.map(e => ({ ...e, parts: e.parts.slice() })), settlements: [],
+      kitty: [5000, 5000, 3000, 2000], kittySpends: KS0.slice(), topups: 0,
+      draft: this.blank(4), settleMode: 'simplified', reminded: {}, inv: { who: null, phase: 'pick' },
+      scanPhase: 'camera', scanW: SCAN.map(s => s.w.slice()), recapHide: false, planDay: 2, vaultOpen: 'f2', derivFor: 1,
+      toast: null, dup: null, ov: null, charge: 0, charging: false,
+    };
+  }
+  blank(n) { return { amount: '', payer: 0, mode: 'equal', inc: Array(n).fill(true), vals: Array(n).fill(0), cat: 'Food', title: '' }; }
+  emb() { const e = this.props.embedded; return !!e && e !== 'false'; }
+  T() { return 1 / (this.props.speed ?? 1); }
+  at(ms, fn) { this.timers.push(setTimeout(fn, ms)); }
+  componentDidMount() {
+    this.fit = () => this.setState({ scale: this.emb() ? 1 : Math.min(1, (window.innerHeight - 32) / 800, (window.innerWidth - 32) / 660) });
+    this.fit(); window.addEventListener('resize', this.fit);
+    if (this.state.screen === 'scan') this.startScan();
+    this.autoAdvance(this.state.screen);
+  }
+  autoAdvance(s) {
+    if (this.emb()) return;
+    clearTimeout(this.aa);
+    if (s === 'splash') this.aa = setTimeout(() => this.setState({ screen: 'welcome', hist: [], dir: 'push' }), 2900 * this.T());
+    if (s === 'loading') this.aa = setTimeout(() => this.setState({ screen: 'home', hist: ['trips'], dir: 'tab' }), 1100 * this.T());
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.fit); this.timers.forEach(clearTimeout); cancelAnimationFrame(this.raf); clearTimeout(this.tt); clearTimeout(this.st); clearTimeout(this.aa); }
+  toastMsg(m) { clearTimeout(this.tt); this.setState({ toast: m }); this.tt = setTimeout(() => this.setState({ toast: null }), 2800); }
+  startScan() { clearTimeout(this.st); this.setState({ scanPhase: 'camera' }); this.st = setTimeout(() => this.setState({ scanPhase: 'draft' }), 1900 * this.T()); }
+  go(s) {
+    const extra = {};
+    if (s === 'add') extra.draft = this.blank(this.state.members.length);
+    if (s === 'invite') extra.inv = { who: null, phase: 'pick' };
+    if (TAB_SCREENS.includes(s) || ['trips', 'welcome', 'splash', 'loading'].includes(s)) { this.setState({ screen: s, hist: s === 'home' || s === 'empty' ? ['trips'] : ['home'], dir: 'tab', ...extra }); }
+    else this.setState(st => ({ screen: s, hist: [...st.hist, st.screen], dir: 'push', ...extra }));
+    if (s === 'scan') this.startScan();
+    this.autoAdvance(s);
+  }
+  back() { this.setState(st => { const h = st.hist.slice(); const p = h.pop() || 'home'; return { screen: p, hist: h, dir: 'pop' }; }); }
+  bal(st) {
+    const n = st.members.length, b = Array(n).fill(0);
+    st.expenses.forEach(e => { if (e.payer >= 0) b[e.payer] += e.amount; e.parts.forEach((p, i) => { if (i < n) b[i] -= p; }); });
+    st.settlements.forEach(s => { b[s.from] += s.amt; b[s.to] -= s.amt; });
+    return b;
+  }
+  simplify(b) {
+    const c = [], d = []; b.forEach((v, i) => { if (v > 0) c.push({ i, v }); else if (v < 0) d.push({ i, v: -v }); });
+    const out = [];
+    while (c.length && d.length) {
+      c.sort((x, y) => y.v - x.v || x.i - y.i); d.sort((x, y) => y.v - x.v || x.i - y.i);
+      const a = c[0], z = d[0], amt = Math.min(a.v, z.v);
+      out.push({ from: z.i, to: a.i, amt }); a.v -= amt; z.v -= amt; if (!a.v) c.shift(); if (!z.v) d.shift();
+    }
+    return out;
+  }
+  direct(st) {
+    const n = st.members.length, o = [...Array(n)].map(() => Array(n).fill(0));
+    st.expenses.forEach(e => { if (e.payer < 0) return; e.parts.forEach((p, i) => { if (i !== e.payer && p && i < n) o[i][e.payer] += p; }); });
+    st.settlements.forEach(s => { o[s.from][s.to] -= s.amt; });
+    const out = [];
+    for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) { const x = o[a][b] - o[b][a]; if (x > 0) out.push({ from: a, to: b, amt: x }); else if (x < 0) out.push({ from: b, to: a, amt: -x }); }
+    return out;
+  }
+  payments(st) { return st.settleMode === 'direct' ? this.direct(st) : this.simplify(this.bal(st)); }
+  calc(st) {
+    const d = st.draft, n = st.members.length, amt = parseInt(d.amount || '0', 10) || 0;
+    const ids = d.inc.map((v, i) => v ? i : -1).filter(i => i >= 0), k = ids.length, sh = Array(n).fill(0);
+    let un = 0, unit = '₹';
+    const spread = (total, w) => { const W = w.reduce((a, b) => a + b, 0); if (!W) return; let acc = 0; const fl = w.map(x => { const f = Math.floor(total * x / W); acc += f; return f; }); const r = total - acc; ids.forEach((i, j) => { sh[i] += fl[j] + (j < r ? 1 : 0); }); };
+    if (d.mode === 'equal') spread(amt, ids.map(() => 1));
+    else if (d.mode === 'exact') { ids.forEach(i => sh[i] = d.vals[i]); un = amt - ids.reduce((a, i) => a + d.vals[i], 0); }
+    else if (d.mode === 'percent') { un = 100 - ids.reduce((a, i) => a + d.vals[i], 0); unit = '%'; if (!un) spread(amt, ids.map(i => d.vals[i])); else ids.forEach(i => sh[i] = Math.round(amt * d.vals[i] / 100)); }
+    else if (d.mode === 'shares') spread(amt, ids.map(i => d.vals[i]));
+    else if (d.mode === 'adjust') { const add = ids.reduce((a, i) => a + d.vals[i], 0); spread(Math.max(0, amt - add), ids.map(() => 1)); ids.forEach(i => sh[i] += d.vals[i]); if (add > amt) un = amt - add; }
+    const sum = sh.reduce((a, b) => a + b, 0);
+    return { amt, sh, un, unit, k, ids, ok: amt > 0 && k > 0 && un === 0 && sum === amt };
+  }
+  setDraft(p) { this.setState(st => ({ draft: { ...st.draft, ...p } })); }
+  setMode(mode) {
+    if (mode === 'itemised') return this.go('scan');
+    this.setState(st => {
+      const d = { ...st.draft, mode }, n = st.members.length, ids = d.inc.map((v, i) => v ? i : -1).filter(i => i >= 0), k = ids.length || 1;
+      let vals = Array(n).fill(0);
+      if (mode === 'exact') vals = this.calc({ ...st, draft: { ...d, mode: 'equal' } }).sh.slice();
+      if (mode === 'percent') { const b = Math.floor(100 / k), r = 100 - b * k; ids.forEach((i, j) => vals[i] = b + (j < r ? 1 : 0)); }
+      if (mode === 'shares') ids.forEach(i => vals[i] = 1);
+      return { draft: { ...d, vals } };
+    });
+  }
+  press(key) {
+    const a = this.state.draft.amount;
+    let v = key === '⌫' ? a.slice(0, -1) : (a + key).replace(/^0+/, '');
+    if (v.length > 6) return;
+    this.setDraft({ amount: v });
+  }
+  save(force) {
+    const st = this.state, c = this.calc(st), d = st.draft;
+    if (!c.amt) return this.toastMsg('Type an amount first');
+    if (!c.ok) return this.toastMsg(c.unit === '%' ? `${Math.abs(c.un)}% still unassigned` : `${fmt(c.un)} still unassigned`);
+    if (d.payer === -1) {
+      this.setState(s => ({ kittySpends: [...s.kittySpends, { t: d.title || d.cat, cat: d.cat, a: c.amt, day: 2, time: '21:41' }] }));
+      this.go('home'); return this.toastMsg(`${fmt(c.amt)} paid from the kitty`);
+    }
+    if (!force) { const dup = st.expenses.find(e => e.amount === c.amt && e.day === 2 && e.payer !== d.payer); if (dup) return this.setState({ dup }); }
+    const exp = { id: Date.now(), title: d.title || d.cat, cat: d.cat, amount: c.amt, payer: d.payer, parts: c.sh, day: 2, time: '21:41' };
+    this.commit(exp, 'New expense', `${st.members[d.payer].name} paid · split ${c.k} ways`);
+  }
+  commit(exp, label, sub) {
+    const st = this.state;
+    this.setState({ expenses: [...st.expenses, exp], dup: null });
+    const pieces = st.members.map((m, i) => ({ name: m.name, init: m.init, amt: fmt(exp.parts[i] || 0), i })).filter(p => p.i !== exp.payer && exp.parts[p.i] > 0);
+    if (!pieces.length) { this.go('home'); return this.toastMsg('Saved'); }
+    this.tear({ label, title: exp.title, amount: fmt(exp.amount), sub, pieces }, () => { this.go('home'); this.toastMsg('Stubs sent to ' + pieces.map(p => p.name).join(', ')); });
+  }
+  tear(ov, done) {
+    const T = this.T(), n = ov.pieces.length;
+    this.setState({ ov: { ...ov, phase: 'print', got: ov.pieces.map(() => false) } });
+    const ph = p => this.setState(s => ({ ov: s.ov && { ...s.ov, phase: p } }));
+    this.at(550 * T, () => ph('tear')); this.at(950 * T, () => ph('split')); this.at(1350 * T, () => ph('fly'));
+    ov.pieces.forEach((_, i) => this.at((1350 + 780 + i * 130) * T, () => this.setState(s => { if (!s.ov) return null; const g = s.ov.got.slice(); g[i] = true; return { ov: { ...s.ov, got: g } }; })));
+    const end = (1350 + 780 + n * 130 + 800) * T;
+    this.at(end, () => ph('done'));
+    this.at(end + 420 * T, () => { this.setState({ ov: null }); done && done(); });
+  }
+  settleDown() {
+    const pays = this.payments(this.state);
+    if (!pays.length || this.state.ov) return;
+    const t0 = performance.now(), dur = 900 * this.T();
+    this.setState({ charging: true, charge: 0 });
+    const tick = () => {
+      const p = Math.min(1, (performance.now() - t0) / dur);
+      if (p >= 1) {
+        this.setState({ charging: false, charge: 0 });
+        const st = this.state, ps = this.payments(st);
+        return this.tear({ label: 'Settlement', title: `${ps.length} payments to close the trip`, amount: fmt(ps.reduce((a, p) => a + p.amt, 0)), sub: st.settleMode === 'direct' ? 'Direct · no rerouting' : 'Simplified · fewest payments', pieces: ps.map(p => ({ name: st.members[p.from].name, init: st.members[p.from].init, amt: fmt(p.amt) })) },
+          () => this.toastMsg('Stubs sent. Each opens their own UPI app.'));
+      }
+      this.setState({ charge: p }); this.raf = requestAnimationFrame(tick);
+    };
+    this.raf = requestAnimationFrame(tick);
+  }
+  settleUp() { if (this.state.charging) { cancelAnimationFrame(this.raf); this.setState({ charging: false, charge: 0 }); } }
+  record(p, via) { this.setState(s => ({ settlements: [...s.settlements, { ...p, via, day: 2 }] })); }
+
+  renderVals() {
+    const st = this.state, T = this.T(), M = st.members, n = M.length, you = M[0].name;
+    const is = {}; ['splash', 'loading', 'empty', 'welcome', 'create', 'trips', 'home', 'add', 'split', 'balance', 'kitty', 'settle', 'invite', 'scan', 'budget', 'plan', 'vault', 'feed', 'recap'].forEach(s => is[s] = st.screen === s);
+    const nav = {}; ['splash', 'loading', 'empty', 'welcome', 'create', 'trips', 'home', 'add', 'split', 'kitty', 'settle', 'invite', 'scan', 'budget', 'plan', 'vault', 'feed', 'recap'].forEach(s => nav[s] = () => this.go(s));
+    const tab = {}; TAB_SCREENS.forEach(s => tab[s] = st.screen === s ? L : MU); if (st.screen === 'empty') tab.home = L;
+    const b = this.bal(st);
+
+    // home
+    const kSpent = st.kittySpends.reduce((a, k) => a + k.a, 0);
+    const expTotal = st.expenses.reduce((a, e) => a + e.amount, 0);
+    const home = {
+      heroLabel: b[0] > 0 ? 'You are owed' : b[0] < 0 ? 'You owe' : "You're all square",
+      heroAmt: fmt(b[0]), spent: fmt(expTotal + kSpent), count: st.expenses.length,
+      bals: M.map((m, i) => ({ name: i ? m.name : `${m.name} (you)`, init: m.init, sub: m.ghost ? 'Ghost · not on Toli yet' : 'On Toli', net: sfmt(b[i]), fg: b[i] > 0 ? L : TX, word: b[i] > 0 ? 'gets back' : b[i] < 0 ? 'owes' : 'settled', open: () => { this.setState({ derivFor: i }); this.go('balance'); } })),
+      recent: st.expenses.slice().reverse().slice(0, 5).map(e => ({ title: e.title, mark: e.cat.slice(0, 2).toUpperCase(), meta: `${M[e.payer].name} paid · ${e.parts.filter(p => p > 0).length} people`, amt: fmt(e.amount), yours: e.parts[0] ? `yours ${fmt(e.parts[0])}` : 'not in this' })),
+    };
+
+    // kitty
+    const kTot = st.kitty.reduce((a, x) => a + x, 0), kRem = kTot - kSpent, kPct = Math.max(0, Math.round(kRem / kTot * 100));
+    const kLow = kRem / kTot <= 0.2, kTop = Math.ceil(Math.max(0, kSpent - kRem) / 4 / 50) * 50, kMax = Math.max(...st.kitty);
+    const kit = {
+      total: fmt(kTot), spent: fmt(kSpent), remaining: fmt(kRem), pct: kPct, low: kLow, topup: fmt(kTop), offset: 389.6 * (1 - Math.max(0, kRem) / kTot),
+      flag: kLow ? 'LOW' : 'OK', flagFg: kLow ? L : MU,
+      people: st.kitty.map((c, i) => ({ name: M[i].name, amt: fmt(c), refund: fmt(Math.max(0, kRem) * c / kTot), w: Math.round(c / kMax * 100) })),
+      spends: st.kittySpends.map(k => ({ t: k.t, a: fmt(k.a) })),
+      doTopup: () => { this.setState(s => ({ kitty: s.kitty.map(x => x + kTop), topups: s.topups + 1 })); this.toastMsg(`Top-up logged · ${fmt(kTop)} from each person`); },
+    };
+
+    // budget
+    const B = 30000;
+    const spends = [...st.expenses.map(e => ({ a: e.amount, day: e.day, cat: e.cat, c: !!e.committed })), ...st.kittySpends.map(k => ({ a: k.a, day: k.day, cat: k.cat, c: false }))];
+    const tot = spends.reduce((a, s) => a + s.a, 0), com = spends.filter(s => s.c).reduce((a, s) => a + s.a, 0), inT = tot - com;
+    const d1 = spends.filter(s => !s.c && s.day === 1).reduce((a, s) => a + s.a, 0), d2 = inT - d1;
+    const proj = com + Math.round(inT / 2 * 4), over = Math.round((proj / B - 1) * 100);
+    const W = 300, H = 140, maxV = Math.max(B, proj) * 1.12, X = d => d / 4 * W, Y = v => +(H - v / maxV * H).toFixed(1);
+    const pts = [[0, com], [1, com + d1], [2, tot]];
+    const catMap = {}; spends.forEach(s => catMap[s.cat] = (catMap[s.cat] || 0) + s.a);
+    const cats = Object.entries(catMap).sort((a, c) => c[1] - a[1]); const cMax = cats[0] ? cats[0][1] : 1;
+    const bud = {
+      spent: fmt(tot), usedPct: Math.round(tot / B * 100), barPct: Math.min(100, Math.round(tot / B * 100)), committed: fmt(com), inTrip: fmt(inT),
+      msg: over > 0 ? `At this rate you'll finish ${over}% over, around ${fmt(proj)}.` : `On track: about ${fmt(proj)} by the last day.`,
+      msgBg: over > 0 ? L : CA, msgFg: over > 0 ? OA : TX,
+      budY: Y(B), budLabelY: Y(B) - 6, projY: Y(proj),
+      actual: 'M' + pts.map(p => `${X(p[0])} ${Y(p[1])}`).join(' L'), proj: `M${X(2)} ${Y(tot)} L${X(4)} ${Y(proj)}`,
+      dots: pts.map(p => ({ x: X(p[0]), y: Y(p[1]) })), xl: ['Before', 'Sat', 'Sun', 'Mon', 'Tue'].map((l, i) => ({ x: Math.min(292, Math.max(18, X(i))), l })),
+      cats: cats.map(([cat, a]) => ({ cat, amt: fmt(a), w: Math.round(a / cMax * 100) })),
+    };
+
+    // add
+    const c = this.calc(st), d = st.draft;
+    const last = st.expenses[st.expenses.length - 1];
+    const modeNames = { equal: 'Equal', exact: 'Exact', percent: 'Percent', shares: 'Shares', adjust: 'Adjust' };
+    const add = {
+      amtDisp: c.amt ? c.amt.toLocaleString('en-IN') : '0', amtFg: c.amt ? TX : RA, title: d.title,
+      per: !c.amt ? 'Amount is the only thing you need' : d.mode === 'equal' && c.k ? `${fmt(Math.floor(c.amt / c.k))} each · ${c.k} people` : c.ok ? `Split ${c.k} ways · ${modeNames[d.mode]}` : 'Split needs fixing',
+      payer: d.payer === -1 ? 'Kitty' : d.payer === 0 ? 'You' : M[d.payer].name,
+      mode: `${modeNames[d.mode]} · ${c.k}`,
+      repeatLabel: last ? `${last.title.split(' ')[0]} ${fmt(last.amount)}` : 'Repeat',
+      repeat: () => { if (!last) return; this.setState(s => ({ draft: { ...this.blank(n), amount: String(last.amount), cat: last.cat, title: last.title, payer: s.draft.payer, inc: M.map((_, i) => (last.parts[i] || 0) > 0) } })); },
+      setTitle: e => this.setDraft({ title: e.target.value }),
+      cyclePayer: () => this.setDraft({ payer: d.payer === -1 ? 0 : d.payer + 1 >= n ? -1 : d.payer + 1 }),
+      cats: CATS.map(x => ({ label: x, bg: d.cat === x ? L : CA, fg: d.cat === x ? OA : TX, pick: () => this.setDraft({ cat: x }) })),
+      keys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '00', '0', '⌫'].map(k => ({ label: k, press: () => this.press(k) })),
+      saveBg: c.ok ? L : RA, saveFg: c.ok ? OA : MU, save: () => this.save(false),
+      dupOn: !!st.dup, dupText: st.dup ? `${M[st.dup.payer].name} already logged ${fmt(st.dup.amount)} for “${st.dup.title}” today. Two people logging the same bill is common.` : '',
+      dupSkip: () => { this.setState({ dup: null }); this.go('home'); this.toastMsg('Skipped the duplicate'); }, dupSave: () => this.save(true),
+    };
+
+    // split
+    const stepBy = { exact: 100, percent: 5, shares: 1, adjust: 50 }[d.mode];
+    const sp = {
+      amount: fmt(c.amt),
+      modes: [['equal', 'Equal', ''], ['exact', 'Exact', '₹'], ['percent', 'Percent', '%'], ['shares', 'Shares', '×'], ['adjust', 'Adjust', '+₹'], ['itemised', 'Itemised', 'PRO']].map(([k, l, t]) => ({ label: l, tag: t, bg: d.mode === k ? L : CA, fg: d.mode === k ? OA : TX, pick: () => this.setMode(k) })),
+      help: { equal: 'Untick anyone who wasn’t there. The rest split it evenly.', exact: 'Type what each person owes. It has to add up to the total.', percent: 'Percentages have to reach 100%.', shares: 'A couple can count as 2 shares, singles as 1.', adjust: 'Split evenly, then add extra to someone (the extra drink).' }[d.mode],
+      rows: M.map((m, i) => ({
+        name: i ? m.name : 'You', init: m.init, amt: d.inc[i] ? fmt(c.sh[i]) : '—', op: d.inc[i] ? 1 : 0.45,
+        chk: d.inc[i] ? '✓' : '', chkBg: d.inc[i] ? L : 'transparent',
+        toggle: () => this.setState(s => { const inc = s.draft.inc.slice(); inc[i] = !inc[i]; return { draft: { ...s.draft, inc } }; }),
+        step: d.mode !== 'equal' && d.inc[i], val: d.mode === 'percent' ? `${d.vals[i]}%` : d.mode === 'shares' ? `${d.vals[i]} share${d.vals[i] === 1 ? '' : 's'}` : d.mode === 'adjust' ? `+${fmt(d.vals[i])}` : fmt(d.vals[i]),
+        dec: () => this.setState(s => { const v = s.draft.vals.slice(); v[i] = Math.max(0, v[i] - stepBy); return { draft: { ...s.draft, vals: v } }; }),
+        inc: () => this.setState(s => { const v = s.draft.vals.slice(); v[i] = v[i] + stepBy; return { draft: { ...s.draft, vals: v } }; }),
+      })),
+      status: !c.amt ? 'Add an amount first' : c.un === 0 ? (c.ok ? `✓ All ${fmt(c.amt)} assigned` : 'Pick at least one person') : c.un > 0 ? `${c.unit === '%' ? c.un + '%' : fmt(c.un)} unassigned` : `${c.unit === '%' ? -c.un + '%' : fmt(-c.un)} too much`,
+      statusFg: c.ok ? L : TX, canDist: c.un > 0 && ['exact', 'percent'].includes(d.mode),
+      distribute: () => this.setState(s => { const v = s.draft.vals.slice(); const ids = c.ids; const per = Math.floor(c.un / ids.length); let r = c.un - per * ids.length; ids.forEach(i => { v[i] += per + (r-- > 0 ? 1 : 0); }); return { draft: { ...s.draft, vals: v } }; }),
+    };
+
+    // derivation
+    const m = Math.min(st.derivFor, n - 1);
+    const lines = [];
+    st.expenses.forEach(e => { if (e.payer === m) lines.push({ t: `Paid for ${e.title}`, sub: `Day ${e.day} · ${e.time}`, v: sfmt(e.amount) }); if (e.parts[m]) lines.push({ t: `Share of ${e.title}`, sub: `${e.parts.filter(p => p > 0).length} people`, v: sfmt(-e.parts[m]) }); });
+    st.settlements.forEach(s => { if (s.from === m) lines.push({ t: `Paid ${M[s.to].name}`, sub: s.via === 'upi' ? 'UPI · confirmed by payer' : 'Marked as paid', v: sfmt(s.amt) }); if (s.to === m) lines.push({ t: `Received from ${M[s.from].name}`, sub: 'Settlement', v: sfmt(-s.amt) }); });
+    const der = { name: M[m].name, net: sfmt(b[m]), word: b[m] > 0 ? 'gets back' : b[m] < 0 ? 'owes' : 'is settled', count: lines.length, lines, pick: M.map((x, i) => ({ name: x.name, bg: i === m ? L : CA, fg: i === m ? OA : TX, pick: () => this.setState({ derivFor: i }) })) };
+
+    // settle
+    const pays = this.payments(st), directN = this.direct(st).length, simpN = this.simplify(b).length;
+    const why = i => st.expenses.filter(e => e.payer !== i && e.parts[i]).map(e => `${e.title.split(' ·')[0]} ${fmt(e.parts[i])}`).slice(0, 2).join(' + ');
+    const stl = {
+      open: pays.length > 0, done: pays.length === 0, recorded: st.settlements.length, kittyNote: kRem > 0,
+      before: directN > simpN ? directN : pays.length, after: pays.length,
+      modes: [['simplified', 'Simplified'], ['direct', 'Direct']].map(([k, l]) => ({ label: l, bg: st.settleMode === k ? L : 'transparent', fg: st.settleMode === k ? OA : TX, pick: () => this.setState({ settleMode: k }) })),
+      modeHelp: st.settleMode === 'direct' ? 'Only people who actually owe each other pay each other. More payments, no rerouting.' : `Debts are rerouted so ${directN} pairwise payments become ${simpN}. Nobody's total changes.`,
+      pays: pays.map(p => {
+        const key = p.from + '-' + p.to;
+        return {
+          init: M[p.from].init, line: `${M[p.from].name} pays ${p.to === 0 ? 'you' : M[p.to].name}`, why: why(p.from) || 'Net of shared expenses', amt: fmt(p.amt),
+          remindLabel: st.reminded[key] ? 'Reminded · 48h' : 'Remind',
+          remind: () => { if (st.reminded[key]) return this.toastMsg('One reminder per 48 hours. Keeps it friendly.'); this.setState(s => ({ reminded: { ...s.reminded, [key]: true } })); this.toastMsg(`Nudge sent to ${M[p.from].name}`); },
+          paid: () => { this.record(p, 'manual'); this.toastMsg(`${M[p.from].name} → ${M[p.to].name} ${fmt(p.amt)} recorded`); },
+          view: () => { this.go('invite'); this.setState({ inv: { who: p.from, phase: 'owe' } }); },
+          trace: () => { this.setState({ derivFor: p.from }); this.go('balance'); },
+        };
+      }),
+      fill: st.charging ? st.charge * 100 : 0, btnFg: st.charging && st.charge > 0.55 ? OA : TX,
+      btnLabel: st.charging ? 'Keep holding…' : 'Hold to tear & send stubs',
+      down: () => this.settleDown(), up: () => this.settleUp(), share: () => this.toastMsg('Summary card ready for WhatsApp'),
+    };
+
+    // invite
+    const iv = st.inv, who = iv.who, myPay = who != null ? this.simplify(b).find(p => p.from === who) : null;
+    const inv = {
+      pick: iv.phase === 'pick', owe: iv.phase === 'owe' && !!myPay, upi: iv.phase === 'upi', confirm: iv.phase === 'confirm', done: iv.phase === 'done' || (iv.phase === 'owe' && !myPay),
+      people: M.slice(1).map((x, j) => ({ name: x.name, init: x.init, pick: () => this.setState({ inv: { who: j + 1, phase: 'owe' } }) })),
+      name: who != null ? M[who].name : '', amt: myPay ? fmt(myPay.amt) : '', raw: myPay ? myPay.amt : 0,
+      lines: who != null ? [...st.expenses.filter(e => e.parts[who] && e.payer !== who).map(e => ({ t: e.title, v: fmt(e.parts[who]) })), ...st.expenses.filter(e => e.payer === who).map(e => ({ t: `You paid ${e.title}`, v: '−' + fmt(e.amount - (e.parts[who] || 0)) }))] : [],
+      pay: () => { this.setState({ inv: { ...iv, phase: 'upi' } }); this.at(1400 * T, () => this.setState(s => ({ inv: { ...s.inv, phase: 'confirm' } }))); },
+      yes: () => { if (myPay) this.record(myPay, 'upi'); this.setState({ inv: { ...iv, phase: 'done', paid: true } }); },
+      no: () => this.setState({ inv: { ...iv, phase: 'owe' } }),
+      doneTitle: iv.paid ? 'Recorded.' : "You're all square.", stamp: iv.paid ? 'PAID' : 'SQUARE',
+      doneText: iv.paid ? 'Aditya has been notified. This is based on your confirmation, since Toli never sees the payment itself.' : 'Nothing to pay on this trip right now.',
+    };
+
+    // scan
+    const sw = st.scanW, sub = Array(4).fill(0);
+    SCAN.forEach((it, j) => { const k = sw[j].reduce((a, x) => a + x, 0); if (!k) return; sw[j].forEach((x, i) => { if (x) sub[i] += it.a / k; }); });
+    const subTot = SCAN.reduce((a, s) => a + s.a, 0), extra = Math.round(subTot * 0.05) + Math.round(subTot * 0.1), total = subTot + extra;
+    const per = sub.map(s => Math.floor(s + extra * s / subTot)); per[per.indexOf(Math.max(...per))] += total - per.reduce((a, x) => a + x, 0);
+    const scan = {
+      camera: st.scanPhase === 'camera', draft: st.scanPhase === 'draft', title: st.scanPhase === 'camera' ? 'Scan bill' : 'Thalassa · review',
+      sketch: [62, 48, 70, 40, 56, 44, 66], extra: fmt(extra), total: fmt(total),
+      items: SCAN.map((it, j) => ({ n: it.n, a: fmt(it.a), who: M.slice(0, 4).map((x, i) => ({ init: x.init, bg: sw[j][i] ? L : RA, fg: sw[j][i] ? OA : MU, toggle: () => this.setState(s => { const w = s.scanW.map(r => r.slice()); w[j][i] = w[j][i] ? 0 : 1; return { scanW: w }; }) })) })),
+      per: M.slice(0, 4).map((x, i) => ({ name: x.name, amt: fmt(per[i]) })),
+      confirm: () => { if (per.some(p => isNaN(p))) return; const parts = M.map((_, i) => per[i] || 0); this.setState({ hist: ['home'] }); this.commit({ id: Date.now(), title: 'Thalassa · itemised', cat: 'Food', amount: total, payer: 0, parts, day: 2, time: '21:41' }, 'Itemised bill', `You paid · ${SCAN.length} items split by who ate what`); },
+    };
+
+    // plan
+    const allPlan = Object.values(PLAN).flat(), planned = allPlan.reduce((a, x) => a + x[4], 0), dayItems = PLAN[st.planDay];
+    const plan = {
+      total: fmt(planned), vs: planned > B ? `${fmt(planned - B)} over budget` : `${fmt(B - planned)} under budget`,
+      days: [['Sat', 12], ['Sun', 13], ['Mon', 14], ['Tue', 15]].map(([dow, dn], i) => ({ dow, n: dn, bg: st.planDay === i + 1 ? L : CA, fg: st.planDay === i + 1 ? OA : TX, pick: () => this.setState({ planDay: i + 1 }) })),
+      pins: dayItems.map((_, i) => ({ x: PINS[i][0], y: PINS[i][1], n: i + 1 })), pinCount: dayItems.length,
+      items: dayItems.map(([time, type, title, place, est, act], i) => ({
+        n: i + 1, time, type: type.toUpperCase(), title, place, hasCost: est > 0, est: fmt(est),
+        act: act == null ? 'not spent yet' : `actual ${fmt(act)} · ${act >= est ? '+' : '−'}${Math.abs(Math.round((act / est - 1) * 100))}%`,
+        actBg: act == null ? 'transparent' : act > est ? L : RA, actFg: act != null && act > est ? OA : MU,
+      })),
+    };
+
+    // vault
+    const vault = {
+      items: BOOK.map(x => ({ ...x, open: st.vaultOpen === x.id, bg: st.vaultOpen === x.id ? L : CA, fg: st.vaultOpen === x.id ? OA : TX, toggle: () => this.setState(s => ({ vaultOpen: s.vaultOpen === x.id ? null : x.id })) })),
+      docs: [{ n: 'Aadhaar · 4 copies', s: 'PDF · 2.1 MB · all members' }, { n: 'Travel insurance', s: 'PDF · 640 KB · ICICI Lombard' }, { n: 'Scuba waiver', s: 'PDF · 180 KB · signed' }],
+    };
+
+    // feed
+    const ev = [
+      { day: 1, t: '06:40', mark: '✈', text: 'Trip started · flight BLR → GOI' },
+      { day: 1, t: '08:10', mark: 'J', text: 'Jay joined the trip and claimed his spot' },
+      { day: 1, t: '09:00', mark: 'K', text: `Kitty started · ${fmt(15000)} in, held by Rahul` },
+      { day: 2, t: '11:20', mark: 'R', text: 'Rahul: scuba moved to 12:00, pickup at Baga jetty' },
+      { day: 2, t: '18:40', mark: 'N', text: 'Neha posted a photo', photo: true },
+      ...st.expenses.map(e => ({ day: e.day, t: e.time, mark: '₹', text: `${M[e.payer].name} paid ${fmt(e.amount)} · ${e.title}`, hi: true })),
+      ...st.kittySpends.map(k => ({ day: k.day, t: k.time, mark: 'K', text: `Kitty paid ${fmt(k.a)} · ${k.t}` })),
+      ...st.settlements.map(s => ({ day: 2, t: 'just now', mark: '✓', text: `${M[s.from].name} paid ${M[s.to].name} ${fmt(s.amt)}`, hi: true })),
+    ];
+    const feed = [2, 1].map(dn => ({ label: dn === 2 ? 'SUN 13 OCT · TODAY' : 'SAT 12 OCT', items: ev.filter(e => e.day === dn).sort((a, z) => (z.t === 'just now' ? '99' : z.t).localeCompare(a.t === 'just now' ? '99' : a.t)).map(e => ({ ...e, photo: !!e.photo, bg: e.hi ? L : RA, fg: e.hi ? OA : TX })) }));
+
+    // recap
+    const perP = M.map((_, i) => st.expenses.reduce((a, e) => a + (e.parts[i] || 0), 0) + (i < 4 ? kSpent / 4 : 0));
+    const pMax = Math.max(...perP, 1), big = [...st.expenses.map(e => [e.title, e.amount]), ...st.kittySpends.map(k => [k.t, k.a])].sort((a, z) => z[1] - a[1])[0];
+    const dayTot = [1, 2].map(dn => spends.filter(s => s.day === dn).reduce((a, s) => a + s.a, 0));
+    const recap = {
+      total: fmt(tot), sub: `${n} friends · ${st.expenses.length + st.kittySpends.length} expenses · ${st.settlements.length} settled`,
+      stats: [{ k: 'Biggest', v: fmt(big[1]), s: big[0].split(' ·')[0] }, { k: 'Busiest day', v: dayTot[1] >= dayTot[0] ? 'Sunday' : 'Saturday', s: fmt(Math.max(...dayTot)) }, { k: 'Top category', v: cats[0] ? cats[0][0] : '—', s: cats[0] ? fmt(cats[0][1]) : '' }],
+      people: M.map((x, i) => ({ name: x.name, amt: st.recapHide ? '•••' : fmt(perP[i]), w: st.recapHide ? 100 : Math.round(perP[i] / pMax * 100) })),
+      swBg: st.recapHide ? L : RA, swX: st.recapHide ? 21 : 3,
+      toggle: () => this.setState(s => ({ recapHide: !s.recapHide })),
+      share: () => this.toastMsg('Recap card + link ready for WhatsApp'), save: () => this.toastMsg('Saved to Photos'),
+    };
+
+    // create
+    const create = {
+      count: n, template: st.template, setName: e => this.setState({ tripName: e.target.value }), setNew: e => this.setState({ newMember: e.target.value }),
+      templates: ['Beach trip', 'Road trip', 'Trek', 'Wedding', 'Office offsite', 'Other'].map(t => ({ label: t, bg: st.template === t ? L : CA, fg: st.template === t ? OA : TX, pick: () => this.setState({ template: t }) })),
+      members: M.map((x, i) => ({ name: i ? x.name : 'You', init: x.init, sub: i ? 'ghost' : 'organiser', border: i ? 'dashed' : 'solid' })),
+      add: () => this.addMember(), key: e => { if (e.key === 'Enter') this.addMember(); },
+      go: () => { if (!st.tripName.trim()) return this.toastMsg('Give the trip a name'); this.go('empty'); this.toastMsg(`${st.tripName} created · works offline`); },
+    };
+
+    // overlay
+    let ovOn = false, ov = {};
+    if (st.ov) {
+      ovOn = true;
+      const o = st.ov, k = o.pieces.length, ph = o.phase, base = Math.floor(310 / k);
+      const torn = ph !== 'print', flying = ph === 'fly' || ph === 'done', split = ph === 'split' || flying;
+      const gap = Math.min(76, 320 / k), axs = o.pieces.map((_, i) => 185 + (i - (k - 1) / 2) * gap);
+      const mid = i => i - (k - 1) / 2;
+      ov = {
+        label: o.label, title: o.title, amount: o.amount, sub: o.sub, perf: !torn, torn, opacity: ph === 'done' ? 0 : 1,
+        headline: o.got.every(Boolean) ? 'STUBS DELIVERED' : flying ? 'SENDING STUBS' : 'TEARING',
+        mainT: torn ? 'translateY(-8px)' : 'none',
+        avatars: o.pieces.map((p, i) => ({ init: p.init, name: p.name, left: axs[i] - 26, bg: o.got[i] ? L : RA, fg: o.got[i] ? OA : TX, scale: o.got[i] ? 1.12 : 1, label: o.got[i] ? p.amt : '·', lfg: o.got[i] ? L : MU })),
+        pieces: o.pieces.map((p, i) => {
+          const w = i === k - 1 ? 310 - base * (k - 1) : base, left = 30 + base * i, cx = left + w / 2, dy = 106 - 479, dx = axs[i] - cx, dl = i * 130 * T;
+          let coreT = 'none';
+          if (ph === 'tear') coreT = `translateY(${14 + i * 4}px) rotate(2deg)`;
+          if (ph === 'split') coreT = `translate(${mid(i) * 14}px,30px) rotate(${mid(i) * 7}deg)`;
+          if (flying) coreT = `rotate(${mid(i) * 22 + 10}deg) scale(.34)`;
+          return {
+            name: p.name, init: p.init, amt: p.amt, left, w: torn ? w : w + 2, opacity: o.got[i] ? 0 : 1, zig: torn,
+            outerT: flying ? `translateX(${dx}px)` : 'none', outerTr: `transform ${780 * T}ms cubic-bezier(.45,0,.25,1) ${dl}ms, opacity .15s`,
+            innerT: flying ? `translateY(${dy}px)` : 'none', innerTr: `transform ${780 * T}ms cubic-bezier(.35,1.35,.6,1) ${dl}ms`,
+            coreT, coreTr: `transform ${420 * T}ms cubic-bezier(.2,.9,.3,1.3) ${flying ? dl : 0}ms`,
+            radius: split ? '4px 4px 16px 16px' : k === 1 ? '0 0 20px 20px' : i === 0 ? '0 0 0 20px' : i === k - 1 ? '0 0 20px 0' : '0',
+            shadow: split ? '0 18px 30px rgba(0,0,0,.4)' : 'none',
+          };
+        }),
+      };
+    }
+
+    const emb = this.emb();
+    return {
+      scale: st.scale, page: { side: !emb, minH: emb ? '800px' : '100vh' }, tripName: st.tripName, newMember: st.newMember,
+      side: SCREENS.map(([label, items]) => ({ label, items: items.map(([k, l]) => ({ label: l, bg: st.screen === k ? L : 'transparent', fg: st.screen === k ? OA : TX, go: () => this.go(k) })) })),
+      reset: () => { this.timers.forEach(clearTimeout); this.setState({ ...this.init(), screen: 'home', hist: ['trips'], scale: st.scale }); },
+      is, nav, tab, back: () => this.back(), showTabs: TAB_SCREENS.includes(st.screen),
+      home, kit, bud, add, sp, der, stl, inv, scan, plan, vault, feed, recap, create, ovOn, ov,
+      toastOn: !!st.toast, toast: st.toast,
+      anim: ({ slide: { push: 'tsPushIn .38s cubic-bezier(.2,.9,.3,1) both', pop: 'tsPopIn .38s cubic-bezier(.2,.9,.3,1) both', tab: 'tsFadeIn .28s ease both' }, ticket: { push: 'tsTicketIn .5s cubic-bezier(.2,.9,.3,1.1) both', pop: 'tsTicketBack .42s cubic-bezier(.2,.9,.3,1) both', tab: 'tsFadeIn .28s ease both' }, fade: { push: 'tsFadeIn .3s ease both', pop: 'tsFadeIn .3s ease both', tab: 'tsFadeIn .3s ease both' } }[this.props.transition || 'slide'] || {})[st.dir || 'tab'],
+      statusFg: st.screen === 'welcome' ? OA : TX, offlineOn: !!this.props.offline && this.props.offline !== 'false',
+      netLabel: this.props.offline && this.props.offline !== 'false' ? 'OFFLINE' : '5G ▮▮▮', skelRows: [1, 2, 3, 4],
+    };
+  }
+  addMember() {
+    const nm = this.state.newMember.trim(); if (!nm) return;
+    this.setState(s => ({
+      newMember: '', members: [...s.members, { name: nm, init: nm[0].toUpperCase(), ghost: true }],
+      expenses: s.expenses.map(e => ({ ...e, parts: [...e.parts, 0] })), kitty: [...s.kitty, 0],
+      draft: { ...s.draft, inc: [...s.draft.inc, true], vals: [...s.draft.vals, 0] },
+    }));
+  }
+}
+</script>
+</body>
+</html>

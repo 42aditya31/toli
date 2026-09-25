@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#212429}a{color:#D4F26A}a:hover{color:#F2F4F6}</style>
+</helmet>
+<div style="padding:56px 64px;display:flex;flex-direction:column;gap:48px;font-family:'Bricolage Grotesque',sans-serif;color:#F2F4F6;background:#212429;min-height:100vh">
+  <div style="display:flex;flex-direction:column;gap:8px;max-width:720px">
+    <div style="display:flex;align-items:center;gap:18px"><svg width="64" height="64" viewBox="0 0 120 120"><rect width="120" height="120" rx="28" fill="#2B2F36"></rect><rect x="22" y="36" width="76" height="48" rx="10" fill="#D4F26A"></rect><circle cx="76" cy="36" r="7" fill="#2B2F36"></circle><circle cx="76" cy="84" r="7" fill="#2B2F36"></circle><line x1="76" y1="46" x2="76" y2="74" stroke="#1F2A00" stroke-width="3" stroke-dasharray="4 4"></line></svg><div style="margin-left:-4px"><div style="position:relative;width:116px;height:64px;font-size:60px;font-weight:800;letter-spacing:-.06em;line-height:64px;flex:none"><span style="position:absolute;inset:0;text-align:center;color:#F2F4F6;clip-path:polygon(0 0,100% 0,100% 55%,95% 62%,90% 55%,85% 62%,80% 55%,75% 62%,70% 55%,65% 62%,60% 55%,55% 62%,50% 55%,45% 62%,40% 55%,35% 62%,30% 55%,25% 62%,20% 55%,15% 62%,10% 55%,5% 62%,0 55%)">toli</span><span style="position:absolute;inset:0;text-align:center;color:#D4F26A;transform:translate(4px,5px) rotate(3deg);clip-path:polygon(0 55%,5% 62%,10% 55%,15% 62%,20% 55%,25% 62%,30% 55%,35% 62%,40% 55%,45% 62%,50% 55%,55% 62%,60% 55%,65% 62%,70% 55%,75% 62%,80% 55%,85% 62%,90% 55%,95% 62%,100% 55%,100% 100%,0 100%)">toli</span></div></div><span style="font-size:18px;color:#A3A9B3;padding-top:10px">टोली · all screens</span></div>
+    <span style="font-size:16px;line-height:1.5;color:#A3A9B3">Every screen from the PRD, R1 to R3. Each phone is live, so you can click inside it. The full clickable flow with shared state is in <a href="Toli App.dc.html">Toli App</a>.</span>
+  </div>
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div style="display:flex;align-items:baseline;gap:12px;border-bottom:1px solid #393E47;padding-bottom:12px">
+        <span style="font:700 13px 'JetBrains Mono',monospace;letter-spacing:.12em;color:#D4F26A">{{ g.id }}</span>
+        <span style="font-size:22px;font-weight:600">{{ g.title }}</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:40px">
+        <sc-for list="{{ g.items }}" as="s" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">{{ s.label }}</span><span style="font-size:13px;color:#A3A9B3">{{ s.note }}</span></div>
+            <dc-import name="Toli App" screen="{{ s.key }}" transition="{{ s.tr }}" offline="{{ s.off }}" embedded="true" hint-size="390px,800px"></dc-import>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const G = [
+      ['SYS', 'System states', [['splash', 'Splash', 'Ticket prints, stub tears, wordmark lands'], ['loading', 'Skeleton loading', 'Shimmer while a trip syncs'], ['empty', 'Empty trip', 'Right after Create trip'], ['home', 'Offline', 'Everything works; changes queue locally', 'slide', 'true']]],
+      ['MOTION', 'Page transitions · tap into any card', [['home', 'Slide', 'Push from right, pop from left', 'slide'], ['home', 'Ticket', 'Screens rise like a printed ticket', 'ticket'], ['home', 'Fade', 'Quiet crossfade', 'fade']]],
+      ['R1', 'Splitting core', [['welcome', 'Welcome', 'No sign-up to start'], ['create', 'Create trip', 'Name only · ghost members'], ['trips', 'Trips', 'Active, planning, archived'], ['home', 'Trip home', 'Live balance, kitty, budget'], ['add', 'Add expense', 'Amount-first keypad · tears stubs on save'], ['split', 'Split editor', 'Equal, exact, %, shares, adjust, itemised'], ['balance', 'Balance trace', 'Every number explained'], ['kitty', 'Kitty', 'Common pot · proportional refund'], ['settle', 'Settle up', 'Hold to tear · 5 payments → 3'], ['invite', 'Invite link (web)', 'See what you owe before installing']]],
+      ['R2', 'Money context + planning', [['scan', 'Receipt scan', 'Pro · itemised, tax prorated'], ['budget', 'Budget burn-down', 'Committed vs in-trip, projection'], ['plan', 'Itinerary + map', 'Estimate vs actual per item']]],
+      ['R3', 'Vault + memory', [['vault', 'Bookings vault', 'PNRs and documents offline'], ['feed', 'Trip feed', 'Spends, notes, photos'], ['recap', 'Recap card', 'Shareable, amounts can be hidden']]],
+    ];
+    return { groups: G.map(([id, title, items]) => ({ id, title, items: items.map(([key, label, note, tr, off]) => ({ key, label, note, tr: tr || 'slide', off: off || 'false' })) })) };
+  }
+}
+</script>
+</body>
+</html>

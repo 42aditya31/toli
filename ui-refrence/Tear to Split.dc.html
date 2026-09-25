@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#212429;overflow:hidden}
+a{color:#D4F26A}a:hover{color:#F2F4F6}
+@keyframes tsPop{0%{opacity:0;transform:scale(2.6) rotate(-34deg)}60%{opacity:1;transform:scale(.9) rotate(-10deg)}100%{opacity:1;transform:scale(1) rotate(-12deg)}}
+@keyframes tsDrop{0%{opacity:0;transform:translateY(-40px) scale(.86)}55%{opacity:1;transform:translateY(6px) scale(1.03)}75%{transform:translateY(-2px) rotate(-1deg)}100%{transform:none}}
+@keyframes tsBuzz{0%,100%{transform:none}20%{transform:translateX(-3px) rotate(-1deg)}40%{transform:translateX(3px) rotate(1deg)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+@keyframes tsFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div style="width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#212429;font-family:'Bricolage Grotesque',sans-serif;color:#F2F4F6">
+<div style="flex:none;position:relative;width:1320px;height:860px;transform:scale({{ scale }});transform-origin:center">
+
+  <div style="position:absolute;left:560px;top:44px;width:700px;display:flex;flex-direction:column;gap:10px">
+    <div style="font:500 13px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#A3A9B3">Toli · tear-to-split</div>
+    <div style="font-size:32px;font-weight:800;line-height:1.05;letter-spacing:-.02em;white-space:nowrap">Tear the ticket. Everyone gets their stub.</div>
+    <div style="font-size:16px;color:#A3A9B3">{{ hintText }}</div>
+  </div>
+
+  <div style="position:absolute;left:70px;top:30px;width:390px;height:800px;box-sizing:border-box;padding:10px;border-radius:56px;background:#0E0F11;box-shadow:0 40px 80px rgba(0,0,0,.45)">
+    <div style="position:relative;width:370px;height:780px;border-radius:46px;background:#2B2F36;overflow:hidden">
+      <div style="position:absolute;top:16px;left:30px;right:30px;display:flex;justify-content:space-between;font:700 14px 'JetBrains Mono',monospace">
+        <span>9:41</span><span style="color:#A3A9B3">5G ▮▮▮</span>
+      </div>
+      <div style="position:absolute;top:52px;left:18px;right:18px;height:48px;display:flex;align-items:center;justify-content:space-between">
+        <div style="width:48px;height:48px;border-radius:16px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:20px">‹</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+          <span style="font-size:20px;font-weight:600">Split now</span>
+          <span style="font-size:12px;color:#A3A9B3">Goa Weekend · Day 2</span>
+        </div>
+        <div style="width:48px;height:48px;border-radius:16px;background:#393E47;display:flex;align-items:center;justify-content:center;font-size:18px;color:#A3A9B3">⋯</div>
+      </div>
+
+      <div style="position:absolute;top:386px;left:18px;width:334px;height:114px;box-sizing:border-box;border:2px dashed #393E47;border-radius:0 0 20px 20px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#A3A9B3;opacity:{{ ghostOpacity }};transition:opacity .4s">Stub torn · sent to 3 phones</div>
+
+      <div onClick="{{ ticketClick }}" style="position:absolute;top:130px;left:18px;width:334px;height:250px;box-sizing:border-box;padding:20px 22px;background:#D4F26A;color:#1F2A00;border-radius:24px 24px 0 0;display:flex;flex-direction:column;gap:14px;cursor:pointer;transform:{{ ticketTransform }};transition:transform .3s cubic-bezier(.2,.9,.3,1.3)">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="background:#1F2A00;color:#D4F26A;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px">Receipt #12</span>
+          <span style="font:500 12px 'JetBrains Mono',monospace;opacity:.7">21:40 · Candolim</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:12px;opacity:.65">Title</span>
+          <span style="font-size:22px;font-weight:600">Dinner at Thalassa</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <span style="font-size:12px;opacity:.65">Total bill</span>
+          <span style="font-size:48px;font-weight:800;letter-spacing:-.03em;line-height:1">₹4,800</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:26px;height:26px;border-radius:50%;background:#1F2A00;color:#D4F26A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">A</div>
+            <span>Paid by <b>you</b></span>
+          </div>
+          <span style="opacity:.75">Equal · 4 people</span>
+        </div>
+        <sc-if value="{{ showPerf }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;left:24px;right:24px;bottom:-1px;height:2px;display:flex;justify-content:space-between">
+            <sc-for list="{{ dashes }}" as="d" hint-placeholder-count="20">
+              <div style="width:8px;height:2px;border-radius:2px;background:#1F2A00;opacity:{{ d.op }};transition:opacity .1s"></div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <div style="position:absolute;left:-12px;bottom:0;width:24px;height:12px;border-radius:12px 12px 0 0;background:#2B2F36"></div>
+        <div style="position:absolute;right:-12px;bottom:0;width:24px;height:12px;border-radius:12px 12px 0 0;background:#2B2F36"></div>
+        <sc-if value="{{ torn }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;left:12px;right:12px;bottom:-6px;height:6px;background:linear-gradient(135deg,#D4F26A 4.5px,transparent 0) 0 0/9px 6px repeat-x,linear-gradient(-135deg,#D4F26A 4.5px,transparent 0) 0 0/9px 6px repeat-x"></div>
+        </sc-if>
+        <sc-if value="{{ allDelivered }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;right:18px;top:92px;padding:8px 12px;border:3px solid #1F2A00;border-radius:10px;font:700 15px 'JetBrains Mono',monospace;letter-spacing:.08em;transform:rotate(-12deg);animation:tsPop .5s cubic-bezier(.2,.9,.3,1.2) both">{{ stampText }}</div>
+        </sc-if>
+      </div>
+
+      <div style="position:absolute;top:520px;left:18px;width:334px;box-sizing:border-box;padding:8px 16px;background:#212429;border-radius:24px;display:flex;flex-direction:column">
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:12px;height:56px;border-bottom:{{ r.border }}">
+            <div style="width:36px;height:36px;border-radius:50%;background:#393E47;display:flex;align-items:center;justify-content:center;font-weight:800">{{ r.init }}</div>
+            <div style="flex:1;display:flex;flex-direction:column">
+              <span style="font-size:15px;font-weight:600">{{ r.name }}</span>
+              <span style="font:500 12px 'JetBrains Mono',monospace;color:#A3A9B3">₹1,200 share</span>
+            </div>
+            <span style="font-size:12px;font-weight:600;padding:6px 10px;border-radius:999px;background:{{ r.chipBg }};color:{{ r.chipFg }};transition:background .3s">{{ r.status }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div onPointerDown="{{ down }}" onPointerUp="{{ up }}" onPointerLeave="{{ up }}" onClick="{{ click }}" style="position:absolute;top:704px;left:18px;width:334px;height:60px;border-radius:20px;background:#393E47;overflow:hidden;cursor:pointer;user-select:none;touch-action:none">
+        <div style="position:absolute;left:0;top:0;bottom:0;width:{{ fillPct }}%;background:#D4F26A"></div>
+        <div style="position:relative;height:100%;display:flex;align-items:center;justify-content:center;gap:10px;font-size:17px;font-weight:600;color:{{ btnFg }}">
+          <span>{{ btnLabel }}</span><span style="font-family:'JetBrains Mono',monospace;opacity:.7">{{ btnIcon }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <sc-for list="{{ friends }}" as="f" hint-placeholder-count="3">
+    <div style="position:absolute;left:{{ f.left }}px;top:164px;width:230px;display:flex;justify-content:space-between;align-items:center;font-size:14px">
+      <span style="font-weight:600">{{ f.name }}’s phone</span>
+      <span style="font:500 11px 'JetBrains Mono',monospace;color:#A3A9B3">{{ f.tag }}</span>
+    </div>
+    <div style="position:absolute;left:{{ f.left }}px;top:200px;width:230px;height:470px;box-sizing:border-box;padding:8px;border-radius:38px;background:#0E0F11;box-shadow:0 30px 60px rgba(0,0,0,.4)">
+      <div style="position:relative;width:214px;height:454px;border-radius:30px;background:#2B2F36;overflow:hidden">
+        <div style="position:absolute;top:26px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:0">
+          <span style="font-size:12px;color:#A3A9B3">Sat, 12 October</span>
+          <span style="font-size:56px;font-weight:800;letter-spacing:-.03em;line-height:1.05">21:41</span>
+        </div>
+        <sc-if value="{{ f.delivered }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:118px;left:10px;width:194px;animation:tsDrop .6s cubic-bezier(.2,.9,.3,1.2) both">
+            <div style="height:6px;margin:0 8px;background:linear-gradient(45deg,{{ f.bannerBg }} 4.5px,transparent 0) 0 100%/9px 6px repeat-x,linear-gradient(-45deg,{{ f.bannerBg }} 4.5px,transparent 0) 0 100%/9px 6px repeat-x"></div>
+            <div style="background:{{ f.bannerBg }};color:{{ f.bannerFg }};border-radius:4px 4px 18px 18px;padding:12px;display:flex;flex-direction:column;gap:8px;transition:background .3s">
+              <div style="display:flex;justify-content:space-between;font:700 10px 'JetBrains Mono',monospace;letter-spacing:.1em;opacity:.7">
+                <span>TOLI · GOA WEEKEND</span><span>NOW</span>
+              </div>
+              <div style="font-size:13px;line-height:1.3">Aditya tore you a stub for <b>Dinner at Thalassa</b></div>
+              <div style="font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1">₹1,200</div>
+              <sc-if value="{{ f.unpaid }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ f.pay }}" style="height:40px;border-radius:12px;background:#1F2A00;color:#D4F26A;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#000">Pay via UPI</div>
+              </sc-if>
+              <sc-if value="{{ f.paid }}" hint-placeholder-val="{{ false }}">
+                <div style="height:40px;border-radius:12px;border:1.5px solid #A3A9B3;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:600;animation:tsFade .3s both">✓ Paid · Aditya notified</div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+        <div style="position:absolute;bottom:14px;left:50%;width:90px;height:4px;margin-left:-45px;border-radius:4px;background:#F2F4F6;opacity:.5"></div>
+      </div>
+    </div>
+  </sc-for>
+
+  <sc-for list="{{ pieces }}" as="p" hint-placeholder-count="3">
+    <div style="position:absolute;left:{{ p.left }}px;top:420px;width:{{ p.w }}px;height:120px;pointer-events:none;z-index:5;opacity:{{ p.opacity }};transform:{{ p.outerT }};transition:{{ p.outerTr }}">
+      <div style="width:100%;height:100%;transform:{{ p.innerT }};transition:{{ p.innerTr }}">
+        <div style="position:relative;width:100%;height:100%;transform:{{ p.coreT }};transition:{{ p.coreTr }}">
+          <sc-if value="{{ p.zig }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;left:0;right:0;top:-6px;height:6px;background:linear-gradient(45deg,#D4F26A 4.5px,transparent 0) 0 100%/9px 6px repeat-x,linear-gradient(-45deg,#D4F26A 4.5px,transparent 0) 0 100%/9px 6px repeat-x"></div>
+          </sc-if>
+          <div style="width:100%;height:100%;box-sizing:border-box;background:#D4F26A;color:#1F2A00;border-radius:{{ p.radius }};box-shadow:{{ p.shadow }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-left:{{ p.seam }}">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1F2A00;color:#D4F26A;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">{{ p.init }}</div>
+            <span style="font-size:13px;font-weight:600">{{ p.name }}</span>
+            <span style="font:700 15px 'JetBrains Mono',monospace">₹1,200</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;holdToTear&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;speed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.4,&quot;max&quot;:2,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  state = { scale: 1, phase: 'idle', progress: 0, delivered: [false, false, false], paid: [false, false, false] };
+  timers = [];
+  componentDidMount() {
+    this.fit = () => this.setState({ scale: Math.min(window.innerWidth / 1360, window.innerHeight / 900) });
+    this.fit();
+    window.addEventListener('resize', this.fit);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.fit); this.clear(); }
+  clear() { this.timers.forEach(clearTimeout); this.timers = []; cancelAnimationFrame(this.raf); }
+  T() { return 1 / (this.props.speed ?? 1); }
+  at(ms, fn) { this.timers.push(setTimeout(fn, ms)); }
+  fire() {
+    const T = this.T();
+    cancelAnimationFrame(this.raf);
+    this.setState({ phase: 'tear', progress: 1 });
+    this.at(450 * T, () => this.setState({ phase: 'split' }));
+    this.at(950 * T, () => this.setState({ phase: 'fly' }));
+    [0, 1, 2].forEach(i => this.at((950 + 820 + i * 150) * T, () =>
+      this.setState(s => { const d = s.delivered.slice(); d[i] = true; return { delivered: d }; })));
+    this.at((950 + 820 + 450) * T, () => this.setState({ phase: 'done' }));
+  }
+  reset() { this.clear(); this.setState({ phase: 'idle', progress: 0, delivered: [false, false, false], paid: [false, false, false] }); }
+  renderVals() {
+    const { phase, progress, delivered, paid, scale } = this.state;
+    const hold = this.props.holdToTear ?? true;
+    const T = this.T();
+    const names = [['Rahul', 'R'], ['Neha', 'N'], ['Jay', 'J']];
+    const FL = [560, 810, 1060];
+    const W = 334 / 3;
+    const torn = !['idle', 'charging'].includes(phase);
+    const flying = phase === 'fly' || phase === 'done';
+    const allDelivered = delivered.every(Boolean);
+    const allPaid = paid.every(Boolean);
+
+    const pieces = names.map(([name, init], i) => {
+      const startX = [153.5, 265, 376.5][i], dx = FL[i] + 8 + 10 + 97 - startX, dy = 200 + 8 + 118 + 60 - 480;
+      const delay = i * 150 * T;
+      let coreT = 'none';
+      if (phase === 'charging') coreT = `translateY(${progress * 8}px) rotate(${progress * (i - 1) * 0.6}deg)`;
+      if (phase === 'tear') coreT = `translateY(${18 + i * 6}px) rotate(3deg)`;
+      if (phase === 'split') coreT = `translate(${(i - 1) * 16}px, 36px) rotate(${(i - 1) * 7}deg)`;
+      if (flying) coreT = `rotate(${(i - 1) * 16 + 8}deg) scale(.78)`;
+      return {
+        name, init, w: torn ? [111, 112, 111][i] : [113, 114, 111][i], left: [98, 209, 321][i],
+        opacity: delivered[i] ? 0 : 1,
+        outerT: flying ? `translateX(${dx}px)` : 'none',
+        outerTr: `transform ${820 * T}ms cubic-bezier(.45,0,.25,1) ${delay}ms, opacity .15s`,
+        innerT: flying ? `translateY(${dy}px)` : 'none',
+        innerTr: `transform ${820 * T}ms cubic-bezier(.3,2.2,.6,1) ${delay}ms`,
+        coreT, coreTr: `transform ${(phase === 'charging' ? 60 : 450) * T}ms cubic-bezier(.2,.9,.3,1.3) ${flying ? delay : 0}ms`,
+        zig: torn,
+        radius: phase === 'split' || flying ? '4px 4px 16px 16px' : ['0 0 0 20px', '0', '0 0 20px 0'][i],
+        shadow: phase === 'split' || flying ? '0 18px 30px rgba(0,0,0,.35)' : 'none',
+        seam: i > 0 && phase === 'tear' ? '1.5px dashed rgba(31,42,0,.35)' : '0 solid transparent',
+      };
+    });
+
+    const rows = names.map(([name, init], i) => {
+      const status = paid[i] ? '✓ Paid' : delivered[i] ? 'Notified' : flying ? 'Sending…' : 'Waiting';
+      const on = paid[i];
+      return { name, init, status, border: i < 2 ? '1px solid #393E47' : '0 solid transparent', chipBg: on ? '#D4F26A' : '#393E47', chipFg: on ? '#1F2A00' : '#F2F4F6' };
+    });
+
+    const friends = names.map(([name], i) => ({
+      name, left: FL[i], delivered: delivered[i], paid: paid[i], unpaid: !paid[i],
+      tag: paid[i] ? 'PAID' : delivered[i] ? '1 NEW' : 'LOCKED',
+      bannerBg: paid[i] ? '#393E47' : '#D4F26A', bannerFg: paid[i] ? '#F2F4F6' : '#1F2A00',
+      pay: () => this.setState(s => { const p = s.paid.slice(); p[i] = true; return { paid: p }; }),
+    }));
+
+    const dashes = Array.from({ length: 20 }, (_, i) => ({ op: phase === 'charging' && i / 20 < progress ? 1 : 0.28 }));
+    const done = phase === 'done';
+    const btnLabel = done ? 'Replay' : torn ? 'Tearing…' : hold ? (phase === 'charging' ? 'Keep holding' : 'Hold to tear & send') : 'Tap to tear & send';
+    const fillPct = phase === 'charging' ? progress * 100 : 0;
+
+    return {
+      scale, pieces, rows, friends, dashes, torn, allDelivered,
+      showPerf: !torn,
+      stampText: allPaid ? 'SETTLED' : 'SENT 3/3',
+      ghostOpacity: flying ? 1 : 0,
+      ticketTransform: phase === 'charging' ? `translateY(${-progress * 4}px)` : torn ? 'translateY(-6px)' : 'none',
+      fillPct, btnLabel, btnIcon: done ? '↺' : '✂',
+      btnFg: fillPct > 55 ? '#1F2A00' : '#F2F4F6',
+      hintText: done ? (allPaid ? 'Everyone paid. The ticket is settled.' : 'Tap “Pay via UPI” on each friend’s phone.') : hold ? 'Press and hold the button on Aditya’s phone until the perforation fills.' : 'Tap the ticket or the button on Aditya’s phone.',
+      ticketClick: () => { if (!hold && this.state.phase === 'idle') this.fire(); },
+      down: () => {
+        if (!hold || this.state.phase !== 'idle') return;
+        const t0 = performance.now(), dur = 900 * this.T();
+        this.setState({ phase: 'charging', progress: 0 });
+        const tick = () => {
+          const p = Math.min(1, (performance.now() - t0) / dur);
+          if (p >= 1) return this.fire();
+          this.setState({ progress: p });
+          this.raf = requestAnimationFrame(tick);
+        };
+        this.raf = requestAnimationFrame(tick);
+      },
+      up: () => { if (this.state.phase === 'charging') { cancelAnimationFrame(this.raf); this.setState({ phase: 'idle', progress: 0 }); } },
+      click: () => {
+        const ph = this.state.phase;
+        if (ph === 'done') return this.reset();
+        if (!hold && ph === 'idle') this.fire();
+      },
+    };
+  }
+}
+</script>
+</body>
+</html>
