@@ -20,7 +20,20 @@
       },
       "predictiveBackGestureEnabled": false
     },
-    "plugins": ["expo-sqlite", "expo-font", "expo-router", "expo-localization"],
+    "plugins": [
+      "expo-sqlite",
+      "expo-font",
+      "expo-router",
+      "expo-localization",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 150,
+          "backgroundColor": "#2B2F36"
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": false
     }
