@@ -231,3 +231,11 @@ export const tear = {
 
 /** Reference frame of the UI reference: the 370 px wide screen (13 §9). */
 export const frame = { width: 370, height: 780 } as const;
+
+/** The ticket mark (app icon 1b) as drawn on the splash (ui-refrence SPLASH, 13 §8). */
+export const brand = {
+  mark: { width: 150, height: 92, body: 108, stub: 42, notchAt: 100 },
+  /** Welcome's lime ticket: 500 high, 400 at least on short screens (screens/welcome). */
+  welcomeTicket: { height: 500, min: 400 },
+  wordmark: { small: 40, medium: 56, large: 80 },
+} as const;

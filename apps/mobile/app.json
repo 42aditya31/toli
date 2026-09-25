@@ -20,6 +20,9 @@
       },
       "predictiveBackGestureEnabled": false
     },
-    "plugins": ["expo-sqlite", "expo-font"]
+    "plugins": ["expo-sqlite", "expo-font", "expo-router", "expo-localization"],
+    "experiments": {
+      "typedRoutes": false
+    }
   }
 }

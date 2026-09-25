@@ -1,6 +1,13 @@
 import { ImpactFeedbackStyle, impactAsync } from 'expo-haptics';
 import { Children, type ReactNode, useEffect } from 'react';
-import { Pressable, type PressableProps, StyleSheet, View, type ViewStyle } from 'react-native';
+import {
+  Pressable,
+  type PressableProps,
+  type StyleProp,
+  StyleSheet,
+  View,
+  type ViewStyle,
+} from 'react-native';
 import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
@@ -99,7 +106,7 @@ export function Card({
   radiusSize = 'card',
 }: {
   readonly children: ReactNode;
-  readonly style?: ViewStyle;
+  readonly style?: StyleProp<ViewStyle>;
   readonly padded?: boolean;
   readonly radiusSize?: 'card' | 'cardS' | 'row';
 }) {

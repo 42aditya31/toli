@@ -5,8 +5,8 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { openDatabaseSync } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { ScrollView, Text } from 'react-native';
-import migrations from '../../drizzle/migrations';
 import { fromDb, toDb } from '../data/money-codec.ts';
+import migrations from './drizzle/migrations';
 import { expense_revisions, outbox } from './schema.ts';
 
 const sqlite = openDatabaseSync('spike.db');
