@@ -1,6 +1,7 @@
 // The only place where money crosses between SQLite numbers and Minor bigints (D-028).
-// When @toli/engine exists (M2), Minor is imported from it instead of declared here.
-export type Minor = bigint & { readonly __minor: unique symbol };
+import type { Minor } from '@toli/engine';
+
+export type { Minor };
 
 const MAX = BigInt(Number.MAX_SAFE_INTEGER);
 

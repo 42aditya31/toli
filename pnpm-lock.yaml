@@ -23,6 +23,9 @@ importers:
 
   apps/mobile:
     dependencies:
+      '@toli/engine':
+        specifier: workspace:^
+        version: link:../../packages/engine
       drizzle-orm:
         specifier: ^0.45.3
         version: 0.45.3(expo-sqlite@57.0.3(expo@57.0.25)(react-native@0.86.3(@babel/core@7.29.7)(@types/react@19.2.18)(react@19.2.3))(react@19.2.3))

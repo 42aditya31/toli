@@ -10,6 +10,7 @@
       "!spikes",
       "!supabase/.temp",
       "!.claude",
+      "!apps/mobile/drizzle",
       "!**/*.html",
       "!pnpm-lock.yaml",
       "!BUILD-PROMPT.md",

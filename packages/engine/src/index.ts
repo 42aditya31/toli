@@ -14,6 +14,7 @@ export { convertToBase, crossRate, IDENTITY_RATE, parseRate } from './fx/rate.ts
 export { isKittyLow, kittyRefunds, topUpSuggestion } from './kitty/kitty.ts';
 export { currencyExponent, SUPPORTED_CURRENCIES } from './money/currency.ts';
 export { formatMoney, parseMajor } from './money/format.ts';
+export type { Minor } from './money/minor.ts';
 export { spokenMoney } from './money/spoken.ts';
 export type { Payment } from './settle/settle.ts';
 export {

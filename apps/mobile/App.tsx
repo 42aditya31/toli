@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
+import { SqliteMoneySpike } from './src/spikes/sqlite-money.tsx';
 
-// M1 placeholder. Real screens arrive in M7, built only from @toli/design-system tokens (M3).
+// TEMPORARY for Spike 3. Restore the M1 placeholder when the spike is done.
 export default function App() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>toli</Text>
-      <StatusBar style="light" />
-    </View>
+    <>
+      <SqliteMoneySpike />
+      <StatusBar style="auto" />
+    </>
   );
 }
